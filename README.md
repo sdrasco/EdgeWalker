@@ -115,14 +115,14 @@ An example output:
    ```
    AAPL Best Balanced Strangle Search result:
    Expiration: 2023-10-20
-   Call strike: 175.00 at premium: 2.50
-   Put strike: 175.00 at premium: 2.45
+   Call strike: $175.00 at premium: $2.50
+   Put strike: $175.00 at premium: $2.45
    Cost of strangle: $495.00
    Cost of call: $250.00
    Cost of put: $245.00
-   Upper breakeven: 179.950
-   Lower breakeven: 170.050
-   Breakeven difference: 9.900
+   Upper breakeven: $179.950
+   Lower breakeven: $170.050
+   Breakeven difference: $9.900
    Normalized breakeven difference: 0.06
    ```
 
