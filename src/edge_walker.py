@@ -2,10 +2,6 @@ import yfinance as yf
 import pandas as pd
 import time
 
-# Output the versions of yfinance and pandas
-print(f"yfinance version: {yf.__version__}")
-print(f"pandas version: {pd.__version__}")
-
 # Function to calculate breakeven points and look for the best-balanced strangle
 def find_balanced_strangle(ticker):
     # Fetch the options chain for the given ticker
@@ -90,29 +86,23 @@ def find_balanced_strangle(ticker):
 def show_findings(best_strangle):
     # Print the results
     if best_strangle['call_strike']:
-        print(f"{ticker} Best Balanced Strangle Search result:")
+        print(f"{best_strangle['ticker']} Best Balanced Strangle Search result:")
         print(f"Expiration: {best_strangle['expiration']}")
-        print(f"Call strike: {best_strangle['call_strike']:.2f} at premium: {best_strangle['call_premium']:.2f}")
-        print(f"Put strike: {best_strangle['put_strike']:.2f} at premium: {best_strangle['put_premium']:.2f}")
+        print(f"Call strike: {best_strangle['call_strike']:.2f} at premium: ${best_strangle['call_premium']:.2f}")
+        print(f"Put strike: {best_strangle['put_strike']:.2f} at premium: ${best_strangle['put_premium']:.2f}")
         print(f"Cost of strangle: ${best_strangle['cost_call']+best_strangle['cost_put']:.2f}")
         print(f"Cost of call: ${best_strangle['cost_call']:.2f}")
         print(f"Cost of put: ${best_strangle['cost_put']:.2f}")
-        print(f"Upper breakeven: {best_strangle['upper_breakeven']:.3f}")
-        print(f"Lower breakeven: {best_strangle['lower_breakeven']:.3f}")
-        print(f"Breakeven difference: {best_strangle['breakeven_difference']:.3f}")
+        print(f"Upper breakeven: ${best_strangle['upper_breakeven']:.3f}")
+        print(f"Lower breakeven: ${best_strangle['lower_breakeven']:.3f}")
+        print(f"Breakeven difference: ${best_strangle['breakeven_difference']:.3f}")
         print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.2f}\n")
 
 # Start the timer
 start_time = time.time()
 
 # Make our list of stocks to search
-tickers = [
-    'AAPL', 'ABNB', 'AMD', 'AMZN', 'BA', 
-    'BABA', 'BCAB', 'BIDU', 'DIA', 'F', 
-    'FOUR', 'GOOGL', 'INTC', 'IWM', 'JD', 
-    'META', 'MSFT', 'NFLX', 'NVDA', 'QQQ', 
-    'SPY', 'TSLA', 'UBER'
-    ]
+tickers = ['AAPL', 'AMZN', 'GOOGL']
 
 # Remove duplicates and sort alphabetically
 tickers = sorted(set(tickers))
@@ -123,7 +113,7 @@ results = []
 # main loop to search for best ballanced strangles
 for ticker in tickers:
     new_result = find_balanced_strangle(ticker)
-    new_result['ticker'] = ticker  # Add ticker to the result
+    new_result['ticker'] = ticker  
     results.append(new_result)
 
 # Filter out results with no valid strangle
@@ -133,19 +123,15 @@ invalid_results = [r for r in results if not r['call_strike']]
 # Sort the valid results by normalized breakeven difference
 sorted_results = sorted(valid_results, key=lambda x: x['normalized_difference'])
 
-# Extract tickers from invalid_results
-invalid_tickers = [r['ticker'] for r in invalid_results]
-
 # Display any valid results
 if valid_results:
     for result in valid_results:
         show_findings(result)
 
 # Display any invalid results
+invalid_tickers = [r['ticker'] for r in invalid_results]
 if invalid_results:
-    for result in invalid_results:
-        ticker = result.get('ticker', 'Unknown')
-        print(f"{ticker}: Didn't find any suitable put/call contract pairs.\n")
+    print(f"Didn't find any suitable put/call contract pairs for: {invalid_tickers}\n")
 
 # display the execution time taken
 execution_time = time.time() - start_time
