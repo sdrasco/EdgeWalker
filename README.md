@@ -21,7 +21,7 @@ Edge Walker is a software tool that helps identify a specialized version of trad
 - **Upper and Lower Breakeven Prices**: In a strangle, the upper breakeven price is the point at which the stock price needs to rise for the call option to break even. The lower breakeven price is where the stock must fall for the put option to break even.
 - **Strangle**: Similar to a straddle, but the call and put options have different strike prices. This creates a wider range for profit or loss, and is used when traders expect the stock to move significantly, but not necessarily by a large amount.
 
-Edge Walker helps traders find the most “balanced” strangles—those with the smallest difference, or narrowest gap, between the upper and lower breakeven prices. By narrowing this gap or edge, if you will, traders can reduce the conditions under which losses occur, making their trades potentially less risky. 
+Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, between the upper and lower breakeven prices. By narrowing this gap or edge, if you will, traders can reduce the conditions under which losses occur, making their trades potentially less risky. 
 
 ## Table of Contents
 
