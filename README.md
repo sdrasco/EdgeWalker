@@ -17,7 +17,7 @@ Edge Walker is a software tool that helps identify a specialized version of trad
 - **Expiration**: The date by which the buyer must decide whether to exercise the option or let it expire. After the expiration date, the option becomes worthless.
 - **Strike Price**: The price at which the buyer of the option can buy (for a call) or sell (for a put) the stock. The strike price is agreed upon when the option is purchased.
 - **Breakeven Price**: The stock price at which an options strategy results in neither a profit nor a loss. For a call option, the breakeven price is the strike price plus the premium paid. For a put option, it’s the strike price minus the premium.
-- **Straddle**: A strategy where an investor buys both a call option and a put option for the same stock with the same strike price. This strategy is used when the investor expects a big price move but is unsure of the direction.
+- **Straddle**: A strategy where an investor buys both a call option and a put option for the same stock with the same strike price and the same expiration date. This strategy is used when the investor expects a big price move but is unsure of the direction.
 - **Upper and Lower Breakeven Prices**: In a strangle, the upper breakeven price is the point at which the stock price needs to rise for the call option to break even. The lower breakeven price is where the stock must fall for the put option to break even.
 - **Strangle**: Similar to a straddle, but the call and put options have different strike prices. This creates a wider range for profit or loss, and is used when traders expect the stock to move significantly, but not necessarily by a large amount.
 
