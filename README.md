@@ -9,7 +9,7 @@ Edge Walker is a Python script that searches for the best-balanced options stran
 
 ## For those without options trading experience:
 
-Edge Walker is a software tool that searches for an idealized version of a trading strategy called a “strangle.” This strategy involves purchasing options—financial contracts that give you the right to buy or sell a stock at a certain price in the future. To help you understand how Edge Walker works, here are some key terms related to options trading:
+Edge Walker is a software tool that searches for an idealized version of a trading strategy called a “strangle.” This strategy involves purchasing options—financial contracts that give you the right to buy or sell a stock at a certain price in the future. Here are some basics or key terms about options trading and the strangle strategy that Edge Walker tries to idealize:
 
 - **Options**: Financial contracts that give the buyer the right, but not the obligation, to buy or sell a stock at a specific price before a set expiration date. There are two types of options: calls and puts.
 - **Call Option**: A contract that gives the buyer the right to buy a stock at a specific price (the strike price) before the option expires. Traders use call options when they expect the stock’s price to increase.
