@@ -1,7 +1,7 @@
 
 # Edge Walker
 
-![Edge Walker Logo](EdgeWalker.png)
+![Edge Walker Logo](EdgeWalker_small.png)
 
 ## For experienced traders: (TLDR)
 
