@@ -51,7 +51,7 @@ An **options strangle** is an options strategy where an investor holds a positio
 
 ## Requirements
 
-- Python 3.6 or higher
+- Python 3.11.5 or higher
 - [yfinance](https://pypi.org/project/yfinance/)
 - [pandas](https://pypi.org/project/pandas/)
 
