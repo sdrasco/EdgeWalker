@@ -3,11 +3,11 @@
 
 ![Edge Walker Logo](EdgeWalker_small.png)
 
-## For experienced traders: (TLDR)
+## For experienced traders (TLDR)
 
 Edge Walker is a Python script that searches for the best-balanced options strangles for a list of stock tickers. It finds strangles with the smallest normalized breakeven difference, minimizing the conditions for losses.
 
-## For those without options trading experience:
+## For those without options trading experience
 
 Edge Walker is a software tool that searches for an idealized version of a trading strategy called a “strangle.” This strategy involves purchasing options—financial contracts that give you the right to buy or sell a stock at a certain price in the future. Here are some basics or key terms about options trading and the strangle strategy that Edge Walker tries to idealize:
 
@@ -24,7 +24,7 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, between the upper and lower breakeven prices. By narrowing this gap, or edge,  you reduce the conditions under which losses occur.  Edge Walker was made to try and find scenarios as near as possible to the ideal case in which the upper and lower breakeven prices are identical.
 
-## Disclaimer:
+## Disclaimer
 
 Edge Walker does not account for transaction fees, although those could easily be factored into its calculations. It is also focused entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves (a complex topic that concerns the market's preceived value of the time remaining until options expire).
 
@@ -62,19 +62,19 @@ An **options strangle** is an options strategy where an investor holds a positio
 
 ## Installation
 
-1. **Clone the repository:**
+1. **Clone the repository**
 
    ```bash
    git clone https://github.com/sdrasco/EdgeWalker.git
    ```
 
-2. **Navigate to the project directory:**
+2. **Navigate to the project directory**
 
    ```bash
    cd EdgeWalker
    ```
 
-3. Install the required packages:
+3. Install the required packages
 
    ```bash
    pip install -r requirements.txt
@@ -82,7 +82,7 @@ An **options strangle** is an options strategy where an investor holds a positio
 
 ## Usage
 
-1. **Prepare the list of stock tickers:**
+1. **Prepare the list of stock tickers**
 
    ```python
    tickers = [
@@ -94,13 +94,13 @@ An **options strangle** is an options strategy where an investor holds a positio
    ]
    ```
 
-2. **Run the script:**
+2. **Run the script**
    
    ```python 
    python src/edge_walker.py
    ```
 
-3. **View the results:**
+3. **View the results**
    The script will output the best-balanced strangle for each ticker, along with detailed information about the options contracts.
 
 ### Understanding the Output
@@ -115,7 +115,7 @@ For each ticker, the script provides:
 - Breakeven Difference: The absolute difference between the breakeven points.
 - Normalized Breakeven Difference: The breakeven difference normalized by the average strike price.
 
-An example output:
+An example output
 
    ```
    AAPL Best Balanced Strangle Search result:
@@ -140,9 +140,9 @@ By default, the script considers all available expiration dates. To limit the se
    # expiration_dates = stock.options[:N]
 ```
 
-- **Adjusting the Tickers List:**
+- **Adjusting the Tickers List**
 Modify the tickers list to include any stocks you’re interested in.
-- **Changing Output Preferences:**
+- **Changing Output Preferences**
 Feel free to adjust the `show_findings` function to customize the output format.
 
 ## Contributing
