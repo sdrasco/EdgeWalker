@@ -24,7 +24,9 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, between the upper and lower breakeven prices. By narrowing this gap, or edge,  you reduce the conditions under which losses occur.  Edge Walker was made to try and find scenarios as near as possible to the ideal case in which the upper and lower breakeven prices are identical.
 
-Edge Walker does not account for transaction fees. It is also focused entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves (a complex topic that concerns the market's preceived value of the time remaining until options expire).
+## Disclaimer:
+
+Edge Walker does not account for transaction fees, although those coudl easily be factored into its calculations. It is also focused entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves (a complex topic that concerns the market's preceived value of the time remaining until options expire).
 
 ## Table of Contents
 
