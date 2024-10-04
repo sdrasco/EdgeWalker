@@ -136,7 +136,7 @@ An example output
    Upper breakeven: $179.950
    Lower breakeven: $170.050
    Breakeven difference: $9.900
-   difference: 0.06
+   Normalized: 0.06
    ```
 
 ## Customization 
