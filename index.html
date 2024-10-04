@@ -3,93 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edge Walker Options</title>
+    <title>EdgeWalker</title>
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="EdgeWalker - Scouring Market Data for Option Trades">
+    <meta property="og:description" content="Finding the best-balanced option strangles.">
+    <meta property="og:image" content="https://yourdomain.com/EdgeWalker_small.png">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="EdgeWalker">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EdgeWalker - Scouring Market Data for Option Trades">
+    <meta name="twitter:description" content="Finding the best-balanced option strangles for your trades.">
+    <meta name="twitter:image" content="https://yourdomain.com/EdgeWalker_small.png">
+    <meta name="twitter:url" content="https://yourdomain.com">
+
+    <!-- Attempt a nice font -->
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Work Sans', Arial, sans-serif;
-            background-color: #C5D3C5; /* Soft muted green */
+            background-color: #f0f0f0;
+            color: #333;
             margin: 0;
             padding: 0;
+            text-align: center;
+        }
+
+        header {
+            padding: 50px 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            gap: 20px;
         }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            padding: 40px;
-            max-width: 1200px;
-            width: 100%;
-        }
-
-        .panel {
-            background-color: #F9F9F9; /* Off-white panels */
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .logo-text-container {
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 800px;
+        }
+
+        .logo-text-container img {
+            max-width: 225px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .text-container {
             text-align: left;
-            white-space: pre-wrap; /* Ensures text formatting is maintained */
+            max-width: 500px;
         }
 
-        #logo {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: transparent; /* Makes the background transparent */
-            border-radius: 15px; /* Keeps rounded corners */
-            padding: 0; /* Removes padding from the logo panel */
-            box-shadow: none; /* No shadow for the logo panel */
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
         }
 
-        #logo img {
-            width: 60%; /* Makes the logo fill the entire panel */
-            height: 100%; /* Ensures full height */
-            border-radius: 15px; /* Ensures the image has rounded corners like the panel */
-            object-fit: cover; /* Ensures the logo covers the panel without distortion */
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin: 5px 0;
         }
 
-        /* Media query for small screens */
+        .small-center {
+            font-size: 16px; 
+            text-align: center;
+            margin: 10px auto 15px;
+            line-height: 1.6;
+            color: #777; 
+            max-width: 80%;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        a.button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        a.button:hover {
+            background-color: #0056b3;
+        }
+
+        iframe {
+            width: 80%;
+            height: 800px;
+            border: 1px solid #ccc;
+            margin: 5px 0;
+            border-radius: 10px;
+        }
+
+        footer {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 20px 0;
+            margin-top: 25px;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Media query for smaller screens */
         @media (max-width: 600px) {
-            .grid-container {
-                grid-template-columns: 1fr; /* Single column layout */
+            h1 {
+                font-size: 32px;
             }
 
-            #logo {
-                display: none; /* Hide the logo panel */
+            p {
+                font-size: 16px;
+            }
+            
+            .small-center {
+                font-size: 16px;
+                max-width: 100%;
+            }
+
+            a.button {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+
+            iframe {
+                width: 100%;
+                height: 600px;
+            }
+
+            .logo-text-container {
+                flex-direction: column;
+            }
+
+            .logo-text-container img {
+                max-width: 250px; 
+                border-radius: 10px
+            }
+
+            .text-container {
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="grid-container">
-        <!-- Trade Panels with data-position attribute -->
-        <div class="panel" data-position="1">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
 
-        <div class="panel" data-position="2">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
-
-        <div class="panel" data-position="3">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
-
-        <div class="panel" data-position="4">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
-
-        <!-- Logo Panel (Same size as other panels) -->
-        <div class="panel" id="logo" data-position="logo">
-            <img src="EdgeWalker.png" alt="Edge Walker Logo">
+<header>
+    <div class="logo-text-container">
+        <img src="EdgeWalker_small.png" alt="EdgeWalker Logo">
+        <div class="text-container">
+            <p>Analyzing live market data to find options trades that closely align with a target trading strategy.</p>
         </div>
-
-        <div class="panel" data-position="5">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
-
-        <div class="panel" data-position="6">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
-
-        <div class="panel" data-position="7">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
-
-        <div class="panel" data-position="8">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
     </div>
+</header>
+
+<!-- Report Section -->
+<iframe src="https://yourdomain.com/eventually.html" title="Eventually Report"></iframe>
+<p>
+<a href="https://github.com/sdrasco/EdgeWalker" class="button">Tell me more about this</a>
+<a href="https://github.com/sdrasco/EdgeWalker/blob/main/src/edge_walker.py" class="button">View source code</a>
+</p>
+<p class="small-center">We’re in early development, and you’ll need to understand Python to try this out.</p>
+
+<footer>
+    <p>&copy; 2024 EdgeWalker. All rights reserved. | <a href="mailto:steve.drasco@gmail.com">Contact</a></p>
+</footer>
+
 </body>
 </html>
