@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge Walker Options</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Work Sans', Arial, sans-serif;
+            background-color: #C5D3C5; /* Soft muted green */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .panel {
+            background-color: #F9F9F9; /* Off-white panels */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: left;
+            white-space: pre-wrap; /* Ensures text formatting is maintained */
+        }
+
+        #logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent; /* Makes the background transparent */
+            border-radius: 15px; /* Keeps rounded corners */
+            padding: 0; /* Removes padding from the logo panel */
+            box-shadow: none; /* No shadow for the logo panel */
+        }
+
+        #logo img {
+            width: 60%; /* Makes the logo fill the entire panel */
+            height: 100%; /* Ensures full height */
+            border-radius: 15px; /* Ensures the image has rounded corners like the panel */
+            object-fit: cover; /* Ensures the logo covers the panel without distortion */
+        }
+
+        /* Media query for small screens */
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr; /* Single column layout */
+            }
+
+            #logo {
+                display: none; /* Hide the logo panel */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Trade Panels with data-position attribute -->
+        <div class="panel" data-position="1">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <div class="panel" data-position="2">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <div class="panel" data-position="3">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <div class="panel" data-position="4">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <!-- Logo Panel (Same size as other panels) -->
+        <div class="panel" id="logo" data-position="logo">
+            <img src="EdgeWalker.png" alt="Edge Walker Logo">
+        </div>
+
+        <div class="panel" data-position="5">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <div class="panel" data-position="6">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <div class="panel" data-position="7">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+
+        <div class="panel" data-position="8">AAPL<br>Expiration: 2023-10-20<br>Call strike: $175.00 at premium: $2.50<br>Put strike: $175.00 at premium: $2.45<br>Cost of strangle: $495.00<br>Cost of call: $250.00<br>Cost of put: $245.00<br>Upper breakeven: $179.950<br>Lower breakeven: $170.050<br>Breakeven difference: $9.900<br>Normalized breakeven difference: 0.06</div>
+    </div>
+</body>
+</html>
