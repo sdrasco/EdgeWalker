@@ -161,10 +161,6 @@ Contributions are welcome! If you have suggestions or improvements, please fork 
 
 This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.
 
-## Acknowledgments
-
-- Yahoo Finance: For providing access to financial data through the yfinance library.
-
 ## Contact
 
 For questions or suggestions, please contact Steve Drasco at steve.drasco@gmail.com
