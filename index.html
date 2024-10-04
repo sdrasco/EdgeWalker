@@ -103,6 +103,9 @@
             border: 1px solid #ccc;
             margin: 5px 0;
             border-radius: 10px;
+            padding-top: 10px;  /* Add some padding to avoid clipping */
+            overflow: auto;  /* Ensure content is scrollable within the frame */
+            box-sizing: border-box;  /* Ensures padding and border are included in the width/height calculations */
         }
 
         footer {
