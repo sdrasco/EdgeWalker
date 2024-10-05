@@ -19,10 +19,10 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 - **Premium**: The cost of buying an option contract.
 - **Breakeven Price**: The stock price at which an options strategy results in neither a profit nor a loss. For a call option, the breakeven price is the strike price plus the premium paid. For a put option, it’s the strike price minus the premium.
 - **Straddle**: A strategy where an investor buys both a call option and a put option for the same stock with the same strike price and the same expiration date. This strategy is used when the investor expects a price movement but is unsure of the direction.
-- **Upper and Lower Breakeven Prices**: In a straddle, the upper breakeven price is the point at which the stock price needs to rise for the call option to break even. The lower breakeven price is where the stock must fall for the put option to break even. When the stock price is between the upper and lower breakeven prices, exericising would result in a loss.  When the stock price is above the upper breakeven price or below the lower breakeven price, exericising would result in a profit.
-- **Strangle**: Similar to a straddle, but the call and put options have different strike prices. They will have a different total cost or premium than a straddle, but will also have a different sized gap between the uper and lower breakeven prices.
+- **Upper and Lower Breakeven Prices**: In a straddle, the upper breakeven price is the point at which the stock price needs to rise for the call option to break even. The lower breakeven price is where the stock must fall for the put option to break even. When the stock price is between the upper and lower breakeven prices, exercising would result in a loss. When the stock price is above the upper breakeven price or below the lower breakeven price, exercising would result in a profit.
+- **Strangle**: Similar to a straddle, but the call and put options have different strike prices. They will have a different total cost or premium than a straddle, but will also have a different sized gap between the upper and lower breakeven prices.
 
-Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur.  Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
+Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
 ## Future Plans
 
@@ -32,9 +32,9 @@ Eventually, Edgewalker will be a realtime market data scraping machine [that loo
 
 ## Disclaimer
 
-Edge Walker does not account for transaction fees, although those could easily be factored into its calculations. It also focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves (a complex topic that concerns the market's preceived value of the time remaining until options expire).
+Edge Walker does not account for transaction fees, although those could easily be factored into its calculations. It also focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves (a complex topic that concerns the market's perceived value of the time remaining until options expire).
 
-Edge Walker is provided “as is” without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy. 
+Edge Walker is provided “as is” without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
 
 ## Table of Contents
 
@@ -56,17 +56,19 @@ An **options strangle** is an options strategy where an investor holds a positio
 
 ## Features
 
-- Fetches options data for a list of stock tickers using Yahoo Finance.
+- Fetches options data for a list of stock tickers using the Polygon.io API.
 - Calculates breakeven points for various call and put combinations.
 - Identifies the strangle with the smallest normalized breakeven difference for each ticker.
 - Provides detailed output including strike prices, premiums, costs, and breakeven points.
 - Measures execution time and provides performance metrics.
+- Stores ticker collections in an external `tickers.json` file for easy management and customization.
 
 ## Requirements
 
 - Python 3.11.5 or higher
-- [yfinance](https://pypi.org/project/yfinance/)
+- A Polygon.io API key with access to options data
 - [pandas](https://pypi.org/project/pandas/)
+- [requests](https://pypi.org/project/requests/)
 
 ## Installation
 
@@ -92,15 +94,7 @@ An **options strangle** is an options strategy where an investor holds a positio
 
 1. **Prepare the list of stock tickers**
 
-   ```python
-   tickers = [
-    'AAPL', 'ABNB', 'AMD', 'AMZN', 'BA', 
-    'BABA', 'BCAB', 'BIDU', 'DIA', 'F', 
-    'FOUR', 'GOOGL', 'INTC', 'IWM', 'JD', 
-    'META', 'MSFT', 'NFLX', 'NVDA', 'QQQ', 
-    'SPY', 'TSLA', 'UBER'
-   ]
-   ```
+   The tickers are stored in a `tickers.json` file. Edit this file to add or remove tickers as needed.
 
 2. **Run the script**
    
@@ -123,21 +117,23 @@ For each ticker, the script provides:
 - Breakeven Difference: The absolute difference between the breakeven points.
 - Normalized Breakeven Difference: The breakeven difference normalized by the average strike price.
 
-An example output
+An example of the output:
 
-   ```
-   AAPL
-   Expiration: 2023-10-20
-   Call strike: $175.00
-   Put strike: $175.00
-   Cost of strangle: $495.00
-   Cost of call: $250.00
-   Cost of put: $245.00
-   Upper breakeven: $179.950
-   Lower breakeven: $170.050
-   Breakeven difference: $9.900
-   Normalized: 0.06
-   ```
+```
+<div class="panel" data-position="1">FOUR<br>Normalized Breakeven Difference: 0.104Cost of strangle: $495.00<br>Expiration: 2024-10-18<br>Call strike: $95.00<br>Put strike: $95.00<br>Cost of call: $120.00<br>Cost of put: $375.00<br>Upper breakeven: $99.950<br>Lower breakeven: $90.050<br>Breakeven difference: $9.900<br></div>
+```
+
+### Execution Statistics
+
+At the end of the execution, statistics are provided with details about the number of tickers processed, the number of requests sent to Polygon.io, the number of HTML panels generated, and the execution time. For example:
+
+```
+Number of tickers processed: 5
+Number of requests sent to Polygon.io: 5
+Number of HTML panels generated: 5
+Execution time: 155.23 seconds
+Execution time per ticker: 31.05 seconds
+```
 
 ## Customization 
 
@@ -149,7 +145,7 @@ By default, the script considers all available expiration dates. To limit the se
 ```
 
 - **Adjusting the Tickers List**
-Modify the tickers list to include any stocks you’re interested in.
+Modify the tickers list by editing the `tickers.json` file to include any stocks you’re interested in.
 - **Changing Output Preferences**
 Feel free to adjust the `show_findings` function to customize the output format.
 
