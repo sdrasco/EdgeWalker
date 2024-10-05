@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker is a Python script that searches a list of stock tickers for the best-balanced options strangles (strangles with the smallest breakeven differences).
+Edge Walker is Python tool that uses the polygon.io API to searches a list of stock tickers for the best-balanced options strangles (strangles with the smallest breakeven differences).
 
 ## For those without options trading experience
 
