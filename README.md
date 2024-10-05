@@ -9,7 +9,7 @@ Edge Walker is Python tool that uses the [Polygon API](https://polygon.io/) to s
 
 ## For those without options trading experience
 
-Edge Walker is a software tool that searches for an idealized version of a trading strategy called a “strangle.” This strategy involves purchasing options—financial contracts that give you the right to buy or sell a stock at a certain price in the future. Here are some basics or key terms about options trading and the strangle strategy that Edge Walker tries to idealize:
+Edge Walker is a software tool that searches for an idealized version of a trading strategy called a “strangle." This strategy involves purchasing options—financial contracts that give you the right to buy or sell a stock at a certain price in the future. Here are some basics or key terms about options trading and the strangle strategy that Edge Walker tries to idealize:
 
 - **Options**: Financial contracts that give the buyer the right, but not the obligation, to buy or sell a stock at a specific price before a set expiration date. There are two types of options: calls and puts.
 - **Call Option**: A contract that gives the buyer the right to buy a stock at a specific price (the strike price) before the option expires. Traders use call options when they expect the stock’s price to increase.
@@ -22,7 +22,7 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 - **Upper and Lower Breakeven Prices**: In a straddle, the upper breakeven price is the point at which the stock price needs to rise for the call option to break even. The lower breakeven price is where the stock must fall for the put option to break even. When the stock price is between the upper and lower breakeven prices, exercising would result in a loss. When the stock price is above the upper breakeven price or below the lower breakeven price, exercising would result in a profit.
 - **Strangle**: Similar to a straddle, but the call and put options have different strike prices. They will have a different total cost or premium than a straddle, but will also have a different sized gap between the upper and lower breakeven prices.
 
-Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
+Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
 ## Page layout
 
@@ -34,7 +34,7 @@ Edgewalker's main output it designed to be easily incorporated into [a simple ht
 
 Edge Walker does not account for transaction fees, although those could easily be factored into its calculations. It also focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves (a complex topic that concerns the market's perceived value of the time remaining until options expire).
 
-Edge Walker is provided “as is” without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
+Edge Walker is provided "as is" without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
 
 ## Table of Contents
 
