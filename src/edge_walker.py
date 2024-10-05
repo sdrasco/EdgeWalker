@@ -182,7 +182,7 @@ def generate_html_table(strangle, position):
     # If all required values are present, proceed to generate HTML and return it as one compact line
     return ''.join([
         f'<div class="panel" data-position="{position}">',
-        f'{strangle["ticker"]}: ${best_strangle["last_close"]:.2f}<br>',
+        f'{strangle["ticker"]}: ${strangle["last_close"]:.2f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
@@ -206,9 +206,9 @@ with open('tickers.json', 'r') as f:
     tickers_data = json.load(f)
 
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
-ticker_collection = 'sp500_tickers'
+#ticker_collection = 'sp500_tickers'
 #ticker_collection = '100_tickers'
-#ticker_collection = '25_tickers'
+ticker_collection = '25_tickers'
 #ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
@@ -239,9 +239,22 @@ for ticker in tickers:
     display_strangle(strangle)
 
 # Sort the results first by 'normalized_difference' and then by total strangle price ('cost_call' + 'cost_put')
+# Filter out entries where 'cost_call' or 'cost_put' or 'normalized_difference' or 'num_strangles_considered' is None
+filtered_results = [
+    x for x in results 
+    if (x.get('cost_call') is not None and 
+    x.get('cost_put') is not None and 
+    x.get('normalized_difference') is not None and 
+    x.get('num_strangles_considered') is not None)
+]
+
 sorted_results = sorted(
-    results, 
-    key=lambda x: (x['normalized_difference'], x['cost_call'] + x['cost_put'])
+    filtered_results, 
+    key=lambda x: (
+        x['normalized_difference'],  # First priority (ascending)
+        -x['num_strangles_considered'],  # Second priority (decending)
+        x['cost_call'] + x['cost_put'],  # Third priority (ascending)
+    )
 )
 
 # Generate HTML for each result
