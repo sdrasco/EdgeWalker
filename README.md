@@ -68,7 +68,6 @@ An **options strangle** is an options strategy where an investor holds a positio
 - Python 3.11.5 or higher
 - A Polygon.io API key with access to options data
 - [pandas](https://pypi.org/project/pandas/)
-- [requests](https://pypi.org/project/requests/)
 
 ## Installation
 
