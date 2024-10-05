@@ -94,7 +94,7 @@ Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the 
 
 1. **Prepare the list of stock tickers**
 
-   The tickers are stored in a `tickers.json` file. Edit this file to add or remove tickers as needed.  Here's an example
+   The tickers are stored in a `tickers.json` file. Edit this file to add or remove tickers as needed.  Here's an example:
    ```
    {
      "tickers_5": [
