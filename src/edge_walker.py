@@ -17,13 +17,25 @@ def find_balanced_strangle(ticker, force_coupled=False):
     today = datetime.today()
     one_week_from_today = today + timedelta(weeks=1)
     one_week_from_today_str = one_week_from_today.strftime('%Y-%m-%d')
+
+    # Limit strike prices within a generous buffer_factor the last closing stock price
+    try:
+        last_close_price = client.get_previous_close_agg(ticker)[0].close
+    except Exception as e:
+        print(f"Warning: No stock price data for {ticker}: {e}. Moving to next ticker.\n")
+        return None  # Skip this ticker if we can't get any price data
+    buffer_factor = 3.0
+    strike_min = last_close_price / buffer_factor
+    strike_max = last_close_price * buffer_factor
     
     # Fetch the options chain with no strike price filter, just by expiration date
     for option in client.list_snapshot_options_chain(
         ticker,
         params={
             "expiration_date.gte": one_week_from_today_str,
-            "strike_price.gte": 0
+            "strike_price.gte": strike_min,
+            "strike_price.lte": strike_max,
+            "contract_type.in": "call,put"
         }
     ):
         options_chain.append(option)
@@ -31,7 +43,6 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Organize calls and puts by expiration date
     calls = []
     puts = []
-
     for contract in options_chain:
         details = contract.details
         expiration = details.expiration_date
@@ -69,8 +80,10 @@ def find_balanced_strangle(ticker, force_coupled=False):
     }
 
     # Iterate over all possible combinations of call and put
+    num_strangles_considered = 0
     for call in calls:
         for put in puts:
+
             # Apply the force_coupled flag: only process pairs with matching expiration dates if force_coupled is True
             if force_coupled and call['expiration'] != put['expiration']:
                 continue  # Skip if expirations don't match when forcing coupled expirations
@@ -87,6 +100,9 @@ def find_balanced_strangle(ticker, force_coupled=False):
             # Skip anything with zero premium
             if call_premium == 0 or put_premium == 0:
                 continue  # Skip 
+
+            # update the strangles considered counter
+            num_strangles_considered += 1
 
             # Calculate the upper and lower breakeven points
             upper_breakeven = call_strike + call_premium + put_premium
@@ -121,7 +137,8 @@ def find_balanced_strangle(ticker, force_coupled=False):
                     'normalized_difference': normalized_difference,
                     'cost_call': cost_call,
                     'cost_put': cost_put,
-                    'expiration': strangle_expiration
+                    'expiration': strangle_expiration,
+                    'num_strangles_considered': num_strangles_considered
                 }
 
     # Return the best strangle found
@@ -144,7 +161,8 @@ def display_strangle(best_strangle):
     print(f"Cost of put: ${best_strangle['cost_put']:.2f}")
     print(f"Upper breakeven: ${best_strangle['upper_breakeven']:.3f}")
     print(f"Lower breakeven: ${best_strangle['lower_breakeven']:.3f}")
-    print(f"Breakeven difference: ${best_strangle['breakeven_difference']:.3f}\n")
+    print(f"Breakeven difference: ${best_strangle['breakeven_difference']:.3f}")
+    print(f"Contract pairs tried: {best_strangle['num_strangles_considered']}\n")
     
 def generate_html_table(strangle, position):
     # Check if any of the key values are None, return None if so
@@ -161,7 +179,7 @@ def generate_html_table(strangle, position):
     return ''.join([
         f'<div class="panel" data-position="{position}">',
         f'{strangle["ticker"]}<br>',
-        f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}',
+        f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Expiration: {strangle["expiration"]}<br>',
         f'Call strike: ${strangle["call_strike"]:.2f}<br>',
@@ -171,6 +189,7 @@ def generate_html_table(strangle, position):
         f'Upper breakeven: ${strangle["upper_breakeven"]:.3f}<br>',
         f'Lower breakeven: ${strangle["lower_breakeven"]:.3f}<br>',
         f'Breakeven difference: ${strangle["breakeven_difference"]:.3f}<br>',
+        f'Contract pairs tried: {strangle["num_strangles_considered"]}'
         '</div>'
     ])
 
@@ -182,7 +201,10 @@ with open('tickers.json', 'r') as f:
     tickers_data = json.load(f)
 
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
-ticker_collection = 'tickers_5'
+#ticker_collection = 'sp500_tickers'
+#ticker_collection = '100_tickers'
+ticker_collection = '25_tickers'
+#ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
@@ -193,8 +215,8 @@ results = []
 
 # Initialize usage/resource counters
 num_tickers_processed = 0
-num_requests_sent = 0
 num_html_panels_generated = 0
+num_strangles_considered = 0
 
 # Main loop over tickers
 for ticker in tickers:
@@ -202,12 +224,10 @@ for ticker in tickers:
 
     # Search for the best strangle for each ticker
     strangle = find_balanced_strangle(ticker)
+    num_strangles_considered += strangle['num_strangles_considered']
     
     # Store the result
     results.append(strangle)
-    
-    # Increment the request count (assuming 1 request per ticker)
-    num_requests_sent += 1
     
     # Display the result
     display_strangle(strangle)
@@ -241,7 +261,7 @@ filename = f"results_{ticker_collection}_{timestamp}.txt"
 with open(filename, 'w') as f:
     # Write the execution time details and counts as a header
     f.write(f"Number of tickers processed: {num_tickers_processed}\n")
-    f.write(f"Number of requests sent to Polygon.io: {num_requests_sent}\n")
+    f.write(f"Number of contract pairs tried: {num_strangles_considered}\n")
     f.write(f"Number of HTML panels generated: {num_html_panels_generated}\n")
     f.write(f"Execution time: {execution_time:.2f} seconds\n")
     f.write(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n\n")
@@ -252,7 +272,7 @@ with open(filename, 'w') as f:
 # display summary
 print(f"Results written to {filename}")
 print(f"Number of tickers processed: {num_tickers_processed}")
-print(f"Number of requests sent to Polygon.io: {num_requests_sent}")
 print(f"Number of HTML panels generated: {num_html_panels_generated}")
+print(f"Number of contract pairs tried: {num_strangles_considered}")
 print(f"Execution time: {execution_time:.2f} seconds")
 print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
