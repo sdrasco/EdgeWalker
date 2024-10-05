@@ -182,7 +182,8 @@ with open('tickers.json', 'r') as f:
     tickers_data = json.load(f)
 
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
-tickers = tickers_data['tickers_5']  
+ticker_collection = 'tickers_5'
+tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
 tickers = sorted(set(tickers))
@@ -236,7 +237,7 @@ execution_time_per_ticker = execution_time / len(tickers)
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
 # Write the execution details and final HTML to a file with a timestamp and tickers collection name in the filename
-filename = f"results_{tickers}_{timestamp}.txt"
+filename = f"results_{ticker_collection}_{timestamp}.txt"
 with open(filename, 'w') as f:
     # Write the execution time details and counts as a header
     f.write(f"Number of tickers processed: {num_tickers_processed}\n")
