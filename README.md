@@ -119,8 +119,8 @@ For each ticker, the script provides:
 
 An example of the output:
 
-```
-<div class="panel" data-position="1">FOUR<br>Normalized Breakeven Difference: 0.104Cost of strangle: $495.00<br>Expiration: 2024-10-18<br>Call strike: $95.00<br>Put strike: $95.00<br>Cost of call: $120.00<br>Cost of put: $375.00<br>Upper breakeven: $99.950<br>Lower breakeven: $90.050<br>Breakeven difference: $9.900<br></div>
+```html
+FOUR<br>Normalized Breakeven Difference: 0.104Cost of strangle: $495.00<br>Expiration: 2024-10-18<br>Call strike: $95.00<br>Put strike: $95.00<br>Cost of call: $120.00<br>Cost of put: $375.00<br>Upper breakeven: $99.950<br>Lower breakeven: $90.050<br>Breakeven difference: $9.900<br>
 ```
 
 ### Execution Statistics
