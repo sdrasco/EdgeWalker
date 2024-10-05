@@ -3,7 +3,7 @@ import time
 import os
 import json
 from polygon import RESTClient
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 def find_balanced_strangle(ticker, force_coupled=False):
@@ -16,9 +16,11 @@ def find_balanced_strangle(ticker, force_coupled=False):
     
     # Calculate one week from today's date
     today = datetime.today()
-    one_week_from_today = today + timedelta(weeks=1)
+    one_week_from_today = today + relativedelta(weeks=1)
+    one_month_from_today = today + relativedelta(months=1)
     one_year_from_today = today + relativedelta(years=1)
     one_week_from_today_str = one_week_from_today.strftime('%Y-%m-%d')
+    one_month_from_today_str = one_month_from_today.strftime('%Y-%m-%d')
     one_year_from_today_str = one_year_from_today.strftime('%Y-%m-%d')
 
     # Limit strike prices within a generous buffer_factor the last closing stock price
@@ -36,7 +38,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
         ticker,
         params={
             "expiration_date.gte": one_week_from_today_str,
-            "expiration_date.lte": one_year_from_today_str,
+            "expiration_date.lte": one_month_from_today_str,
             "strike_price.gte": strike_min,
             "strike_price.lte": strike_max,
             "contract_type.in": "call,put"
@@ -68,6 +70,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Store the best strangle found
     best_strangle = {
         'ticker': ticker,
+        'last_close': last_close_price,
         'call_strike': None,
         'put_strike': None,
         'call_premium': None,
@@ -126,6 +129,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
             if normalized_difference < best_strangle['normalized_difference']:
                 best_strangle = {
                     'ticker': ticker,
+                    'last_close': last_close_price,
                     'call_strike': call_strike,
                     'put_strike': put_strike,
                     'call_premium': call_premium,
@@ -145,12 +149,12 @@ def find_balanced_strangle(ticker, force_coupled=False):
     return best_strangle
 
 def display_strangle(best_strangle):
-    if best_strangle['call_strike'] is None or best_strangle['put_strike'] is None:
-        print(f"No valid strangle found for {best_strangle['ticker']}")
+    if best_strangle and (best_strangle['call_strike'] is None or best_strangle['put_strike'] is None):
+        print(f"No valid strangle found for {best_strangle['ticker']}\n")
         return
     
     # Display the best strangle details
-    print(f"{best_strangle['ticker']}: ")
+    print(f"{best_strangle['ticker']}: ${best_strangle['last_close']:.2f}")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
     print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
@@ -178,7 +182,7 @@ def generate_html_table(strangle, position):
     # If all required values are present, proceed to generate HTML and return it as one compact line
     return ''.join([
         f'<div class="panel" data-position="{position}">',
-        f'{strangle["ticker"]}<br>',
+        f'{strangle["ticker"]}: ${best_strangle["last_close"]:.2f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
@@ -202,10 +206,10 @@ with open('tickers.json', 'r') as f:
     tickers_data = json.load(f)
 
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
-#ticker_collection = 'sp500_tickers'
+ticker_collection = 'sp500_tickers'
 #ticker_collection = '100_tickers'
 #ticker_collection = '25_tickers'
-ticker_collection = '2_tickers'
+#ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
@@ -225,7 +229,8 @@ for ticker in tickers:
 
     # Search for the best strangle for each ticker
     strangle = find_balanced_strangle(ticker)
-    num_strangles_considered += strangle['num_strangles_considered']
+    if strangle and 'num_strangles_considered' in strangle:
+        num_strangles_considered += strangle['num_strangles_considered']
     
     # Store the result
     results.append(strangle)
