@@ -1,0 +1,22 @@
+{
+  "tickers_5": [
+    "BIDU", "JD", "BABA", "FOUR", "BCAB"
+  ],
+  "tickers_25": [
+    "BIDU", "JD", "BABA", "FOUR", "ABNB", "UBER", "BA", "BCAB", "ARM", "F", 
+    "AMZN", "GOOGL", "INTC", "IWM", "JD", "META", "MSFT", "NFLX", "NVDA", "QQQ", 
+    "SPY", "TSLA", "AAPL", "GME", "GERN"
+  ],
+  "tickers_100": [
+    "AAPL", "MSFT", "AMZN", "GOOGL", "FB", "TSLA", "NVDA", "PYPL", "NFLX", "INTC", 
+    "AMD", "CSCO", "ORCL", "IBM", "CRM", "SAP", "VMW", "QCOM", "TXN", "MU",
+    "ADI", "AVGO", "AMAT", "LRCX", "KLAC", "TSM", "ASML", "MRVL", "NXPI", "SWKS",
+    "SNPS", "CDNS", "ADBE", "NOW", "SQ", "SHOP", "TWLO", "UBER", "LYFT", "ZM", 
+    "DOCU", "ROKU", "SPOT", "ETSY", "PINS", "SNAP", "DIS", "NFLX", "CMCSA", "CHTR",
+    "VZ", "T", "TMUS", "SIRI", "VIAC", "DISCA", "NWS", "TTWO", "ATVI", "EA",
+    "SONY", "RBLX", "SNE", "WMT", "COST", "TGT", "BBY", "HD", "LOW", "M", 
+    "KSS", "JWN", "GPS", "LB", "BBBY", "WBA", "CVS", "RAD", "KR", "SBUX",
+    "MCD", "YUM", "DPZ", "CMG", "SHAK", "DASH", "UBER", "LYFT", "SQ", "V", 
+    "MA", "AXP", "COF", "DFS", "PYPL", "BAC", "JPM", "WFC", "C", "GS"
+  ]
+}
