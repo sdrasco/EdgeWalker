@@ -97,10 +97,10 @@ Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the 
    The tickers are stored in a `tickers.json` file. Edit this file to add or remove tickers as needed.  Here's an example:
    ```
    {
-     "tickers_5": [
+     "5_tickers": [
        "BIDU", "JD", "BABA", "FOUR", "BCAB"
      ],
-     "tickers_25": [
+     "25_tickers": [
        "BIDU", "JD", "BABA", "FOUR", "ABNB", "UBER", "BA", "BCAB", "ARM", "F", 
        "AMZN", "GOOGL", "INTC", "IWM", "JD", "META", "MSFT", "NFLX", "NVDA", "QQQ", 
        "SPY", "TSLA", "AAPL", "GME", "GERN"
