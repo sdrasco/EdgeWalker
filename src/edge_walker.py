@@ -38,7 +38,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
         ticker,
         params={
             "expiration_date.gte": one_week_from_today_str,
-            "expiration_date.lte": one_month_from_today_str,
+            "expiration_date.lte": one_year_from_today_str,
             "strike_price.gte": strike_min,
             "strike_price.lte": strike_max,
             "contract_type.in": "call,put"
@@ -206,9 +206,9 @@ with open('tickers.json', 'r') as f:
     tickers_data = json.load(f)
 
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
-#ticker_collection = 'sp500_tickers'
+ticker_collection = 'sp500_tickers'
 #ticker_collection = '100_tickers'
-ticker_collection = '25_tickers'
+#ticker_collection = '25_tickers'
 #ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
