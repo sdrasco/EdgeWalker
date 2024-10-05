@@ -94,15 +94,27 @@ Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the 
 
 1. **Prepare the list of stock tickers**
 
-   The tickers are stored in a `tickers.json` file. Edit this file to add or remove tickers as needed.
+   The tickers are stored in a `tickers.json` file. Edit this file to add or remove tickers as needed.  Here's an example
+   ```
+   {
+     "tickers_5": [
+       "BIDU", "JD", "BABA", "FOUR", "BCAB"
+     ],
+     "tickers_25": [
+       "BIDU", "JD", "BABA", "FOUR", "ABNB", "UBER", "BA", "BCAB", "ARM", "F", 
+       "AMZN", "GOOGL", "INTC", "IWM", "JD", "META", "MSFT", "NFLX", "NVDA", "QQQ", 
+       "SPY", "TSLA", "AAPL", "GME", "GERN"
+     ],
+   }
+   ```
 
-2. **Run the script**
+3. **Run the script**
    
    ```python 
    python src/edge_walker.py
    ```
 
-3. **View the results**
+4. **View the results**
    The script will output the best-balanced strangle for each ticker, along with detailed information about the options contracts.
 
 ### Understanding the Output
