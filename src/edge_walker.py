@@ -4,6 +4,7 @@ import os
 import json
 from polygon import RESTClient
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 def find_balanced_strangle(ticker, force_coupled=False):
     # Initialize the RESTClient with API key
@@ -16,7 +17,9 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Calculate one week from today's date
     today = datetime.today()
     one_week_from_today = today + timedelta(weeks=1)
+    one_year_from_today = today + relativedelta(years=1)
     one_week_from_today_str = one_week_from_today.strftime('%Y-%m-%d')
+    one_year_from_today_str = one_year_from_today.strftime('%Y-%m-%d')
 
     # Limit strike prices within a generous buffer_factor the last closing stock price
     try:
@@ -28,11 +31,12 @@ def find_balanced_strangle(ticker, force_coupled=False):
     strike_min = last_close_price / buffer_factor
     strike_max = last_close_price * buffer_factor
     
-    # Fetch the options chain with no strike price filter, just by expiration date
+    # Fetch the options chains with some filters
     for option in client.list_snapshot_options_chain(
         ticker,
         params={
             "expiration_date.gte": one_week_from_today_str,
+            "expiration_date.lte": one_year_from_today_str,
             "strike_price.gte": strike_min,
             "strike_price.lte": strike_max,
             "contract_type.in": "call,put"
@@ -88,9 +92,6 @@ def find_balanced_strangle(ticker, force_coupled=False):
             if force_coupled and call['expiration'] != put['expiration']:
                 continue  # Skip if expirations don't match when forcing coupled expirations
 
-            # Get the nearest expiration (earlier of the two)
-            strangle_expiration = min(call['expiration'], put['expiration'])
-
             # Get the call and put strike prices and premiums
             call_strike = call['strike']
             call_premium = call['premium']
@@ -137,7 +138,6 @@ def find_balanced_strangle(ticker, force_coupled=False):
                     'normalized_difference': normalized_difference,
                     'cost_call': cost_call,
                     'cost_put': cost_put,
-                    'expiration': strangle_expiration,
                     'num_strangles_considered': num_strangles_considered
                 }
 
@@ -153,6 +153,7 @@ def display_strangle(best_strangle):
     print(f"{best_strangle['ticker']}: ")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
+    print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
     print(f"Call Expiration: {best_strangle['call_expiration']}")
     print(f"Put Expiration: {best_strangle['put_expiration']}")
     print(f"Call strike: {best_strangle['call_strike']:.2f}")
@@ -161,13 +162,12 @@ def display_strangle(best_strangle):
     print(f"Cost of put: ${best_strangle['cost_put']:.2f}")
     print(f"Upper breakeven: ${best_strangle['upper_breakeven']:.3f}")
     print(f"Lower breakeven: ${best_strangle['lower_breakeven']:.3f}")
-    print(f"Breakeven difference: ${best_strangle['breakeven_difference']:.3f}")
-    print(f"Contract pairs tried: {best_strangle['num_strangles_considered']}\n")
+    print(f"Breakeven difference: ${best_strangle['breakeven_difference']:.3f}\n")
     
 def generate_html_table(strangle, position):
     # Check if any of the key values are None, return None if so
     required_keys = [
-        'ticker', 'expiration', 'call_strike', 'put_strike',
+        'ticker', 'call_expiration','put_expiration', 'call_strike', 'put_strike',
         'cost_call', 'cost_put', 'upper_breakeven', 'lower_breakeven',
         'breakeven_difference', 'normalized_difference'
     ]
@@ -181,15 +181,16 @@ def generate_html_table(strangle, position):
         f'{strangle["ticker"]}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
-        f'Expiration: {strangle["expiration"]}<br>',
+        f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
+        f'Call expiration: {strangle["call_expiration"]}<br>',
         f'Call strike: ${strangle["call_strike"]:.2f}<br>',
+        f'Call cost: ${strangle["cost_call"]:.2f}<br>',
+        f'Put expiration: {strangle["put_expiration"]}<br>',
         f'Put strike: ${strangle["put_strike"]:.2f}<br>',
-        f'Cost of call: ${strangle["cost_call"]:.2f}<br>',
-        f'Cost of put: ${strangle["cost_put"]:.2f}<br>',
+        f'Put cost: ${strangle["cost_put"]:.2f}<br>',
         f'Upper breakeven: ${strangle["upper_breakeven"]:.3f}<br>',
         f'Lower breakeven: ${strangle["lower_breakeven"]:.3f}<br>',
-        f'Breakeven difference: ${strangle["breakeven_difference"]:.3f}<br>',
-        f'Contract pairs tried: {strangle["num_strangles_considered"]}'
+        f'Breakeven difference: ${strangle["breakeven_difference"]:.3f}',
         '</div>'
     ])
 
@@ -203,8 +204,8 @@ with open('tickers.json', 'r') as f:
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
 #ticker_collection = 'sp500_tickers'
 #ticker_collection = '100_tickers'
-ticker_collection = '25_tickers'
-#ticker_collection = '2_tickers'
+#ticker_collection = '25_tickers'
+ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
@@ -261,7 +262,7 @@ filename = f"results_{ticker_collection}_{timestamp}.txt"
 with open(filename, 'w') as f:
     # Write the execution time details and counts as a header
     f.write(f"Number of tickers processed: {num_tickers_processed}\n")
-    f.write(f"Number of contract pairs tried: {num_strangles_considered}\n")
+    f.write(f"Number of contract pairs tried: {num_strangles_considered:,}\n")
     f.write(f"Number of HTML panels generated: {num_html_panels_generated}\n")
     f.write(f"Execution time: {execution_time:.2f} seconds\n")
     f.write(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n\n")
@@ -273,6 +274,6 @@ with open(filename, 'w') as f:
 print(f"Results written to {filename}")
 print(f"Number of tickers processed: {num_tickers_processed}")
 print(f"Number of HTML panels generated: {num_html_panels_generated}")
-print(f"Number of contract pairs tried: {num_strangles_considered}")
+print(f"Number of contract pairs tried: {num_strangles_considered:,}")
 print(f"Execution time: {execution_time:.2f} seconds")
 print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
