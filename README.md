@@ -52,7 +52,8 @@ Edge Walker is provided "as is" without any guarantees or warranties. Use this c
 
 ## Introduction
 
-An **options strangle** is an options strategy where an investor holds a position in both a call and a put with different strike prices but the same expiration date. Edge Walker automates the process of finding the most balanced strangles—those with minimal normalized breakeven differences—across multiple stock tickers. Currently, Edgewalker allows for the call and put to have expiration dates, treating the most recent expiration as the expiration of the strangle.  This improves effort to minimize breakeven differences, but you can force matched expiration dates if you like.
+An **options strangle** is an options strategy where an investor holds a position in both a call and a put with different strike prices but the same expiration date. Edge Walker automates the process of finding the most balanced strangles—those with minimal normalized breakeven differences—across multiple stock tickers. 
+Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the call and put to have unequal expiration dates, treating the most recent expiration as the expiration of the strangle. You can force matched expiration dates if you like.
 
 ## Features
 
