@@ -24,9 +24,9 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most “balanced” strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
-## Future Plans
+## Page layout
 
-Eventually, Edgewalker will be a realtime market data scraping machine [that looks like this](https://edgewalker.co.uk/eventually.html)
+Edgewalker's main output it designed to be easily incorporated into [a simple html interface like this](https://edgewalker.co.uk/eventually.html). 
 
 ![Edge Walker Logo](eventually.png)
 
