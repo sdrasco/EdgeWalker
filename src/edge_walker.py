@@ -3,6 +3,7 @@ import time
 import os
 import json
 from polygon import RESTClient
+from polygon.rest.models import TickerSnapshot
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -23,15 +24,13 @@ def find_balanced_strangle(ticker, force_coupled=False):
     one_month_from_today_str = one_month_from_today.strftime('%Y-%m-%d')
     one_year_from_today_str = one_year_from_today.strftime('%Y-%m-%d')
 
-    # Limit strike prices within a generous buffer_factor the last closing stock price
-    try:
-        last_close_price = client.get_previous_close_agg(ticker)[0].close
-    except Exception as e:
-        print(f"Warning: No stock price data for {ticker}: {e}. Moving to next ticker.\n")
-        return None  # Skip this ticker if we can't get any price data
+    # Limit strike prices within a generous buffer_factor of current stock price estimate
+    current_price = get_current_price(client, ticker)
+    if current_price is None:
+        return None
     buffer_factor = 3.0
-    strike_min = last_close_price / buffer_factor
-    strike_max = last_close_price * buffer_factor
+    strike_min = current_price / buffer_factor
+    strike_max = current_price * buffer_factor
     
     # Fetch the options chains with some filters
     for option in client.list_snapshot_options_chain(
@@ -79,7 +78,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Store the best strangle found
     best_strangle = {
         'ticker': ticker,
-        'last_close': last_close_price,
+        'current_price': current_price,
         'call_strike': None,
         'put_strike': None,
         'call_premium': None,
@@ -138,7 +137,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
             if normalized_difference < best_strangle['normalized_difference']:
                 best_strangle = {
                     'ticker': ticker,
-                    'last_close': last_close_price,
+                    'current_price': current_price,
                     'call_strike': call_strike,
                     'put_strike': put_strike,
                     'call_premium': call_premium,
@@ -157,13 +156,53 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Return the best strangle found
     return best_strangle
 
+def is_market_open(client):
+    try:
+        # Fetch market status
+        result = client.get_market_status()
+
+        # Access the 'market' attribute directly from the MarketStatus object
+        return result.market == 'open'
+    except Exception as e:
+        print(f"Warning: Error fetching market status: {e}")
+        return False
+
+def get_current_price(client, ticker):
+    try:
+        # Check if the market is open
+        market_open = is_market_open(client)
+
+        # Fetch snapshot for the provided ticker
+        snapshot = client.get_snapshot_all("stocks", [ticker])
+
+        if snapshot and isinstance(snapshot[0], TickerSnapshot):
+            if market_open and snapshot[0].min:
+                # If the market is open, use min.close (minute-level data)
+                return snapshot[0].min.close
+            elif not market_open and snapshot[0].prev_day:
+                # If the market is closed, use prev_day.close
+                return snapshot[0].prev_day.close
+
+        print(f"Warning: No valid price data available for {ticker}.")
+        return None
+
+    except Exception as e:
+        print(f"Warning: Error fetching stock price for {ticker}: {e}")
+        return None
+
 def display_strangle(best_strangle):
+
+    # Check if best_strangle is None first
+    if not best_strangle:
+        print("No valid strangle found (no data returned).\n")
+        return
+
     if best_strangle and (best_strangle['call_strike'] is None or best_strangle['put_strike'] is None):
         print(f"No valid strangle found for {best_strangle['ticker']}\n")
         return
     
     # Display the best strangle details
-    print(f"{best_strangle['ticker']}: ${best_strangle['last_close']:.2f}")
+    print(f"{best_strangle['ticker']}: ${best_strangle['current_price']:.2f}")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
     print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
@@ -191,7 +230,7 @@ def generate_html_table(strangle, position):
     # If all required values are present, proceed to generate HTML and return it as one compact line
     return ''.join([
         f'<div class="panel" data-position="{position}">',
-        f'{strangle["ticker"]}: ${strangle["last_close"]:.2f}<br>',
+        f'{strangle["ticker"]}: ${strangle["current_price"]:.2f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
