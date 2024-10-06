@@ -292,8 +292,8 @@ def write_reports(results, execution_details):
         f'{current_date}: '
         f'Processed {num_tickers_processed} tickers. '
         f'Considered {num_strangles_considered:,} contract pairs. '
-        f'Finished in {execution_time/3600.0:.2f} hours, or '
-        f'{execution_time_per_ticker:.2f} seconds per ticker.'
+        f'Finished in {execution_time/60.0:.0f} minutes, or '
+        f'{execution_time_per_ticker:.0f} seconds per ticker.'
     )
 
     # Find the header panel and insert the content
@@ -384,8 +384,8 @@ with open('tickers.json', 'r') as f:
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
 #ticker_collection = 'sp500_tickers'
 #ticker_collection = '100_tickers'
-#ticker_collection = '25_tickers'
-ticker_collection = '2_tickers'
+ticker_collection = '25_tickers'
+#ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
