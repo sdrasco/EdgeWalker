@@ -38,10 +38,19 @@ def find_balanced_strangle(ticker, force_coupled=False):
         ticker,
         params={
             "expiration_date.gte": one_week_from_today_str,
-            "expiration_date.lte": one_year_from_today_str,
+            "expiration_date.lte": one_month_from_today_str,
             "strike_price.gte": strike_min,
             "strike_price.lte": strike_max,
-            "contract_type.in": "call,put"
+            "contract_type.in": "call,put",
+            "exercise_style": "american",
+            "contract_size": 100,
+            "option_type": "equity",
+            "market_type": "listed",
+            "contract_flag": "standard",
+            "open_interest.gte": 1,
+            "volume.gte": 50,
+            "premium.gte": 1,
+            "premium.lte":10
         }
     ):
         options_chain.append(option)
