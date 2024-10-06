@@ -6,6 +6,8 @@ from polygon import RESTClient
 from polygon.rest.models import TickerSnapshot
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from bs4 import BeautifulSoup
+
 
 def find_balanced_strangle(ticker, force_coupled=False):
     # Initialize the RESTClient with API key
@@ -54,6 +56,19 @@ def find_balanced_strangle(ticker, force_coupled=False):
     ):
         options_chain.append(option)
 
+    # Get the company name using the Polygon API
+    try:
+        ticker_details = client.get_ticker_details(ticker)
+        if ticker_details and ticker_details.name:
+            # Limit the number of words in the company name
+            max_words = 3
+            company_name = ' '.join(ticker_details.name.split()[:max_words])
+        else:
+            company_name = strangle["ticker"]
+    except Exception as e:
+        print(f"Warning: Could not fetch company name for {ticker}: {e}")
+        company_name = ""
+
     # Organize calls and puts by expiration date
     calls = []
     puts = []
@@ -77,6 +92,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # Store the best strangle found
     best_strangle = {
+        'company_name': company_name,
         'ticker': ticker,
         'current_price': current_price,
         'call_strike': None,
@@ -136,6 +152,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
             # If this strangle has a smaller normalized breakeven difference, update best_strangle
             if normalized_difference < best_strangle['normalized_difference']:
                 best_strangle = {
+                    'company_name': company_name,
                     'ticker': ticker,
                     'current_price': current_price,
                     'call_strike': call_strike,
@@ -202,7 +219,7 @@ def display_strangle(best_strangle):
         return
     
     # Display the best strangle details
-    print(f"{best_strangle['ticker']}: ${best_strangle['current_price']:.2f}")
+    print(f"{best_strangle['company_name']} ({best_strangle['ticker']}): ${best_strangle['current_price']:.2f}")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
     print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
@@ -219,7 +236,8 @@ def display_strangle(best_strangle):
 def generate_html_table(strangle, position):
     # Check if any of the key values are None, return None if so
     required_keys = [
-        'ticker', 'call_expiration','put_expiration', 'call_strike', 'put_strike',
+        'company_name',
+        'ticker', 'call_expiration', 'put_expiration', 'call_strike', 'put_strike',
         'cost_call', 'cost_put', 'upper_breakeven', 'lower_breakeven',
         'breakeven_difference', 'normalized_difference'
     ]
@@ -227,10 +245,11 @@ def generate_html_table(strangle, position):
     if any(strangle[key] is None for key in required_keys):
         return None  # Skip this strangle if any required value is None
 
-    # If all required values are present, proceed to generate HTML and return it as one compact line
+
+    # Generate the HTML with the company name (or fallback to ticker symbol)
     return ''.join([
         f'<div class="panel" data-position="{position}">',
-        f'{strangle["ticker"]}: ${strangle["current_price"]:.2f}<br>',
+        f'{strangle["company_name"]} ({strangle["ticker"]}): ${strangle["current_price"]:.2f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
@@ -246,6 +265,115 @@ def generate_html_table(strangle, position):
         '</div>'
     ])
 
+def write_reports(results, execution_details):
+
+    # define template location
+    template_file = 'template_report.html'
+
+    # Try to read the template file and handle the case where the file is not found
+    try:
+        with open(template_file, 'r') as file:
+            soup = BeautifulSoup(file, 'html.parser')
+    except FileNotFoundError:
+        print(f"Error: Template file '{template_file}' not found. Aborting report generation.")
+        return  # Exit the function if the template file is not found
+
+    # Extract execution details
+    num_tickers_processed = execution_details.get('num_tickers_processed')
+    num_strangles_considered = execution_details.get('num_strangles_considered')
+    execution_time = execution_details.get('execution_time')
+    execution_time_per_ticker = execution_details.get('execution_time_per_ticker')
+
+    # Generate the current date in the desired format
+    current_date = datetime.now().strftime("%A, %d %B, %Y")  # Example: "Sunday, 6 October, 2024"
+
+    # Create a wide header panel that spans all columns and includes the current date
+    header_panel = (
+        f'{current_date}: '
+        f'Processed {num_tickers_processed} tickers. '
+        f'Considered {num_strangles_considered:,} contract pairs. '
+        f'Finished in {execution_time/3600.0:.2f} hours, or '
+        f'{execution_time_per_ticker:.2f} seconds per ticker.'
+    )
+
+    # Find the header panel and insert the content
+    header_div = soup.find("div", {"class": "header", "data-position": "header"})
+    if header_div:
+        header_div.clear()  # Clear any existing content
+        header_div.append(BeautifulSoup(header_panel, 'html.parser'))
+
+    # Sort the results first by 'normalized_difference' and then by total strangle price ('cost_call' + 'cost_put')
+    filtered_results = [
+        x for x in results 
+        if (x.get('cost_call') is not None and 
+        x.get('cost_put') is not None and 
+        x.get('normalized_difference') is not None and 
+        x.get('num_strangles_considered') is not None)
+    ]
+
+    sorted_results = sorted(
+        filtered_results, 
+        key=lambda x: (
+            x['normalized_difference'],  # First priority (ascending)
+            -x['num_strangles_considered'],  # Second priority (descending)
+            x['cost_call'] + x['cost_put'],  # Third priority (ascending)
+        )
+    )
+
+    # Generate all the HTML content once
+    all_results = [
+        result_html for idx, result in enumerate(sorted_results) 
+        if (result_html := generate_html_table(result, idx + 1)) is not None
+    ]
+    
+    # Get the current time and format it for the filename
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_file = f'summary_report_{stamp}.html'
+    full_output_file = f'full_report_{stamp}.html'
+
+    # Find the grid container
+    grid_container = soup.find("div", class_="grid-container")
+
+    # Replace the top 8 panels (or fewer if there are not enough results)
+    top_8_results = all_results[:8]  # Use the first 8 panels
+    for idx, result in enumerate(top_8_results):
+        data_position = idx + 1  # Data positions for panels are 1-indexed
+        panel = grid_container.find("div", {"data-position": str(data_position)})
+        if panel:
+            new_content = BeautifulSoup(result, 'html.parser').div.decode_contents()  # Extract inner content
+            panel.clear()  # Clear any existing content
+            panel.append(BeautifulSoup(new_content, 'html.parser'))  # Insert the new content
+
+    # Write the top 8 report to file
+    with open(output_file, 'w') as file:
+        file.write(str(soup))
+
+    # Only create the full report if there are more than 8 panels
+    if len(all_results) > 8:
+        # Clear and re-populate the entire grid for the full report
+        grid_container.clear()
+        for idx, result in enumerate(all_results):
+            new_panel = soup.new_tag("div", **{'class': 'panel', 'data-position': str(idx + 1)})
+            new_content = BeautifulSoup(result, 'html.parser').div.decode_contents()  # Extract inner content
+            new_panel.append(BeautifulSoup(new_content, 'html.parser'))  # Append the content
+            grid_container.append(new_panel)
+
+        # Re-insert the logo panel at position 5
+        logo_panel = soup.new_tag("div", **{'class': 'panel', 'id': 'logo', 'data-position': 'logo'})
+        logo_img = soup.new_tag("img", src="EdgeWalker.png", alt="Edge Walker Logo")
+        logo_panel.append(logo_img)
+        grid_container.insert(4, logo_panel)  # Insert at the fifth position
+
+        # Write the full report to file
+        with open(full_output_file, 'w') as file:
+            file.write(str(soup))
+
+#############################
+#                           #
+# main execution area below #
+#                           #
+#############################
+
 # Start the timer
 start_time = time.time()
 
@@ -254,10 +382,10 @@ with open('tickers.json', 'r') as f:
     tickers_data = json.load(f)
 
 # Choose the list of tickers you want to use (see tickers.json for what's on offer)
-ticker_collection = 'sp500_tickers'
+#ticker_collection = 'sp500_tickers'
 #ticker_collection = '100_tickers'
 #ticker_collection = '25_tickers'
-#ticker_collection = '2_tickers'
+ticker_collection = '2_tickers'
 tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
@@ -268,7 +396,6 @@ results = []
 
 # Initialize usage/resource counters
 num_tickers_processed = 0
-num_html_panels_generated = 0
 num_strangles_considered = 0
 
 # Main loop over tickers
@@ -286,60 +413,22 @@ for ticker in tickers:
     # Display the result
     display_strangle(strangle)
 
-# Sort the results first by 'normalized_difference' and then by total strangle price ('cost_call' + 'cost_put')
-# Filter out entries where 'cost_call' or 'cost_put' or 'normalized_difference' or 'num_strangles_considered' is None
-filtered_results = [
-    x for x in results 
-    if (x.get('cost_call') is not None and 
-    x.get('cost_put') is not None and 
-    x.get('normalized_difference') is not None and 
-    x.get('num_strangles_considered') is not None)
-]
-
-sorted_results = sorted(
-    filtered_results, 
-    key=lambda x: (
-        x['normalized_difference'],  # First priority (ascending)
-        -x['num_strangles_considered'],  # Second priority (decending)
-        x['cost_call'] + x['cost_put'],  # Third priority (ascending)
-    )
-)
-
-# Generate HTML for each result
-html_tables = []
-for idx, strangle in enumerate(sorted_results, start=1):
-    html_table = generate_html_table(strangle, idx)
-    if html_table:  # Only append if the table is not None
-        html_tables.append(html_table)
-        num_html_panels_generated += 1  # Increment the HTML panel count
-
-# Join the HTML tables into a single string for faster I/O
-final_html = '\n\n'.join(html_tables)
-
 # Calculate the execution time
 execution_time = time.time() - start_time
 execution_time_per_ticker = execution_time / len(tickers)
 
-# Get the current time and format it for the filename
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+# Prepare execution details for the report
+execution_details = {
+    'num_tickers_processed': num_tickers_processed,
+    'num_strangles_considered': num_strangles_considered,
+    'execution_time': execution_time,
+    'execution_time_per_ticker': execution_time_per_ticker
+}
 
-# Write the execution details and final HTML to a file with a timestamp and tickers collection name in the filename
-filename = f"results_{ticker_collection}_{timestamp}.txt"
-with open(filename, 'w') as f:
-    # Write the execution time details and counts as a header
-    f.write(f"Number of tickers processed: {num_tickers_processed}\n")
-    f.write(f"Number of contract pairs tried: {num_strangles_considered:,}\n")
-    f.write(f"Number of HTML panels generated: {num_html_panels_generated}\n")
-    f.write(f"Execution time: {execution_time:.2f} seconds\n")
-    f.write(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n\n")
-    
-    # Write the HTML panels
-    f.write(final_html)
+# write the html report(s)
+write_reports(results, execution_details)
 
-# display summary
-print(f"Results written to {filename}")
 print(f"Number of tickers processed: {num_tickers_processed}")
-print(f"Number of HTML panels generated: {num_html_panels_generated}")
 print(f"Number of contract pairs tried: {num_strangles_considered:,}")
 print(f"Execution time: {execution_time:.2f} seconds")
 print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
