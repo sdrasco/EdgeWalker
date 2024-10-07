@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker is a Python tool that uses the [Polygon API](https://polygon.io/) to search stock ticker collections for option contract pairs to construct a unique new derivative: the risk-minimizing edge-balanced decoupled strangle. These are put/call contract pairs with unconstrained expirations that are tuned to have identical upper and lower overall breakeven prices.
+Edge Walker is a Python tool that uses the [Polygon API](https://polygon.io/) to search stock ticker collections for option contract pairs to construct a novel derivative: the risk-minimizing edge-balanced decoupled strangle. These are put/call contract pairs with unconstrained expirations that are tuned to have identical upper and lower overall breakeven prices.
 
 ## For those without options trading experience
 
