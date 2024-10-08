@@ -453,12 +453,6 @@ def write_reports(results, execution_details):
             new_panel.append(BeautifulSoup(new_content, 'html.parser'))  # Append the content
             grid_container.append(new_panel)
 
-        # Re-insert the logo panel at position 5 (if needed)
-        logo_panel = soup.new_tag("div", **{'class': 'panel', 'id': 'logo', 'data-position': 'logo'})
-        logo_img = soup.new_tag("img", src="EdgeWalker.png", alt="Edge Walker Logo")
-        logo_panel.append(logo_img)
-        grid_container.insert(4, logo_panel)  # Insert at the fifth position
-
         # Write the full report to file
         with open(full_output_file, 'w') as file:
             file.write(str(soup))
@@ -475,9 +469,9 @@ def main():
     # Choose the list of tickers you want to use
     #ticker_collection = '1_tickers'
     #ticker_collection = '5_tickers'
-    ticker_collection = '25_tickers'
+    #ticker_collection = '25_tickers'
     #ticker_collection = '100_tickers'
-    #ticker_collection = 'sp500_tickers'
+    ticker_collection = 'sp500_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
     # initialize results storage
