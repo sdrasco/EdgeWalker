@@ -14,7 +14,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # Limit strike prices within a buffer_factor of current stock price estimate
     stock_price = get_stock_price(client, ticker)
-    max_stock_price = 100.00
+    max_stock_price = 200.00
     if stock_price is None or stock_price > max_stock_price:
         return None
     buffer_factor = 3.0
@@ -22,8 +22,8 @@ def find_balanced_strangle(ticker, force_coupled=False):
     strike_max = stock_price * buffer_factor
     
     # Make date strings that define our search range
-    date_min = datetime.today() + timedelta(days=14)
-    date_max = date_min + timedelta(days=120)
+    date_min = datetime.today() + timedelta(days=1)
+    date_max = date_min + timedelta(days=14)
     date_min = date_min.strftime('%Y-%m-%d')
     date_max = date_max.strftime('%Y-%m-%d')
 
@@ -42,8 +42,8 @@ def find_balanced_strangle(ticker, force_coupled=False):
             "option_type": "equity",
             "market_type": "listed",
             "contract_flag": "standard",
-            "open_interest.gte": 10,
-            "volume.gte": 50,
+            "open_interest.gte": 1,
+            "volume.gte": 5,
             "premium.gte": 0.0,
             "premium.lte":20.0
         }
@@ -82,9 +82,23 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
         if premium is not None:
             if details.contract_type == 'call':
-                calls.append({'strike': strike, 'premium': premium, 'expiration': expiration, 'bid': bid, 'ask': ask, 'spread': spread})
+                calls.append({
+                    'strike': strike,
+                    'premium': premium,
+                    'expiration': expiration,
+                    'bid': bid,
+                    'ask': ask,
+                    'spread': spread
+                })
             elif details.contract_type == 'put':
-                puts.append({'strike': strike, 'premium': premium, 'expiration': expiration, 'bid': bid, 'ask': ask, 'spread': spread})
+                puts.append({
+                    'strike': strike,
+                    'premium': premium,
+                    'expiration': expiration,
+                    'bid': bid,
+                    'ask': ask,
+                    'spread': spread
+                })
 
     # clean the lists of call and put contracts
     calls = filter_options(calls, stock_price)
@@ -170,7 +184,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
 def filter_options(options, stock_price):
     filtered_options = []
-    max_spread_factor = 0.2
+    max_spread_factor = 0.5
     for option in options:
         strike = option['strike']
         premium = option['premium']
@@ -432,15 +446,14 @@ def write_reports(results, execution_details):
 
     # Only create the full report if there are more than 8 panels
     if len(all_results) > 8:
-        # Clear and re-populate the entire grid for the full report
-        grid_container.clear()
-        for idx, result in enumerate(all_results):
+        # Add the remaining results to the grid
+        for idx, result in enumerate(all_results[8:], start=8):  # Continue from the 9th result
             new_panel = soup.new_tag("div", **{'class': 'panel', 'data-position': str(idx + 1)})
             new_content = BeautifulSoup(result, 'html.parser').div.decode_contents()  # Extract inner content
             new_panel.append(BeautifulSoup(new_content, 'html.parser'))  # Append the content
             grid_container.append(new_panel)
 
-        # Re-insert the logo panel at position 5
+        # Re-insert the logo panel at position 5 (if needed)
         logo_panel = soup.new_tag("div", **{'class': 'panel', 'id': 'logo', 'data-position': 'logo'})
         logo_img = soup.new_tag("img", src="EdgeWalker.png", alt="Edge Walker Logo")
         logo_panel.append(logo_img)
@@ -462,9 +475,9 @@ def main():
     # Choose the list of tickers you want to use
     #ticker_collection = '1_tickers'
     #ticker_collection = '5_tickers'
-    #ticker_collection = '25_tickers'
+    ticker_collection = '25_tickers'
     #ticker_collection = '100_tickers'
-    ticker_collection = 'sp500_tickers'
+    #ticker_collection = 'sp500_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
     # initialize results storage
