@@ -14,16 +14,16 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # Limit strike prices within a buffer_factor of current stock price estimate
     stock_price = get_stock_price(client, ticker)
-    max_stock_price = 150.00
+    max_stock_price = 100.00
     if stock_price is None or stock_price > max_stock_price:
         return None
-    buffer_factor = 2.0
+    buffer_factor = 3.0
     strike_min = stock_price / buffer_factor
     strike_max = stock_price * buffer_factor
     
     # Make date strings that define our search range
-    date_min = datetime.today() + timedelta(days=7)
-    date_max = date_min + timedelta(days=90)
+    date_min = datetime.today() + timedelta(days=14)
+    date_max = date_min + timedelta(days=120)
     date_min = date_min.strftime('%Y-%m-%d')
     date_max = date_max.strftime('%Y-%m-%d')
 
@@ -45,7 +45,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
             "open_interest.gte": 10,
             "volume.gte": 50,
             "premium.gte": 0.0,
-            "premium.lte":5.0
+            "premium.lte":20.0
         }
     ):
         options_chain.append(option)
@@ -74,7 +74,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
         bid = contract.last_quote.bid if contract.last_quote else None
         ask = contract.last_quote.ask if contract.last_quote else None
         if bid is not None and ask is not None:
-            premium = (bid + ask) / 2  # Bid-ask midpoint
+            premium = (bid + ask) / 2.0  # Bid-ask midpoint
             spread = abs(ask - bid)  # Calculate bid-ask spread
         else:
             premium = (contract.last_trade.price if contract.last_trade else contract.fair_market_value)
@@ -85,6 +85,10 @@ def find_balanced_strangle(ticker, force_coupled=False):
                 calls.append({'strike': strike, 'premium': premium, 'expiration': expiration, 'bid': bid, 'ask': ask, 'spread': spread})
             elif details.contract_type == 'put':
                 puts.append({'strike': strike, 'premium': premium, 'expiration': expiration, 'bid': bid, 'ask': ask, 'spread': spread})
+
+    # clean the lists of call and put contracts
+    calls = filter_options(calls, stock_price)
+    puts = filter_options(puts, stock_price)
 
     # Initialize best strangle found
     best_strangle = {
@@ -103,55 +107,20 @@ def find_balanced_strangle(ticker, force_coupled=False):
         'normalized_difference': float('inf'),
         'cost_call': None,
         'cost_put': None,
-        'expiration': None
+        'expiration': None,
+        'variability_ratio': None
     }
 
     # Iterate over all possible combinations of call and put
     num_strangles_considered = 0
     for call in calls:
-
-        # Get the call and put strike prices and premiums
-        call_strike = call['strike']
-        call_premium = call['premium']
-
-        # sanity check the premium 
-        suspicious_premium = call_premium < max(0, stock_price - call_strike)
-
-        # apply some skipping filters
-        max_spread_factor = 0.2
-        any_None = call['spread'] is None or call['bid'] is None or call['ask'] is None
-        if (
-            any_None or
-            call_premium == 0 or
-            call['bid'] == 0 or
-            call['ask'] == 0 or
-            call['spread'] > max_spread_factor * call_premium or
-            suspicious_premium
-        ):
-            calls.remove(call)
-            continue  # Skip it
-
         for put in puts:
 
-            # Get the put strike prices and premiums
+            # Get the strike prices and premiums
+            call_strike = call['strike']
+            call_premium = call['premium']
             put_strike = put['strike']
             put_premium = put['premium']
-
-            # sanity check the premium 
-            suspicious_premium = put_premium < max(0, stock_price - put_strike)
-
-            # apply some skipping filters
-            any_None = put['spread'] is None or put['bid'] is None or put['ask'] is None
-            if (
-                any_None or
-                put_premium == 0 or
-                put['bid'] == 0 or
-                put['ask'] == 0 or
-                put['spread'] > max_spread_factor * put_premium or
-                suspicious_premium
-            ):
-                puts.remove(put)
-                continue  # Skip it
 
             # Apply the force_coupled flag: only process pairs with matching expiration dates if force_coupled is True
             if force_coupled and call['expiration'] != put['expiration']:
@@ -181,27 +150,48 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
             # If this strangle has a smaller normalized breakeven difference, update best_strangle
             if normalized_difference < best_strangle['normalized_difference']:
-                best_strangle = {
-                    'company_name': company_name,
-                    'ticker': ticker,
-                    'stock_price': stock_price,
-                    'call_strike': call_strike,
-                    'put_strike': put_strike,
-                    'call_premium': call_premium,
-                    'put_premium': put_premium,
-                    'call_expiration': call['expiration'],
-                    'put_expiration': put['expiration'],
-                    'upper_breakeven': upper_breakeven,
-                    'lower_breakeven': lower_breakeven,
-                    'breakeven_difference': breakeven_difference,
-                    'normalized_difference': normalized_difference,
-                    'cost_call': cost_call,
-                    'cost_put': cost_put,
-                    'num_strangles_considered': num_strangles_considered
-                }
-
+                best_strangle['call_strike'] = call_strike
+                best_strangle['put_strike'] = put_strike
+                best_strangle['call_premium'] = call_premium
+                best_strangle['put_premium'] = put_premium
+                best_strangle['call_expiration'] = call['expiration']
+                best_strangle['put_expiration'] = put['expiration']
+                best_strangle['upper_breakeven'] = upper_breakeven
+                best_strangle['lower_breakeven'] = lower_breakeven
+                best_strangle['breakeven_difference'] = breakeven_difference
+                best_strangle['normalized_difference'] = normalized_difference
+                best_strangle['cost_call'] = cost_call
+                best_strangle['cost_put'] = cost_put
+                best_strangle['num_strangles_considered'] = num_strangles_considered
+                best_strangle['variability_ratio'] = compute_relative_fluctuation_ratio(best_strangle, client)
+        
     # Return the best strangle found
     return best_strangle
+
+def filter_options(options, stock_price):
+    filtered_options = []
+    max_spread_factor = 0.2
+    for option in options:
+        strike = option['strike']
+        premium = option['premium']
+        bid = option['bid']
+        ask = option['ask']
+        spread = option['spread']
+        # Sanity check the premium
+        suspicious_premium = premium < max(0, stock_price - strike)
+        any_None = spread is None or bid is None or ask is None
+        if (
+            any_None or
+            premium == 0 or
+            bid == 0 or
+            ask == 0 or
+            spread > max_spread_factor * premium or
+            suspicious_premium
+        ):
+            continue  # Skip it
+        else:
+            filtered_options.append(option)
+    return filtered_options
 
 def is_market_open(client):
     try:
@@ -237,6 +227,66 @@ def get_stock_price(client, ticker):
         print(f"Warning: Error fetching stock price for {ticker}: {e}")
         return None
 
+import numpy as np
+from polygon import RESTClient
+from datetime import datetime, timedelta
+
+def compute_relative_fluctuation_ratio(best_strangle, client):
+    """
+    Computes the relative fluctuation ratio for a given best_strangle object.
+    This ratio is the standard deviation of the stock price over the last month,
+    divided by the breakeven difference of the strangle.
+    
+    :param best_strangle: dict containing details about the strangle (including breakeven difference)
+    :param client: RESTClient from Polygon API
+    :return: relative fluctuation ratio (float)
+    """
+
+    ticker = best_strangle['ticker']
+    breakeven_difference = best_strangle['breakeven_difference']
+    
+    # Ensure the breakeven difference is not zero to avoid division by zero
+    if breakeven_difference == 0:
+        return float('inf')  
+    
+    # Define the period for fetching historical data (e.g., 30 days)
+    end_date = datetime.today()
+    start_date = end_date - timedelta(days=30)
+    
+    # Fetch historical stock prices for the last 30 days using Polygon's API
+    try:
+        response = client.get_aggs(
+            ticker=ticker,
+            multiplier=1,
+            timespan="day",
+            from_=start_date.strftime('%Y-%m-%d'),
+            to=end_date.strftime('%Y-%m-%d')
+        )
+        
+        # Extract the closing prices from the list of Agg objects
+        if isinstance(response, list) and len(response) > 0:
+            # Extract closing prices from each Agg object
+            closing_prices = [agg.close for agg in response]  # 'close' is an attribute in each Agg object
+            
+            # If closing prices are found, calculate the standard deviation
+            if closing_prices:
+                std_dev_price = np.std(closing_prices)
+                
+                # Compute the relative fluctuation ratio
+                relative_fluctuation_ratio = std_dev_price / breakeven_difference
+                
+                return relative_fluctuation_ratio
+            else:
+                print(f"No price data available for {ticker} in the last 30 days.")
+                return 0.0  # Handle case where no data is available
+        else:
+            print(f"No valid data found for {ticker}.")
+            return 0.0
+
+    except Exception as e:
+        print(f"Error fetching historical prices for {ticker}: {e}")
+        return 0.0  # Handle error case
+
 def display_strangle(best_strangle):
 
     # Check if best_strangle is None first
@@ -250,6 +300,7 @@ def display_strangle(best_strangle):
     # Display the best strangle details
     print(f"{best_strangle['company_name']} ({best_strangle['ticker']}): ${best_strangle['stock_price']:.2f}")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
+    print(f"Variability Ratio: {best_strangle['variability_ratio']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
     print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
     print(f"Call Expiration: {best_strangle['call_expiration']}")
@@ -279,6 +330,7 @@ def generate_html_table(strangle, position):
     return ''.join([
         f'<div class="panel" data-position="{position}">',
         f'{strangle["company_name"]} ({strangle["ticker"]}): ${strangle["stock_price"]:.2f}<br>',
+        f'Variability Ratio: {strangle["variability_ratio"]:.3f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
@@ -344,8 +396,9 @@ def write_reports(results, execution_details):
         filtered_results, 
         key=lambda x: (
             x['normalized_difference'],  # First priority (ascending)
-            -x['num_strangles_considered'],  # Second priority (descending)
-            x['cost_call'] + x['cost_put'],  # Third priority (ascending)
+            -x['variability_ratio'], # Second priority (descending)
+            -x['num_strangles_considered'],  # Third priority (descending)
+            x['cost_call'] + x['cost_put'],  # Fourth priority (ascending)
         )
     )
 
@@ -407,6 +460,10 @@ def main():
         tickers_data = json.load(f)
 
     # Choose the list of tickers you want to use
+    #ticker_collection = '1_tickers'
+    #ticker_collection = '5_tickers'
+    #ticker_collection = '25_tickers'
+    #ticker_collection = '100_tickers'
     ticker_collection = 'sp500_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
