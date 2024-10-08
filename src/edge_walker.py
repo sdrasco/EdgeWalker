@@ -4,8 +4,7 @@ import os
 import json
 from polygon import RESTClient
 from polygon.rest.models import TickerSnapshot
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
 
@@ -14,32 +13,28 @@ def find_balanced_strangle(ticker, force_coupled=False):
     polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
     client = RESTClient(api_key=polygonio_api_key)
 
-    # Create a dictionary to store all options
-    options_chain = []
-    
-    # Calculate one week from today's date
-    today = datetime.today()
-    one_week_from_today = today + relativedelta(weeks=1)
-    one_month_from_today = today + relativedelta(months=1)
-    one_year_from_today = today + relativedelta(years=1)
-    one_week_from_today_str = one_week_from_today.strftime('%Y-%m-%d')
-    one_month_from_today_str = one_month_from_today.strftime('%Y-%m-%d')
-    one_year_from_today_str = one_year_from_today.strftime('%Y-%m-%d')
-
-    # Limit strike prices within a generous buffer_factor of current stock price estimate
-    current_price = get_current_price(client, ticker)
-    if current_price is None:
+    # Limit strike prices within a buffer_factor of current stock price estimate
+    stock_price = get_stock_price(client, ticker)
+    max_stock_price = 150.00
+    if stock_price is None or stock_price > max_stock_price:
         return None
-    buffer_factor = 3.0
-    strike_min = current_price / buffer_factor
-    strike_max = current_price * buffer_factor
+    buffer_factor = 2.0
+    strike_min = stock_price / buffer_factor
+    strike_max = stock_price * buffer_factor
     
-    # Fetch the options chains with some filters
+    # Make date strings that define our search range
+    date_min = datetime.today() + timedelta(days=7)
+    date_max = date_min + timedelta(days=90)
+    date_min = date_min.strftime('%Y-%m-%d')
+    date_max = date_max.strftime('%Y-%m-%d')
+
+    # Get the filtered set of options chains
+    options_chain = []
     for option in client.list_snapshot_options_chain(
         ticker,
         params={
-            "expiration_date.gte": one_week_from_today_str,
-            "expiration_date.lte": one_month_from_today_str,
+            "expiration_date.gte": date_min,
+            "expiration_date.lte": date_max,
             "strike_price.gte": strike_min,
             "strike_price.lte": strike_max,
             "contract_type.in": "call,put",
@@ -48,10 +43,10 @@ def find_balanced_strangle(ticker, force_coupled=False):
             "option_type": "equity",
             "market_type": "listed",
             "contract_flag": "standard",
-            "open_interest.gte": 1,
+            "open_interest.gte": 10,
             "volume.gte": 50,
-            "premium.gte": 1,
-            "premium.lte":10
+            "premium.gte": 0.0,
+            "premium.lte":5.0
         }
     ):
         options_chain.append(option)
@@ -90,11 +85,11 @@ def find_balanced_strangle(ticker, force_coupled=False):
             elif details.contract_type == 'put':
                 puts.append({'strike': strike, 'premium': premium, 'expiration': expiration})
 
-    # Store the best strangle found
+    # Initialize best strangle found
     best_strangle = {
         'company_name': company_name,
         'ticker': ticker,
-        'current_price': current_price,
+        'stock_price': stock_price,
         'call_strike': None,
         'put_strike': None,
         'call_premium': None,
@@ -154,7 +149,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
                 best_strangle = {
                     'company_name': company_name,
                     'ticker': ticker,
-                    'current_price': current_price,
+                    'stock_price': stock_price,
                     'call_strike': call_strike,
                     'put_strike': put_strike,
                     'call_premium': call_premium,
@@ -184,7 +179,7 @@ def is_market_open(client):
         print(f"Warning: Error fetching market status: {e}")
         return False
 
-def get_current_price(client, ticker):
+def get_stock_price(client, ticker):
     try:
         # Check if the market is open
         market_open = is_market_open(client)
@@ -211,7 +206,6 @@ def display_strangle(best_strangle):
 
     # Check if best_strangle is None first
     if not best_strangle:
-        print("No valid strangle found (no data returned).\n")
         return
 
     if best_strangle and (best_strangle['call_strike'] is None or best_strangle['put_strike'] is None):
@@ -219,7 +213,7 @@ def display_strangle(best_strangle):
         return
     
     # Display the best strangle details
-    print(f"{best_strangle['company_name']} ({best_strangle['ticker']}): ${best_strangle['current_price']:.2f}")
+    print(f"{best_strangle['company_name']} ({best_strangle['ticker']}): ${best_strangle['stock_price']:.2f}")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
     print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
@@ -249,7 +243,7 @@ def generate_html_table(strangle, position):
     # Generate the HTML with the company name (or fallback to ticker symbol)
     return ''.join([
         f'<div class="panel" data-position="{position}">',
-        f'{strangle["company_name"]} ({strangle["ticker"]}): ${strangle["current_price"]:.2f}<br>',
+        f'{strangle["company_name"]} ({strangle["ticker"]}): ${strangle["stock_price"]:.2f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
@@ -386,6 +380,7 @@ with open('tickers.json', 'r') as f:
 #ticker_collection = '100_tickers'
 ticker_collection = '25_tickers'
 #ticker_collection = '2_tickers'
+#ticker_collection = '1_tickers'
 tickers = tickers_data[ticker_collection]  
 
 # Remove duplicates and sort alphabetically
@@ -404,14 +399,16 @@ for ticker in tickers:
 
     # Search for the best strangle for each ticker
     strangle = find_balanced_strangle(ticker)
-    if strangle and 'num_strangles_considered' in strangle:
+
+    # If no strangle is found, skip to the next ticker
+    if strangle is None:
+        continue
+
+    # Store result, display it, and update the strangle count
+    if 'num_strangles_considered' in strangle:
         num_strangles_considered += strangle['num_strangles_considered']
-    
-    # Store the result
-    results.append(strangle)
-    
-    # Display the result
-    display_strangle(strangle)
+        results.append(strangle)
+        display_strangle(strangle)
 
 # Calculate the execution time
 execution_time = time.time() - start_time
