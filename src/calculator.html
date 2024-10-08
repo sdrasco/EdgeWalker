@@ -85,9 +85,10 @@
         document.getElementById('result').innerHTML = "Please fill in all fields correctly.";
         return;
       }
-
-      var upperBreakeven = callStrike + callPremium + putPremium;
-      var lowerBreakeven = putStrike - callPremium - putPremium;
+      var contract_buying_fee = 0.53
+      var strangle_costs = callPremium + putPremium + 2.0*contract_buying_fee
+      var upperBreakeven = callStrike + strangle_costs;
+      var lowerBreakeven = putStrike - strangle_costs;
       var breakevenDifference = upperBreakeven - lowerBreakeven;
       var normalizedDifference = breakevenDifference / stockPrice;
 
