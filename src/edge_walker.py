@@ -7,7 +7,6 @@ from polygon.rest.models import TickerSnapshot
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 
-
 def find_balanced_strangle(ticker, force_coupled=False):
     # Initialize the RESTClient with API key
     polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
@@ -76,14 +75,16 @@ def find_balanced_strangle(ticker, force_coupled=False):
         ask = contract.last_quote.ask if contract.last_quote else None
         if bid is not None and ask is not None:
             premium = (bid + ask) / 2  # Bid-ask midpoint
+            spread = abs(ask - bid)  # Calculate bid-ask spread
         else:
             premium = (contract.last_trade.price if contract.last_trade else contract.fair_market_value)
+            spread = None
 
         if premium is not None:
             if details.contract_type == 'call':
-                calls.append({'strike': strike, 'premium': premium, 'expiration': expiration})
+                calls.append({'strike': strike, 'premium': premium, 'expiration': expiration, 'bid': bid, 'ask': ask, 'spread': spread})
             elif details.contract_type == 'put':
-                puts.append({'strike': strike, 'premium': premium, 'expiration': expiration})
+                puts.append({'strike': strike, 'premium': premium, 'expiration': expiration, 'bid': bid, 'ask': ask, 'spread': spread})
 
     # Initialize best strangle found
     best_strangle = {
@@ -108,28 +109,62 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Iterate over all possible combinations of call and put
     num_strangles_considered = 0
     for call in calls:
+
+        # Get the call and put strike prices and premiums
+        call_strike = call['strike']
+        call_premium = call['premium']
+
+        # sanity check the premium 
+        suspicious_premium = call_premium < max(0, stock_price - call_strike)
+
+        # apply some skipping filters
+        max_spread_factor = 0.2
+        any_None = call['spread'] is None or call['bid'] is None or call['ask'] is None
+        if (
+            any_None or
+            call_premium == 0 or
+            call['bid'] == 0 or
+            call['ask'] == 0 or
+            call['spread'] > max_spread_factor * call_premium or
+            suspicious_premium
+        ):
+            calls.remove(call)
+            continue  # Skip it
+
         for put in puts:
+
+            # Get the put strike prices and premiums
+            put_strike = put['strike']
+            put_premium = put['premium']
+
+            # sanity check the premium 
+            suspicious_premium = put_premium < max(0, stock_price - put_strike)
+
+            # apply some skipping filters
+            any_None = put['spread'] is None or put['bid'] is None or put['ask'] is None
+            if (
+                any_None or
+                put_premium == 0 or
+                put['bid'] == 0 or
+                put['ask'] == 0 or
+                put['spread'] > max_spread_factor * put_premium or
+                suspicious_premium
+            ):
+                puts.remove(put)
+                continue  # Skip it
 
             # Apply the force_coupled flag: only process pairs with matching expiration dates if force_coupled is True
             if force_coupled and call['expiration'] != put['expiration']:
                 continue  # Skip if expirations don't match when forcing coupled expirations
 
-            # Get the call and put strike prices and premiums
-            call_strike = call['strike']
-            call_premium = call['premium']
-            put_strike = put['strike']
-            put_premium = put['premium']
-
-            # Skip anything with zero premium
-            if call_premium == 0 or put_premium == 0:
-                continue  # Skip 
-
             # update the strangles considered counter
             num_strangles_considered += 1
 
             # Calculate the upper and lower breakeven points
-            upper_breakeven = call_strike + call_premium + put_premium
-            lower_breakeven = put_strike - call_premium - put_premium
+            contract_buying_fee = 0.53 # adjust to the fees you encounter when buying option contracts 
+            strangle_costs = call_premium + put_premium + 2.0*contract_buying_fee
+            upper_breakeven = call_strike + strangle_costs
+            lower_breakeven = put_strike - strangle_costs
 
             # Calculate the breakeven difference
             breakeven_difference = abs(upper_breakeven - lower_breakeven)
@@ -141,8 +176,8 @@ def find_balanced_strangle(ticker, force_coupled=False):
             normalized_difference = breakeven_difference / average_strike_price
 
             # Calculate the cost of buying the call and put options
-            cost_call = call_premium * 100  # Multiply by 100 to get cost in dollars
-            cost_put = put_premium * 100    # Multiply by 100 to get cost in dollars
+            cost_call = call_premium * 100.0  # Multiply by 100 to get cost in dollars
+            cost_put = put_premium * 100.0    # Multiply by 100 to get cost in dollars
 
             # If this strangle has a smaller normalized breakeven difference, update best_strangle
             if normalized_difference < best_strangle['normalized_difference']:
@@ -362,70 +397,54 @@ def write_reports(results, execution_details):
         with open(full_output_file, 'w') as file:
             file.write(str(soup))
 
-#############################
-#                           #
-# main execution area below #
-#                           #
-#############################
+# main exectution
+def main():
+    # Start the timer
+    start_time = time.time()
 
-# Start the timer
-start_time = time.time()
+    # Load tickers from the tickers.json file
+    with open('tickers.json', 'r') as f:
+        tickers_data = json.load(f)
 
-# Load tickers from the tickers.json file
-with open('tickers.json', 'r') as f:
-    tickers_data = json.load(f)
+    # Choose the list of tickers you want to use
+    ticker_collection = 'sp500_tickers'
+    tickers = sorted(set(tickers_data[ticker_collection]))
 
-# Choose the list of tickers you want to use (see tickers.json for what's on offer)
-#ticker_collection = 'sp500_tickers'
-#ticker_collection = '100_tickers'
-ticker_collection = '25_tickers'
-#ticker_collection = '2_tickers'
-#ticker_collection = '1_tickers'
-tickers = tickers_data[ticker_collection]  
+    # initialize results storage
+    results = []  
+    num_tickers_processed = 0
+    num_strangles_considered = 0
 
-# Remove duplicates and sort alphabetically
-tickers = sorted(set(tickers))
+    # Main loop over tickers
+    for ticker in tickers:
+        num_tickers_processed += 1
+        strangle = find_balanced_strangle(ticker)
 
-# initialize results storage
-results = []  
+        if strangle is not None:
+            num_strangles_considered += strangle.get('num_strangles_considered', 0)
+            results.append(strangle)
+            display_strangle(strangle)
 
-# Initialize usage/resource counters
-num_tickers_processed = 0
-num_strangles_considered = 0
+    # Calculate execution time
+    execution_time = time.time() - start_time
+    execution_time_per_ticker = execution_time / len(tickers)
 
-# Main loop over tickers
-for ticker in tickers:
-    num_tickers_processed += 1  # Increment the ticker count
+    # Prepare execution details for the report
+    execution_details = {
+        'num_tickers_processed': num_tickers_processed,
+        'num_strangles_considered': num_strangles_considered,
+        'execution_time': execution_time,
+        'execution_time_per_ticker': execution_time_per_ticker
+    }
 
-    # Search for the best strangle for each ticker
-    strangle = find_balanced_strangle(ticker)
+    # Write reports
+    write_reports(results, execution_details)
 
-    # If no strangle is found, skip to the next ticker
-    if strangle is None:
-        continue
+    # Print summary
+    print(f"Number of tickers processed: {num_tickers_processed}")
+    print(f"Number of contract pairs tried: {num_strangles_considered:,}")
+    print(f"Execution time: {execution_time:.2f} seconds")
+    print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
 
-    # Store result, display it, and update the strangle count
-    if 'num_strangles_considered' in strangle:
-        num_strangles_considered += strangle['num_strangles_considered']
-        results.append(strangle)
-        display_strangle(strangle)
-
-# Calculate the execution time
-execution_time = time.time() - start_time
-execution_time_per_ticker = execution_time / len(tickers)
-
-# Prepare execution details for the report
-execution_details = {
-    'num_tickers_processed': num_tickers_processed,
-    'num_strangles_considered': num_strangles_considered,
-    'execution_time': execution_time,
-    'execution_time_per_ticker': execution_time_per_ticker
-}
-
-# write the html report(s)
-write_reports(results, execution_details)
-
-print(f"Number of tickers processed: {num_tickers_processed}")
-print(f"Number of contract pairs tried: {num_strangles_considered:,}")
-print(f"Execution time: {execution_time:.2f} seconds")
-print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
+if __name__ == "__main__":
+    main()
