@@ -72,6 +72,10 @@ def find_balanced_strangle(ticker, force_coupled=False):
     # Convert options_chain to pandas DataFrame
     options_df = pd.DataFrame(options_chain)
 
+    # Check if 'contract_type' column exists
+    if 'contract_type' not in options_df.columns:
+        return None
+
     # Extract calls and puts
     calls_df = options_df[options_df['contract_type'] == 'call'].copy()
     puts_df = options_df[options_df['contract_type'] == 'put'].copy()
