@@ -105,7 +105,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
     merged_df['normalized_difference'] = merged_df['breakeven_difference'] / merged_df['average_strike_price']
 
     # Get the single best strangle across all calls and puts
-    best_strangle = merged_df.loc[merged_df['normalized_difference'].idxmin()]
+    best_strangle = merged_df.loc[merged_df['normalized_difference'].idxmin()].copy()
 
     # Restore the ticker and price fields on the output using .loc to avoid warnings
     best_strangle.loc['ticker'] = ticker
@@ -427,11 +427,11 @@ def main():
         tickers_data = json.load(f)
 
     # Choose the list of tickers you want to use
-    ticker_collection = '1_tickers'
+    #ticker_collection = '1_tickers'
     #ticker_collection = '5_tickers'
     #ticker_collection = '25_tickers'
     #ticker_collection = '100_tickers'
-    #ticker_collection = 'sp500_tickers'
+    ticker_collection = 'sp500_tickers'
     #ticker_collection = 'russell1000_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
