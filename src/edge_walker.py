@@ -20,10 +20,18 @@ def find_balanced_strangle(ticker, force_coupled=False):
     buffer_factor = 3.0
     strike_min = stock_price / buffer_factor
     strike_max = stock_price * buffer_factor
+
+    # do a volatility sanity check (our contract data source gets poluted 
+    # by big volatility spikes) and keep standard deviation to be used as 
+    # measure against breakeven_difference later. 
+    stock_sigma, stock_mu = stock_sigma_mu(ticker, client, days=30)
+    max_fluctuation = 3.0
+    if stock_sigma > max_fluctuation * stock_mu:
+        return None
     
     # Make date strings that define our search range
-    date_min = datetime.today() + timedelta(days=1)
-    date_max = date_min + timedelta(days=14)
+    date_min = datetime.today() + timedelta(days=7)
+    date_max = date_min + timedelta(days=90)
     date_min = date_min.strftime('%Y-%m-%d')
     date_max = date_max.strftime('%Y-%m-%d')
 
@@ -158,12 +166,20 @@ def find_balanced_strangle(ticker, force_coupled=False):
             # Calculate the normalized breakeven difference (dimensionless)
             normalized_difference = breakeven_difference / average_strike_price
 
-            # Calculate the cost of buying the call and put options
-            cost_call = call_premium * 100.0  # Multiply by 100 to get cost in dollars
-            cost_put = put_premium * 100.0    # Multiply by 100 to get cost in dollars
-
             # If this strangle has a smaller normalized breakeven difference, update best_strangle
             if normalized_difference < best_strangle['normalized_difference']:
+
+                # Calculate the cost of buying the contracts
+                cost_call = call_premium * 100.0  # Multiply by 100 to get cost in dollars
+                cost_put = put_premium * 100.0    # Multiply by 100 to get cost in dollars
+
+                # Compare standard deviation to breakeven_difference
+                if breakeven_difference == 0.0:
+                    variability_ratio = float(inf)
+                else:
+                    variability_ratio = stock_sigma / breakeven_difference
+
+                # we have a new best strangle
                 best_strangle['call_strike'] = call_strike
                 best_strangle['put_strike'] = put_strike
                 best_strangle['call_premium'] = call_premium
@@ -177,7 +193,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
                 best_strangle['cost_call'] = cost_call
                 best_strangle['cost_put'] = cost_put
                 best_strangle['num_strangles_considered'] = num_strangles_considered
-                best_strangle['variability_ratio'] = compute_relative_fluctuation_ratio(best_strangle, client)
+                best_strangle['variability_ratio'] = variability_ratio
         
     # Return the best strangle found
     return best_strangle
@@ -245,29 +261,17 @@ import numpy as np
 from polygon import RESTClient
 from datetime import datetime, timedelta
 
-def compute_relative_fluctuation_ratio(best_strangle, client):
+def stock_sigma_mu(ticker, client, days=30):
     """
-    Computes the relative fluctuation ratio for a given best_strangle object.
-    This ratio is the standard deviation of the stock price over the last month,
-    divided by the breakeven difference of the strangle.
-    
-    :param best_strangle: dict containing details about the strangle (including breakeven difference)
-    :param client: RESTClient from Polygon API
-    :return: relative fluctuation ratio (float)
+    Computes the fluctuation (std dev) and mean of a stock's closing prices over the specified number of days.
+    Default is 30 days.
     """
-
-    ticker = best_strangle['ticker']
-    breakeven_difference = best_strangle['breakeven_difference']
     
-    # Ensure the breakeven difference is not zero to avoid division by zero
-    if breakeven_difference == 0:
-        return float('inf')  
-    
-    # Define the period for fetching historical data (e.g., 30 days)
+    # Define the period for fetching historical data
     end_date = datetime.today()
-    start_date = end_date - timedelta(days=30)
+    start_date = end_date - timedelta(days=days)
     
-    # Fetch historical stock prices for the last 30 days using Polygon's API
+    # Fetch historical stock prices for the specified period using Polygon's API
     try:
         response = client.get_aggs(
             ticker=ticker,
@@ -279,27 +283,24 @@ def compute_relative_fluctuation_ratio(best_strangle, client):
         
         # Extract the closing prices from the list of Agg objects
         if isinstance(response, list) and len(response) > 0:
-            # Extract closing prices from each Agg object
-            closing_prices = [agg.close for agg in response]  # 'close' is an attribute in each Agg object
+            closing_prices = [agg.close for agg in response]  # Extract 'close' prices
             
-            # If closing prices are found, calculate the standard deviation
+            # If closing prices are found, calculate std dev and mean
             if closing_prices:
-                std_dev_price = np.std(closing_prices)
+                fluctuation = np.std(closing_prices)  # Standard deviation of closing prices
+                mean_price = np.mean(closing_prices)  # Mean of closing prices
                 
-                # Compute the relative fluctuation ratio
-                relative_fluctuation_ratio = std_dev_price / breakeven_difference
-                
-                return relative_fluctuation_ratio
+                return fluctuation, mean_price
             else:
-                print(f"No price data available for {ticker} in the last 30 days.")
-                return 0.0  # Handle case where no data is available
+                print(f"No price data available for {ticker} in the last {days} days.")
+                return 0.0, 0.0  # Handle case where no data is available
         else:
             print(f"No valid data found for {ticker}.")
-            return 0.0
+            return 0.0, 0.0
 
     except Exception as e:
         print(f"Error fetching historical prices for {ticker}: {e}")
-        return 0.0  # Handle error case
+        return 0.0, 0.0  # Handle error case
 
 def display_strangle(best_strangle):
 
@@ -471,7 +472,8 @@ def main():
     #ticker_collection = '5_tickers'
     #ticker_collection = '25_tickers'
     #ticker_collection = '100_tickers'
-    ticker_collection = 'sp500_tickers'
+    #ticker_collection = 'sp500_tickers'
+    ticker_collection = 'russell1000_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
     # initialize results storage
