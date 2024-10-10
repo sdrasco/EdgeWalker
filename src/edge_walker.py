@@ -15,11 +15,11 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # get current stock price estimate and make a strike price filter
     stock_price = get_stock_price(client, ticker)
-    max_stock_price = 500.00
+    max_stock_price = 140.00
     min_stock_price = 10.0
     if stock_price is None or stock_price > max_stock_price or stock_price < min_stock_price:
         return None
-    buffer_factor = 3.0
+    buffer_factor = 5.0
     strike_min = stock_price / buffer_factor
     strike_max = stock_price * buffer_factor
 
@@ -32,8 +32,8 @@ def find_balanced_strangle(ticker, force_coupled=False):
         return None
     
     # Make date strings that define our search range
-    date_min = datetime.today() + timedelta(days=7)
-    date_max = date_min + timedelta(days=90)
+    date_min = datetime.today() + timedelta(days=10)
+    date_max = date_min + timedelta(days=120)
     date_min = date_min.strftime('%Y-%m-%d')
     date_max = date_max.strftime('%Y-%m-%d')
 
@@ -94,7 +94,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # Calculate the strangle costs
     contract_buying_fee = 0.53  # a brokerage dependent cost
-    merged_df['strangle_costs'] = merged_df['premium_call'] + merged_df['premium_put'] + 2.0 * contract_buying_fee
+    merged_df['strangle_costs'] = merged_df['premium_call'] + merged_df['premium_put'] + 2.0 * contract_buying_fee / 100.0
 
     # Calculate the upper and lower breakeven points
     merged_df['upper_breakeven'] = merged_df['strike_price_call'] + merged_df['strangle_costs']
@@ -111,7 +111,7 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # Check if merged_df is empty or if 'normalized_difference' has all NaN values
     if merged_df.empty or merged_df['normalized_difference'].isna().all():
-        print(f"Warning: No valid strangles found for {ticker}.")
+        print(f"Warning: No valid strangles found for {ticker}.\n")
         return None
 
     # Get the single best strangle across all calls and puts
@@ -225,7 +225,7 @@ def get_stock_price(client, ticker):
                 # If the market is closed, use prev_day.close
                 return snapshot[0].prev_day.close
 
-        print(f"Warning: No valid price data available for {ticker}.")
+        print(f"Warning: No valid price data available for {ticker}.\n")
         return None
 
     except Exception as e:
@@ -367,6 +367,7 @@ def write_reports(results, execution_details):
         header_div.clear()  # Clear any existing content
         header_div.append(BeautifulSoup(header_panel, 'html.parser'))
 
+
     # Sort the results first by 'normalized_difference' and then by total strangle price ('cost_call' + 'cost_put')
     filtered_results = [
         x for x in results 
@@ -443,7 +444,8 @@ def main():
     #ticker_collection = '100_tickers'
     #ticker_collection = 'sp500_tickers'
     #ticker_collection = 'russell1000_tickers'
-    ticker_collection = 'nasdaq_tickers'
+    ticker_collection = 'nyse_tickers'
+    #ticker_collection = 'nasdaq_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
     # initialize results storage
@@ -458,8 +460,12 @@ def main():
 
         if strangle is not None and not strangle.empty:
             num_strangles_considered += strangle['num_strangles_considered']
-            results.append(strangle)
-            display_strangle(strangle)
+
+            # only put interesting results into reports or output
+            max_normalized_difference = 0.1
+            if strangle["normalized_difference"] < max_normalized_difference:
+                results.append(strangle)
+                display_strangle(strangle)
 
     # Calculate execution time
     execution_time = time.time() - start_time
