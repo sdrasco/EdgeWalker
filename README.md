@@ -32,7 +32,7 @@ Edgewalker's main output it designed to be easily incorporated into [a simple ht
 
 ## Disclaimer
 
-Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves.
+Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had from trading the options themselves.
 
 Edge Walker is provided "as is" without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
 
