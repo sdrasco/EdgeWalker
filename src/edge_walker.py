@@ -15,8 +15,9 @@ def find_balanced_strangle(ticker, force_coupled=False):
 
     # get current stock price estimate and make a strike price filter
     stock_price = get_stock_price(client, ticker)
-    max_stock_price = 200.00
-    if stock_price is None or stock_price > max_stock_price:
+    max_stock_price = 500.00
+    min_stock_price = 10.0
+    if stock_price is None or stock_price > max_stock_price or stock_price < min_stock_price:
         return None
     buffer_factor = 3.0
     strike_min = stock_price / buffer_factor
@@ -441,7 +442,8 @@ def main():
     #ticker_collection = '25_tickers'
     #ticker_collection = '100_tickers'
     #ticker_collection = 'sp500_tickers'
-    ticker_collection = 'russell1000_tickers'
+    #ticker_collection = 'russell1000_tickers'
+    ticker_collection = 'nasdaq_tickers'
     tickers = sorted(set(tickers_data[ticker_collection]))
 
     # initialize results storage
