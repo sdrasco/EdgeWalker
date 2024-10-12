@@ -7,16 +7,15 @@ from polygon import RESTClient
 from polygon.rest.models import TickerSnapshot
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
+import cProfile
+import pstats
 
-def find_balanced_strangle(ticker, force_coupled=False):
-    # Initialize the RESTClient with API key
-    polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
-    client = RESTClient(api_key=polygonio_api_key)
+def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
 
     # get current stock price estimate and make a strike price filter
-    stock_price = get_stock_price(client, ticker)
-    max_stock_price = 140.00
-    min_stock_price = 10.0
+    stock_price = get_stock_price(client, ticker, market_open)
+    max_stock_price = 250.00
+    min_stock_price = 75.0
     if stock_price is None or stock_price > max_stock_price or stock_price < min_stock_price:
         return None
     buffer_factor = 5.0
@@ -209,10 +208,8 @@ def is_market_open(client):
         print(f"Warning: Error fetching market status: {e}")
         return False
 
-def get_stock_price(client, ticker):
+def get_stock_price(client, ticker, market_open):
     try:
-        # Check if the market is open
-        market_open = is_market_open(client)
 
         # Fetch snapshot for the provided ticker
         snapshot = client.get_snapshot_all("stocks", [ticker])
@@ -437,16 +434,48 @@ def main():
     with open('tickers.json', 'r') as f:
         tickers_data = json.load(f)
 
-    # Choose the list of tickers you want to use
-    #ticker_collection = '1_tickers'
-    #ticker_collection = '5_tickers'
-    #ticker_collection = '25_tickers'
-    #ticker_collection = '100_tickers'
-    #ticker_collection = 'sp500_tickers'
-    #ticker_collection = 'russell1000_tickers'
-    ticker_collection = 'nyse_tickers'
-    #ticker_collection = 'nasdaq_tickers'
-    tickers = sorted(set(tickers_data[ticker_collection]))
+    # Define the collections you want to include (uncommented ones)
+    collections_to_include = [
+        #'1_tickers',
+        #'5_tickers',
+        #'25_tickers',
+        '100_tickers',
+        #'sp500_tickers',
+        #'russell1000_tickers',
+        #'nyse_tickers',
+        #'nasdaq_tickers'
+    ]
+
+    # Initialize an empty set to store tickers and avoid duplicates
+    all_tickers = set()
+
+    # Loop through each collection and add the tickers to the set
+    for collection in collections_to_include:
+        all_tickers.update(tickers_data[collection])
+
+    # Sort the combined tickers alphabetically
+    tickers = sorted(all_tickers)
+
+    # Calculate the total number of tickers and estimated time
+    num_tickers = len(tickers)
+    seconds_per_ticker = 2.0
+    estimated_time_seconds = num_tickers * seconds_per_ticker
+
+    # Calculate the current time and the completion time
+    current_time = datetime.now()
+    completion_time = current_time + timedelta(seconds=estimated_time_seconds)
+
+    # Print a descriptive summary with the expected completion time
+    print(f"Using collections: {', '.join(collections_to_include)}\n")
+    print(f"This run will process {num_tickers} unique tickers in all\n")
+    print(f"The run should finish around {completion_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+
+    # Initialize the RESTClient with API key 
+    polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
+    client = RESTClient(api_key=polygonio_api_key)
+
+    # get market status (effects pricing estimate used)
+    market_open = is_market_open(client)
 
     # initialize results storage
     results = []  
@@ -456,13 +485,13 @@ def main():
     # Main loop over tickers
     for ticker in tickers:
         num_tickers_processed += 1
-        strangle = find_balanced_strangle(ticker)
+        strangle = find_balanced_strangle(client, ticker, market_open)
 
         if strangle is not None and not strangle.empty:
             num_strangles_considered += strangle['num_strangles_considered']
 
             # only put interesting results into reports or output
-            max_normalized_difference = 0.1
+            max_normalized_difference = 0.06
             if strangle["normalized_difference"] < max_normalized_difference:
                 results.append(strangle)
                 display_strangle(strangle)
@@ -489,4 +518,10 @@ def main():
     print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
 
 if __name__ == "__main__":
-    main()
+    # Profile the main function and save the output to a file
+    cProfile.run('main()', 'profile_output.prof')
+
+    # Optional: Print the profiling stats in a readable format
+    with open("profile_output.txt", "w") as f:
+        p = pstats.Stats("profile_output.prof", stream=f)
+        p.strip_dirs().sort_stats("cumtime").print_stats()
