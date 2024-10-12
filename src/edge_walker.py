@@ -110,7 +110,7 @@ def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
 
     # Check if merged_df is empty or if 'normalized_difference' has all NaN values
     if merged_df.empty or merged_df['normalized_difference'].isna().all():
-        print(f"Warning: No valid strangles found for {ticker}.\n")
+        print(f"No valid strangles found for {ticker}.\n")
         return None
 
     # Get the single best strangle across all calls and puts
@@ -143,6 +143,10 @@ def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
         best_strangle.loc['variability_ratio'] = float('inf')
     else:
         best_strangle.loc['variability_ratio'] = stock_sigma / best_strangle['breakeven_difference']
+
+    # put in the escape ratio: fractional price movement needed before strangle is profitable
+    best_strangle.loc['escape_ratio'] = min(abs(stock_price - best_strangle["upper_breakeven"]), 
+        abs(stock_price - best_strangle["lower_breakeven"])) / stock_price
 
     # Add num_strangles_considered to output
     best_strangle.loc['num_strangles_considered'] = len(calls_df) * len(puts_df)
@@ -189,7 +193,7 @@ def filter_options(options_df, stock_price, max_spread_factor=0.5):
         (options_df['ask'] != 0) &
         (options_df['spread'] <= max_spread_factor * options_df['premium']) & 
         ~options_df['suspicious_premium']
-    ].copy()  # Add .copy() here to avoid the warning
+    ].copy()  
 
     # Strip off the columns that we are done with
     keep_columns = ['expiration_date', 'strike_price', 'premium']
@@ -284,14 +288,15 @@ def display_strangle(best_strangle):
     print(f"{best_strangle['company_name']} ({best_strangle['ticker']}): ${best_strangle['stock_price']:.2f}")
     print(f"Normalized breakeven difference: {best_strangle['normalized_difference']:.3f}")
     print(f"Variability Ratio: {best_strangle['variability_ratio']:.3f}")
+    print(f"Escape Ratio: {best_strangle['escape_ratio']:.3f}")
     print(f"Cost of strangle: ${best_strangle['cost_call'] + best_strangle['cost_put']:.2f}")
     print(f"Contract pairs tried: {best_strangle['num_strangles_considered']:,}")
-    print(f"Call Expiration: {best_strangle['expiration_date_call']}")
-    print(f"Put Expiration: {best_strangle['expiration_date_put']}")
+    print(f"Call Expiration: {best_strangle['expiration_date_call']}")    
     print(f"Call strike: {best_strangle['strike_price_call']:.2f}")
+    print(f"Call premium: ${best_strangle['cost_call']/100.0:.2f}")
+    print(f"Put Expiration: {best_strangle['expiration_date_put']}")
     print(f"Put strike: {best_strangle['strike_price_put']:.2f}")
-    print(f"Cost of call: ${best_strangle['cost_call']:.2f}")
-    print(f"Cost of put: ${best_strangle['cost_put']:.2f}")
+    print(f"Put premium: ${best_strangle['cost_put']/100.0:.2f}")
     print(f"Upper breakeven: ${best_strangle['upper_breakeven']:.3f}")
     print(f"Lower breakeven: ${best_strangle['lower_breakeven']:.3f}")
     print(f"Breakeven difference: ${best_strangle['breakeven_difference']:.3f}\n")
@@ -311,16 +316,17 @@ def generate_html_table(strangle, position):
     return ''.join([
         f'<div class="panel" data-position="{position}">',
         f'{strangle["company_name"]} ({strangle["ticker"]}): ${strangle["stock_price"]:.2f}<br>',
-        f'Variability Ratio: {strangle["variability_ratio"]:.3f}<br>',
         f'Normalized Breakeven Difference: {strangle["normalized_difference"]:.3f}<br>',
+        f'Escape ratio: {strangle["escape_ratio"]:.3f}<br>',
+        f'Variability Ratio: {strangle["variability_ratio"]:.3f}<br>',
         f'Cost of strangle: ${strangle["cost_call"] + strangle["cost_put"]:.2f}<br>',
         f'Contract pairs tried: {strangle["num_strangles_considered"]:,}<br>',
         f'Call expiration: {strangle["expiration_date_call"]}<br>',
         f'Call strike: ${strangle["strike_price_call"]:.2f}<br>',
-        f'Call cost: ${strangle["cost_call"]:.2f}<br>',
+        f'Call premium: ${strangle["cost_call"]/100.0:.2f}<br>',
         f'Put expiration: {strangle["expiration_date_put"]}<br>',
         f'Put strike: ${strangle["strike_price_put"]:.2f}<br>',
-        f'Put cost: ${strangle["cost_put"]:.2f}<br>',
+        f'Put premium: ${strangle["cost_put"]/100.0:.2f}<br>',
         f'Upper breakeven: ${strangle["upper_breakeven"]:.3f}<br>',
         f'Lower breakeven: ${strangle["lower_breakeven"]:.3f}<br>',
         f'Breakeven difference: ${strangle["breakeven_difference"]:.3f}',
@@ -439,11 +445,11 @@ def main():
         #'1_tickers',
         #'5_tickers',
         #'25_tickers',
-        '100_tickers',
+        #'100_tickers',
         #'sp500_tickers',
         #'russell1000_tickers',
-        #'nyse_tickers',
-        #'nasdaq_tickers'
+        'nyse_tickers',
+        'nasdaq_tickers'
     ]
 
     # Initialize an empty set to store tickers and avoid duplicates
@@ -458,7 +464,7 @@ def main():
 
     # Calculate the total number of tickers and estimated time
     num_tickers = len(tickers)
-    seconds_per_ticker = 2.0
+    seconds_per_ticker = 8.34
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
     # Calculate the current time and the completion time
@@ -467,8 +473,9 @@ def main():
 
     # Print a descriptive summary with the expected completion time
     print(f"Using collections: {', '.join(collections_to_include)}\n")
-    print(f"This run will process {num_tickers} unique tickers in all\n")
-    print(f"The run should finish around {completion_time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    print(f"We will process {num_tickers} unique tickers "
+        f"and will finish around {completion_time.strftime('%H:%M')} "
+        f"({completion_time.strftime('%Y-%m-%d')}).\n")
 
     # Initialize the RESTClient with API key 
     polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
@@ -495,6 +502,8 @@ def main():
             if strangle["normalized_difference"] < max_normalized_difference:
                 results.append(strangle)
                 display_strangle(strangle)
+            else:
+                print(f"{ticker}: Nothing found.\n")
 
     # Calculate execution time
     execution_time = time.time() - start_time
@@ -518,10 +527,12 @@ def main():
     print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
 
 if __name__ == "__main__":
-    # Profile the main function and save the output to a file
-    cProfile.run('main()', 'profile_output.prof')
+    # Debug flag to control profiling
+    PROFILE = False
+    if PROFILE:
+        # Profile the main function and save the output to a file
+        cProfile.run('main()', 'profile_output.prof')
 
-    # Optional: Print the profiling stats in a readable format
-    with open("profile_output.txt", "w") as f:
-        p = pstats.Stats("profile_output.prof", stream=f)
-        p.strip_dirs().sort_stats("cumtime").print_stats()
+    else:
+        # Run the main function without profiling
+        main()
