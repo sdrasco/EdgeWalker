@@ -51,7 +51,7 @@ def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
             "option_type": "equity",
             "market_type": "listed",
             "contract_flag": "standard",
-            "open_interest.gte": 1,
+            "open_interest.gte": 5,
             "volume.gte": 5,
             "premium.gte": 0.0,
             "premium.lte": 20.0
@@ -110,7 +110,6 @@ def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
 
     # Check if merged_df is empty or if 'normalized_difference' has all NaN values
     if merged_df.empty or merged_df['normalized_difference'].isna().all():
-        print(f"No valid strangles found for {ticker}.\n")
         return None
 
     # Get the single best strangle across all calls and puts
@@ -281,7 +280,6 @@ def display_strangle(best_strangle):
         return
 
     if pd.isna(best_strangle['strike_price_call']) or pd.isna(best_strangle['strike_price_put']):
-        print(f"No valid strangle found for {best_strangle['ticker']}\n")
         return
 
     # Display the best strangle details
@@ -464,7 +462,7 @@ def main():
 
     # Calculate the total number of tickers and estimated time
     num_tickers = len(tickers)
-    seconds_per_ticker = 8.34
+    seconds_per_ticker = 0.88
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
     # Calculate the current time and the completion time
@@ -494,7 +492,9 @@ def main():
         num_tickers_processed += 1
         strangle = find_balanced_strangle(client, ticker, market_open)
 
-        if strangle is not None and not strangle.empty:
+        if strangle is None or strangle.empty:
+            print(f"{ticker}: Nothing interesting.\n")
+        else:
             num_strangles_considered += strangle['num_strangles_considered']
 
             # only put interesting results into reports or output
@@ -503,7 +503,8 @@ def main():
                 results.append(strangle)
                 display_strangle(strangle)
             else:
-                print(f"{ticker}: Nothing found.\n")
+                print(f"{ticker}: Nothing interesting.\n")
+
 
     # Calculate execution time
     execution_time = time.time() - start_time
