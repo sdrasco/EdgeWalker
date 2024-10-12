@@ -51,8 +51,8 @@ def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
             "option_type": "equity",
             "market_type": "listed",
             "contract_flag": "standard",
-            "open_interest.gte": 5,
-            "volume.gte": 5,
+            "open_interest.gte": 1,
+            "volume.gte": 1,
             "premium.gte": 0.0,
             "premium.lte": 20.0
         }
@@ -144,8 +144,10 @@ def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
         best_strangle.loc['variability_ratio'] = stock_sigma / best_strangle['breakeven_difference']
 
     # put in the escape ratio: fractional price movement needed before strangle is profitable
-    best_strangle.loc['escape_ratio'] = min(abs(stock_price - best_strangle["upper_breakeven"]), 
-        abs(stock_price - best_strangle["lower_breakeven"])) / stock_price
+    best_strangle.loc['escape_ratio'] = min(
+        abs(stock_price - best_strangle["upper_breakeven"]), 
+        abs(stock_price - best_strangle["lower_breakeven"])
+    ) / stock_price
 
     # Add num_strangles_considered to output
     best_strangle.loc['num_strangles_considered'] = len(calls_df) * len(puts_df)
@@ -174,8 +176,12 @@ def filter_options(options_df, stock_price, max_spread_factor=0.5):
         lambda row: abs(row['ask'] - row['bid']) if pd.notna(row['bid']) and pd.notna(row['ask']) else None, axis=1
     )
 
-    # Sanity check: suspicious premium
-    options_df.loc[:, 'suspicious_premium'] = options_df['premium'] < np.maximum(0, stock_price - options_df['strike_price'])
+    # Sanity check: thow out suspicious premiums
+    options_df.loc[:, 'suspicious_premium'] = options_df.apply(
+        lambda row: row['premium'] < max(0, row['strike_price'] - stock_price) if row['contract_type'] == 'put' 
+                    else row['premium'] < max(0, stock_price - row['strike_price']),
+        axis=1
+    )
 
     # Check for any None values in bid, ask, or spread
     options_df.loc[:, 'any_None'] = (
@@ -529,7 +535,7 @@ def main():
 
 if __name__ == "__main__":
     # Debug flag to control profiling
-    PROFILE = False
+    PROFILE = True
     if PROFILE:
         # Profile the main function and save the output to a file
         cProfile.run('main()', 'profile_output.prof')
