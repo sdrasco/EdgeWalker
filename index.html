@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdgeWalker</title>
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="EdgeWalker - Scouring Market Data for Option Trades">
+    <meta property="og:description" content="Finding the edge-balanced option strangles.">
+    <meta property="og:image" content="https://edgewalker.co.uk/EdgeWalker_small.png">
+    <meta property="og:url" content="https://edgewalker.co.uk">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="EdgeWalker">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EdgeWalker - Scouring Market Data for Option Trades">
+    <meta name="twitter:description" content="Finding the edge-balanced option strangles.">
+    <meta name="twitter:image" content="https://edgewalker.co.uk/EdgeWalker_small.png">
+    <meta name="twitter:url" content="https://edgewalker.co.uk">
+
+    <!-- Attempt a nice font -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Work Sans', Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-text-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 800px;
+        }
+
+        .logo-text-container img {
+            max-width: 225px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .text-container {
+            text-align: left;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        a.button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        a.button:hover {
+            background-color: #0056b3;
+        }
+
+        iframe {
+            width: 80%;
+            height: 850px;
+            border: 1px solid #ccc;
+            margin: 5px 0;
+            border-radius: 10px;
+            overflow: auto;  
+            box-sizing: border-box;
+        }
+
+        footer {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 20px 0;
+            margin-top: 25px;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Media query for smaller screens */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+            
+            a.button {
+                padding: 12px 24px;
+                font-size: 16px;
+            }
+
+            iframe {
+                width: 100%;
+                height: 600px;
+            }
+
+            .logo-text-container {
+                flex-direction: column;
+            }
+
+            .logo-text-container img {
+                max-width: 250px; 
+                border-radius: 10px
+            }
+
+            .text-container {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-text-container">
+        <img src="images/EdgeWalker_small.png" alt="EdgeWalker Logo">
+        <div class="text-container">
+            <p>Navigating real-time market data to identify mizimized risk edge-balanced options strangles.</p>
+            <p align=center><a href="https://github.com/sdrasco/EdgeWalker/blob/main/README.md" class="button">tell me more</a></p>
+        </div>
+    </div>
+</header>
+
+<!-- Report Section -->
+<iframe src="html/edgewalker_report.html" title="Eventually Report"></iframe>
+
+<footer>
+    <p>&copy; 2024 EdgeWalker. All rights reserved. | <a href="mailto:steve.drasco@gmail.com">Contact</a></p>
+</footer>
+
+</body>
+</html>
