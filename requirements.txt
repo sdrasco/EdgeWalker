@@ -1,3 +1,5 @@
-pandas==1.5.3
-numpy==1.24.2
-polygon-api-client==1.14.2
+# Third-party dependencies
+beautifulsoup4==latest
+numpy==latest
+pandas==latest
+polygon-api-client==latest
