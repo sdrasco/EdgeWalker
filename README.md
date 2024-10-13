@@ -125,12 +125,12 @@ For each ticker, the script outputs something to the console. It could just be l
 AMZN: Nothing interesting.
 ```
 
-which means that the best put/call contract isn't sufficiently low risk bother keeping a record of. This is what you should expect to see for most tickers, 
-unless you've set a somewhat large value of `max_normalized_difference` in `src/main.py`
+which means that the best put/call contract pair isn't sufficiently low risk bother keeping a record of. This is what you should expect to see for most tickers, 
+unless you've set a somewhat large value of `max_normalized_difference`, which you can edit in these lines from `src/main.py`
 
 ```
-            # Only put interesting results into reports or output
-            max_normalized_difference = 0.06
+# Only put interesting results into reports or output
+max_normalized_difference = 0.06
 ````
 In cases where something interesting is found (sufficiently small Normalized Breakeven Difference) you will see an output like this example:
 
