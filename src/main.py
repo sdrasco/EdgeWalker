@@ -26,13 +26,13 @@ def main():
     # Define the collections you want to include
     collections_to_include = [
         # '1_tickers',
-         '5_tickers',
+        #'5_tickers',
         # '25_tickers',
         # '100_tickers',
         # 'sp500_tickers',
         # 'russell1000_tickers',
-        #'nyse_tickers',
-        #'nasdaq_tickers'
+         'nyse_tickers',
+         'nasdaq_tickers'
     ]
 
     # Initialize an empty set to store tickers and avoid duplicates

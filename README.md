@@ -157,10 +157,10 @@ Breakeven difference: $3.021
 At the end of the execution, statistics are provided with details about the number of tickers processed, the number of requests sent to Polygon.io, the number of HTML panels generated, and the execution time. For example:
 
 ```
-Number of tickers processed: 5
-Number of contract pairs tried: 206,293
-Execution time: 5.953 seconds
-Execution time per ticker: 1.191 seconds
+Number of tickers processed: 7,723
+Number of contract pairs tried: 7,146,806
+Execution time: 7301.55 seconds
+Execution time per ticker: 0.95 seconds
 ```
 
 ## Contributing
