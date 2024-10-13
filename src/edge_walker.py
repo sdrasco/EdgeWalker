@@ -1,14 +1,18 @@
+# Standard library imports
+# import cProfile is preformed before main execution 
+# if --profile flag is provided via the command line
+import json
+import os
+import time
+from datetime import datetime, timedelta
+
+
+# Third-party imports
+from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
-import time
-import os
-import json
 from polygon import RESTClient
 from polygon.rest.models import TickerSnapshot
-from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
-import cProfile
-import pstats
 
 def find_balanced_strangle(client, ticker, market_open, force_coupled=False):
 
@@ -534,12 +538,9 @@ def main():
     print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
 
 if __name__ == "__main__":
-    # Debug flag to control profiling
-    PROFILE = True
-    if PROFILE:
-        # Profile the main function and save the output to a file
+    import sys
+    if '--profile' in sys.argv:
+        import cProfile
         cProfile.run('main()', 'profile_output.prof')
-
     else:
-        # Run the main function without profiling
         main()
