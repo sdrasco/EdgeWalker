@@ -60,26 +60,23 @@ class MarketDataClient:
                 to=end_date.strftime('%Y-%m-%d')
             )
 
-            # Extract the closing prices from the list of Agg objects
-            if response and len(response.results) > 0:
+            # Check if response is a list of Agg objects or an object with results attribute
+            if isinstance(response, list):
+                closing_prices = [agg.close for agg in response]  # Directly process the list of Agg objects
+            elif response and hasattr(response, 'results') and len(response.results) > 0:
                 closing_prices = [agg.c for agg in response.results]  # 'c' is the close price
 
-                # If closing prices are found, calculate std dev and mean
-                if closing_prices:
-                    fluctuation = np.std(closing_prices)  # Standard deviation of closing prices
-                    mean_price = np.mean(closing_prices)  # Mean of closing prices
-
-                    return fluctuation, mean_price
-                else:
-                    print(f"No price data available for {ticker} in the last {days} days.")
-                    return 0.0, 0.0  # Handle case where no data is available
+            # Calculate fluctuation and mean if we have closing prices
+            if closing_prices:
+                fluctuation = np.std(closing_prices)  # Standard deviation of closing prices
+                mean_price = np.mean(closing_prices)  # Mean of closing prices
+                return fluctuation, mean_price
             else:
-                print(f"No valid data found for {ticker}.")
+                print(f"No price data available for {ticker} in the last {days} days.")
                 return 0.0, 0.0
 
         except Exception as e:
             print(f"Error fetching historical prices for {ticker}: {e}")
-            return 0.0, 0.0  # Handle error case
 
     def get_options_chain(self, ticker: str, params: dict) -> 'pd.DataFrame':
         import pandas as pd
