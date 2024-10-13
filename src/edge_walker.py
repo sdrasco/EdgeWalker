@@ -1,5 +1,5 @@
 # Standard library imports
-# import cProfile is preformed before main execution 
+# import cProfile is performed before main execution 
 # if --profile flag is provided via the command line
 import json
 import os
