@@ -26,13 +26,13 @@ def main():
     # Define the collections you want to include
     collections_to_include = [
         # '1_tickers',
-        # '5_tickers',
+         '5_tickers',
         # '25_tickers',
         # '100_tickers',
         # 'sp500_tickers',
         # 'russell1000_tickers',
-        'nyse_tickers',
-        'nasdaq_tickers'
+        #'nyse_tickers',
+        #'nasdaq_tickers'
     ]
 
     # Initialize an empty set to store tickers and avoid duplicates
@@ -70,7 +70,7 @@ def main():
     strangle_finder = StrangleFinder(market_data_client=market_data_client)
 
     # Initialize the ReportGenerator
-    report_generator = ReportGenerator(template_file='template_report.html')
+    report_generator = ReportGenerator(template_file='../html/template_report.html')
 
     # Get market status (affects pricing estimate used)
     market_open = market_data_client.is_market_open()
