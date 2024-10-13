@@ -1,6 +1,5 @@
 # main.py 
 
-# system imports
 import os
 import sys
 import time
