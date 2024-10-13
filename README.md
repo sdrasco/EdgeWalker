@@ -119,30 +119,37 @@ Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the 
 
 ### Understanding the Output
 
-For each ticker, the script provides:
-
-- Expiration Date: The date when the options contracts expire.
-- Call Strike and Premium: The strike price and premium for the call option.
-- Put Strike and Premium: The strike price and premium for the put option.
-- Cost of Strangle: The total cost to enter the strangle position.
-- Breakeven Points: The upper and lower breakeven prices.
-- Breakeven Difference: The absolute difference between the breakeven points.
-- Normalized Breakeven Difference: The breakeven difference normalized by the average strike price.
-
-An example of the output:
+For each ticker, the script outputs something to the console. It could just be like this example:
 
 ```
-FOUR
-Normalized Breakeven Difference: 0.104
-Cost of strangle: $495.00
-Expiration: 2024-10-18
-Call strike: $95.00
-Put strike: $95.00
-Cost of call: $120.00
-Cost of put: $375.00
-Upper breakeven: $99.950
-Lower breakeven: $90.050
-Breakeven difference: $9.900
+AMZN: Nothing interesting.
+```
+
+which means that the best put/call contract isn't sufficiently low risk bother keeping a record of. This is what you should expect to see for most tickers, 
+unless you've set a somewhat large value of `max_normalized_difference` in `src/main.py`
+
+```
+            # Only put interesting results into reports or output
+            max_normalized_difference = 0.06
+````
+In cases where something interesting is found (sufficiently small Normalized Breakeven Difference) you will see an output like this example:
+
+```
+PIMCO Active Bond (BOND): $93.05
+Normalized Breakeven Difference: 0.032
+Escape ratio: 0.011
+Variability Ratio: 0.000
+Cost of strangle: $200.00
+Contract pairs tried: 2
+Call expiration: 2024-11-15
+Call strike: $93.00
+Call premium: $0.73
+Put expiration: 2024-11-15
+Put strike: $94.00
+Put premium: $1.27
+Upper breakeven: $95.011
+Lower breakeven: $91.989
+Breakeven difference: $3.021
 ```
 
 ### Execution Statistics
@@ -151,25 +158,10 @@ At the end of the execution, statistics are provided with details about the numb
 
 ```
 Number of tickers processed: 5
-Number of requests sent to Polygon.io: 5
-Number of HTML panels generated: 5
-Execution time: 155.23 seconds
-Execution time per ticker: 31.05 seconds
+Number of contract pairs tried: 206,293
+Execution time: 5.953 seconds
+Execution time per ticker: 1.191 seconds
 ```
-
-## Customization 
-
-- **Limiting Expiration Dates:**
-By default, the script considers all available expiration dates. To limit the search to the nearest N expiration dates, uncomment and adjust the following lines in the `find_balanced_strangle` function:
-```python
-   # N = 4  
-   # expiration_dates = stock.options[:N]
-```
-
-- **Adjusting the Tickers List**
-Modify the tickers list by editing the `tickers.json` file to include any stocks you’re interested in.
-- **Changing Output Preferences**
-Feel free to adjust the `show_findings` function to customize the output format.
 
 ## Contributing
 
