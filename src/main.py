@@ -25,14 +25,14 @@ def main():
 
     # Define the collections you want to include
     collections_to_include = [
-        # '1_tickers',
+        #'1_tickers',
         #'5_tickers',
-        # '25_tickers',
-        # '100_tickers',
-        # 'sp500_tickers',
-        # 'russell1000_tickers',
-         'nyse_tickers',
-         'nasdaq_tickers'
+        '25_tickers',
+        #'100_tickers',
+        #'sp500_tickers',
+        #'russell1000_tickers',
+        #'nyse_tickers',
+        #'nasdaq_tickers'
     ]
 
     # Initialize an empty set to store tickers and avoid duplicates
@@ -91,7 +91,7 @@ def main():
             num_strangles_considered += strangle.num_strangles_considered
 
             # Only put interesting results into reports or output
-            max_normalized_difference = 0.06
+            max_normalized_difference = 0.07
             if strangle.normalized_difference < max_normalized_difference:
                 results.append(strangle)
                 report_generator.display_strangle(strangle)

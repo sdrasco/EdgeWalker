@@ -16,11 +16,11 @@ class StrangleFinder:
     def find_balanced_strangle(self, ticker: str, market_open: bool) -> Optional[Strangle]:
         # Get current stock price estimate and make a strike price filter
         stock_price = self.market_data_client.get_stock_price(ticker, market_open)
-        max_stock_price = 250.00
-        min_stock_price = 75.0
+        max_stock_price = 150.00
+        min_stock_price = 50.0
         if stock_price is None or stock_price > max_stock_price or stock_price < min_stock_price:
             return None
-        buffer_factor = 5.0
+        buffer_factor = 3.0
         strike_min = stock_price / buffer_factor
         strike_max = stock_price * buffer_factor
 
@@ -31,7 +31,7 @@ class StrangleFinder:
             return None
 
         # Make date strings that define our search range
-        date_min = datetime.today() + timedelta(days=10)
+        date_min = datetime.today() + timedelta(days=30)
         date_max = date_min + timedelta(days=120)
         date_min = date_min.strftime('%Y-%m-%d')
         date_max = date_max.strftime('%Y-%m-%d')
@@ -50,8 +50,8 @@ class StrangleFinder:
             "contract_flag": "standard",
             "open_interest.gte": 1,
             "volume.gte": 1,
-            "premium.gte": 0.0,
-            "premium.lte": 20.0
+            "premium.gte": 0.5,
+            "premium.lte": 10.0
         }
 
         # Pull the option chain for this ticker

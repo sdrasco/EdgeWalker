@@ -93,7 +93,7 @@ class ReportGenerator:
             f'Processed {num_tickers_processed} tickers. '
             f'Considered {num_strangles_considered:,} contract pairs. '
             f'Finished in {execution_time/60.0:.0f} minutes, or '
-            f'{execution_time_per_ticker:.0f} seconds per ticker.'
+            f'{execution_time_per_ticker:.2f} seconds per ticker.'
         )
 
         # Find the header panel and insert the content
@@ -123,7 +123,7 @@ class ReportGenerator:
             )
         )
 
-        # Generate all the HTML content once
+        # Generate all the HTML content
         all_results = [
             result_html for idx, result in enumerate(sorted_results)
             if (result_html := self.generate_html_table(result, idx + 1)) is not None
@@ -131,15 +131,13 @@ class ReportGenerator:
 
         # Get the current time and format it for the filename
         stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = f'summary_report_{stamp}.html'
-        full_output_file = f'full_report_{stamp}.html'
+        output_file = f'../html/edgewalker_report_{stamp}.html'
 
         # Find the grid container
         grid_container = soup.find("div", class_="grid-container")
 
-        # Replace the top 8 panels (or fewer if there are not enough results)
-        top_8_results = all_results[:8]  # Use the first 8 panels
-        for idx, result in enumerate(top_8_results):
+        # Replace the panels
+        for idx, result in enumerate(all_results):
             data_position = idx + 1  # Data positions for panels are 1-indexed
             panel = grid_container.find("div", {"data-position": str(data_position)})
             if panel:
@@ -147,19 +145,6 @@ class ReportGenerator:
                 panel.clear()  # Clear any existing content
                 panel.append(BeautifulSoup(new_content, 'html.parser'))  # Insert the new content
 
-        # Write the top 8 report to file
-        with open(output_file, 'w') as file:
-            file.write(str(soup))
-
-        # Only create the full report if there are more than 8 panels
-        if len(all_results) > 8:
-            # Add the remaining results to the grid
-            for idx, result in enumerate(all_results[8:], start=8):  # Continue from the 9th result
-                new_panel = soup.new_tag("div", **{'class': 'panel', 'data-position': str(idx + 1)})
-                new_content = BeautifulSoup(result, 'html.parser').div.decode_contents()  # Extract inner content
-                new_panel.append(BeautifulSoup(new_content, 'html.parser'))  # Append the content
-                grid_container.append(new_panel)
-
-            # Write the full report to file
-            with open(full_output_file, 'w') as file:
+            # Write the report to file
+            with open(output_file, 'w') as file:
                 file.write(str(soup))
