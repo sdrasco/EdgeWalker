@@ -16,17 +16,18 @@ class StrangleFinder:
     def find_balanced_strangle(self, ticker: str, market_open: bool) -> Optional[Strangle]:
         # Get current stock price estimate and make a strike price filter
         stock_price = self.market_data_client.get_stock_price(ticker, market_open)
-        max_stock_price = 150.00
-        min_stock_price = 50.0
+        max_stock_price = 200.00
+        min_stock_price = 25.0
         if stock_price is None or stock_price > max_stock_price or stock_price < min_stock_price:
             return None
-        buffer_factor = 3.0
+        buffer_factor = 4.0
         strike_min = stock_price / buffer_factor
         strike_max = stock_price * buffer_factor
 
-        # Do a volatility sanity check
+        # Do a volatility sanity check (throwing things out if their 30-day-variance is
+        # larger than a set factor of their 30-day-mean).
         stock_sigma, stock_mu = self.market_data_client.stock_sigma_mu(ticker, days=30)
-        max_fluctuation = 3.0
+        max_fluctuation = 4.0
         if stock_sigma > max_fluctuation * stock_mu:
             return None
 
@@ -82,7 +83,7 @@ class StrangleFinder:
             return None
 
         # Calculate the strangle costs
-        contract_buying_fee = 0.53  # Brokerage-dependent cost
+        contract_buying_fee = 0.53 + 0.55 # Brokerage-dependent cost
         merged_df['strangle_costs'] = (
             merged_df['premium_call'] + merged_df['premium_put'] +
             2.0 * contract_buying_fee / 100.0

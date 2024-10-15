@@ -85,7 +85,7 @@
         document.getElementById('result').innerHTML = "Please fill in all fields correctly.";
         return;
       }
-      var contract_buying_fee = 0.53
+      var contract_buying_fee = 0.53 + 0.55
       var strangle_costs = callPremium + putPremium + 2.0*contract_buying_fee/100.0
       var upperBreakeven = callStrike + strangle_costs;
       var lowerBreakeven = putStrike - strangle_costs;

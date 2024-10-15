@@ -136,15 +136,23 @@ class ReportGenerator:
         # Find the grid container
         grid_container = soup.find("div", class_="grid-container")
 
-        # Replace the panels
+        # Replace or add panels
         for idx, result in enumerate(all_results):
             data_position = idx + 1  # Data positions for panels are 1-indexed
             panel = grid_container.find("div", {"data-position": str(data_position)})
+
+            # If the panel exists, replace its content
             if panel:
                 new_content = BeautifulSoup(result, 'html.parser').div.decode_contents()  # Extract inner content
                 panel.clear()  # Clear any existing content
                 panel.append(BeautifulSoup(new_content, 'html.parser'))  # Insert the new content
+            else:
+                # Create a new panel if it doesn't exist
+                new_panel = soup.new_tag("div", **{"class": "panel", "data-position": str(data_position)})
+                new_content = BeautifulSoup(result, 'html.parser').div.decode_contents()
+                new_panel.append(BeautifulSoup(new_content, 'html.parser'))
+                grid_container.append(new_panel)  # Append the new panel to the grid container
 
-            # Write the report to file
-            with open(output_file, 'w') as file:
-                file.write(str(soup))
+        # Write the report to file
+        with open(output_file, 'w') as file:
+            file.write(str(soup))
