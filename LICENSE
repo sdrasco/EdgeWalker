@@ -1,3 +1,17 @@
+# License Information
+
+This project is available under two license options:
+
+1. **Open Source License (GPLv3)**:
+   - You are free to use, modify, and distribute this project under the terms of the GPLv3 license.
+   - If you choose this option, you must comply with the GPLv3 license, including the requirement to make any derivative works public under the same terms.
+
+2. **Commercial License**:
+   - For individuals or organizations wishing to use this project without complying with the GPLv3 terms (e.g., for private use or proprietary modifications), a commercial license is available.
+   - Please contact [your contact info] to discuss terms and pricing for a commercial license.
+
+## GPLv3 License
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
@@ -672,3 +686,4 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
