@@ -1,5 +1,5 @@
 # Third-party dependencies
-beautifulsoup4==latest
+beautifulsoup4:q==latest
 numpy==latest
 pandas==latest
 polygon-api-client==latest

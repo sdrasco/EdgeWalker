@@ -24,17 +24,44 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
-## Page layout
+## Report layout
 
-Edgewalker's main output it designed to be easily incorporated into [a simple html interface like this](https://edgewalker.co.uk/html/edgewalker_report.html). 
+Edgewalker's main output is [a simple html report like this](https://edgewalker.co.uk/html/edgewalker_report.html). 
 
 ![Edge Walker Logo](images/screenshot.png)
 
 ## Disclaimer
 
-Edge Walker does not account for transaction fees, although those could easily be factored into its calculations. It also focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves.
+Edge Walker does minimal accounting for transaction fees when working out the cost of each strangle.  You you should edit these accordingly in `strangle_finder.py`.
+
+```
+# Calculate the strangle costs
+contract_buying_fee = 0.53 + 0.55 # Brokerage-dependent cost
+merged_df['strangle_costs'] = (
+   merged_df['premium_call'] + merged_df['premium_put'] +
+   2.0 * contract_buying_fee / 100.0
+)
+```
+
+Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves. Often simply selling the options is the easier and more profitable way to close your position, but pricing that kind of close isn't as simple.
 
 Edge Walker is provided "as is" without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
+
+directory_structure = """
+### Directory Structure
+
+The project is organized into the following directories:
+
+- **/** (root directory): Contains general project files such as the `README.md`, website configuration files (`CNAME`, `requirements.txt`), and other GitHub config files.
+  
+- **/html**: Stores generated reports, template reports, and recently generated CSV reports from Edge Walker's output.
+  
+- **/images**: Contains image files including the project logo and any relevant screenshots used for documentation or visualization.
+  
+- **/src**: This directory contains the main Python modules responsible for Edge Walker's core functionality. It also contains ticker lists and other support files.
+  
+- **/utility**: Contains helpful tools such as ticker scrapers, [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html), and a script `html2csv.py` that converts the HTML reports into CSV format if you prefer to poke around at the results as a spreadsheet.
+"""
 
 ## Table of Contents
 
@@ -53,7 +80,7 @@ Edge Walker is provided "as is" without any guarantees or warranties. Use this c
 ## Introduction
 
 An **options strangle** is an options strategy where an investor holds a position in both a call and a put with different strike prices but the same expiration date. Edge Walker automates the process of finding the most balanced strangles—those with minimal normalized breakeven differences—across multiple stock tickers. 
-Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the call and put to have unequal expiration dates, treating the most recent expiration as the expiration of the strangle. You can force matched expiration dates if you like.
+To improve EdgeWalker's effort to minimize breakeven differences, we allow the call and put to have unequal expiration dates, treating the most recent expiration as the expiration of the strangle. You can force matched expiration dates if you like.
 
 ## Features
 
@@ -68,7 +95,7 @@ Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the 
 
 - Python 3.11.5 or higher
 - A Polygon.io API key with access to options data
-- [pandas](https://pypi.org/project/pandas/)
+- various python librarys described in `requirements.txt`
 
 ## Installation
 
