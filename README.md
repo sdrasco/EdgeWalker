@@ -1,7 +1,7 @@
 
 # [Edge Walker](https://edgewalker.co.uk)
 
-![Edge Walker Logo](images/EdgeWalker_small.png)
+![Edge Walker Logo](EdgeWalker_small.png)
 
 ## For experienced traders (TLDR)
 
@@ -26,9 +26,9 @@ Edge Walker searches for the most "balanced" strangles—those with the smallest
 
 ## Page layout
 
-Edgewalker's main output it designed to be easily incorporated into [a simple html interface like this](https://edgewalker.co.uk/html/edgewalker_report.html). 
+Edgewalker's main output it designed to be easily incorporated into [a simple html interface like this](https://edgewalker.co.uk/html/eventually.html). 
 
-![Edge Walker Logo](images/screenshot.png)
+![Edge Walker Logo](eventually.png)
 
 ## Disclaimer
 
