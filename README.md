@@ -77,11 +77,6 @@ The project is organized into the following directories:
 - [Acknowledgments](#acknowledgments)
 - [Contact](#contact)
 
-## Introduction
-
-An **options strangle** is an options strategy where an investor holds a position in both a call and a put with different strike prices but the same expiration date. Edge Walker automates the process of finding the most balanced strangles—those with minimal normalized breakeven differences—across multiple stock tickers. 
-To improve EdgeWalker's effort to minimize breakeven differences, we allow the call and put to have unequal expiration dates, treating the most recent expiration as the expiration of the strangle. You can force matched expiration dates if you like.
-
 ## Features
 
 - Fetches options data for a list of stock tickers using the Polygon.io API.
@@ -90,6 +85,25 @@ To improve EdgeWalker's effort to minimize breakeven differences, we allow the c
 - Provides detailed output including strike prices, premiums, costs, and breakeven points.
 - Measures execution time and provides performance metrics.
 - Stores ticker collections in an external `tickers.json` file for easy management and customization.
+
+## Progress Status Notes
+
+### Modular OOP Refactor Complete
+
+The **Edge Walker** project has recently undergone a significant refactor to adopt a **modular, object-oriented (OOP)** architecture. Previously, the core logic was housed in a single script, but now the functionality has been broken out into well-structured modules to improve maintainability, readability, and scalability.
+
+#### Key Improvements:
+- Modular code organization: The project is now divided into multiple `src/*.py` files, making it easier to extend and reuse components.
+- Cleaner separation of concerns: Each module is focused on a specific area of functionality, following common OOP principles.
+- Easier future development: This new structure is designed with future growth in mind, laying the groundwork for further optimizations and feature expansions.
+
+### Current Development Focus: Asynchronous Processing and Polygon API Shift
+
+The next major milestone for **Edge Walker** is transitioning from synchronous REST API calls to fully **asynchronous processing**. This will greatly improve the tool's efficiency by enabling it to handle real-time data in parallel, rather than sequentially.
+
+#### Upcoming Changes:
+- **Asynchronous API calls**: We’re switching from Polygon's current REST-based API client (`polygon.RESTClient`) to its **URL-based endpoints** using async requests. This will allow us to fetch data for multiple stock tickers concurrently, reducing bottlenecks in the pipeline.
+- **Enhanced performance**: This move is expected to drastically reduce execution time, particularly when processing large volumes of data.
 
 ## Requirements
 
@@ -181,7 +195,7 @@ Breakeven difference: $3.021
 
 ### Execution Statistics
 
-At the end of the execution, statistics are provided with details about the number of tickers processed, the number of requests sent to Polygon.io, the number of HTML panels generated, and the execution time. For example:
+At the end of the execution, statistics apear on the console describing the previous run, like this example:
 
 ```
 Number of tickers processed: 7,723
