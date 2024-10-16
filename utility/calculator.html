@@ -65,9 +65,6 @@
       <label for="putPremium">Put Premium:</label>
       <input type="number" id="putPremium" placeholder="Enter Put Premium" required><br>
 
-      <label for="stockPrice">Current Stock Price:</label>
-      <input type="number" id="stockPrice" placeholder="Enter Stock Price" required><br>
-
       <button type="button" onclick="calculateBreakeven()">Calculate</button>
     </form>
     <div class="result" id="result"></div>
@@ -79,18 +76,19 @@
       var callPremium = parseFloat(document.getElementById('callPremium').value);
       var putStrike = parseFloat(document.getElementById('putStrike').value);
       var putPremium = parseFloat(document.getElementById('putPremium').value);
-      var stockPrice = parseFloat(document.getElementById('stockPrice').value);
       
-      if (isNaN(callStrike) || isNaN(callPremium) || isNaN(putStrike) || isNaN(putPremium) || isNaN(stockPrice)) {
+      if (isNaN(callStrike) || isNaN(callPremium) || isNaN(putStrike) || isNaN(putPremium)) {
         document.getElementById('result').innerHTML = "Please fill in all fields correctly.";
         return;
       }
-      var contract_buy_and_sell_fee = 0.53 + 0.55
-      var strangle_costs = callPremium + putPremium + 2.0*contract_buy_and_sell_fee/100.0
+      
+      var contract_buy_and_sell_fee = 0.53 + 0.55;
+      var strangle_costs = callPremium + putPremium + 2.0 * contract_buy_and_sell_fee / 100.0;
       var upperBreakeven = callStrike + strangle_costs;
       var lowerBreakeven = putStrike - strangle_costs;
       var breakevenDifference = upperBreakeven - lowerBreakeven;
-      var normalizedDifference = breakevenDifference / stockPrice;
+      var average_strike = 0.5 * (callStrike + putStrike);
+      var normalizedDifference = breakevenDifference / average_strike;
 
       document.getElementById('result').innerHTML = "Upper Breakeven Price: " + upperBreakeven.toFixed(2) + "<br>" +
                                                     "Lower Breakeven Price: " + lowerBreakeven.toFixed(2) + "<br>" +
