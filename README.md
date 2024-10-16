@@ -36,7 +36,10 @@ You can use `/utility/html2csv.py` to convert that to a spreadsheet if you want.
 
 Another handy utility is [the simple html calculator for breakeven prices](https://edgewalker.co.uk/utility/calculator.html)
 
-![Empty Calculator](images/empty_calculator.png) ![Full Calculator](images/full_calculator.png)
+<p align="center">
+  <img src="images/empty_calculator.png" alt="Empty Calculator" width="25%" />
+  <img src="images/full_calculator.png" alt="Full Calculator" width="25%" />
+</p>
 
 ## Disclaimer
 
