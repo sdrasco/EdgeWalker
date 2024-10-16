@@ -214,6 +214,8 @@ This project is licensed under the GNU General Public License v3.0 (GPLv3) for o
 
 For organizations or individuals that wish to use the project without adhering to the GPLv3 terms (for example, for private or commercial use without sharing modifications), a **commercial license** is available. Please contact Steve Drasco at steve.drasco@gmail.com for details on obtaining a commercial license.
 
+For the full text of the GPLv3 license, see the [LICENSE](LICENSE) file in this repository.
+
 ## Contact
 
 For questions or suggestions, please contact Steve Drasco at steve.drasco@gmail.com
