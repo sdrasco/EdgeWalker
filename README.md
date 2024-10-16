@@ -24,11 +24,19 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
-## Report layout
+## Screenshots
 
 Edgewalker's main output is [a simple html report like this](https://edgewalker.co.uk/html/edgewalker_report.html). 
 
-![Edge Walker Logo](images/screenshot.png)
+![HTML Report](images/screenshot.png)
+
+You can use `/utility/html2csv.py` to convert that to a spreadsheet if you want.
+
+![CSV Report](images/csv_report.png)
+
+Another handy utility is [the simple html calculator for breakeven prices](https://edgewalker.co.uk/utility/calculator.html)
+
+![Empty Calculator](images/empty_calculator.png) ![Full Calculator](images/full_calculator.png)
 
 ## Disclaimer
 
@@ -82,7 +90,7 @@ The project is organized into the following directories:
 The **Edge Walker** project has recently undergone a significant refactor to adopt a **modular, object-oriented (OOP)** architecture. Previously, the core logic was housed in a single script, but now the functionality has been broken out into well-structured modules to improve maintainability, readability, and scalability.
 
 #### Key Improvements:
-- Modular code organization: The project is now divided into multiple `src/*.py` files, making it easier to extend and reuse components.
+- Modular code organization: The project is now divided into multiple `/src/*.py` files, making it easier to extend and reuse components.
 - Cleaner separation of concerns: Each module is focused on a specific area of functionality, following common OOP principles.
 - Easier future development: This new structure is designed with future growth in mind, laying the groundwork for further optimizations and feature expansions.
 
@@ -91,7 +99,7 @@ The **Edge Walker** project has recently undergone a significant refactor to ado
 The next major milestone for **Edge Walker** is transitioning from synchronous REST API calls to fully **asynchronous processing**. This will greatly improve the tool's efficiency by enabling it to handle real-time data in parallel, rather than sequentially.
 
 #### Upcoming Changes:
-- **Asynchronous API calls**: We’re switching from Polygon's current REST-based API client (`polygon.RESTClient`) to its **URL-based endpoints** using async requests. This will allow us to fetch data for multiple stock tickers concurrently, reducing bottlenecks in the pipeline.
+- **Asynchronous API calls**: switching from Polygon's current REST-based API client (`polygon.RESTClient`) to its **URL-based endpoints** using async requests. This will fetch data for multiple stock tickers concurrently, reducing bottlenecks in the pipeline.
 - **Enhanced performance**: This move is expected to drastically reduce execution time, particularly when processing large volumes of data.
 
 ## Requirements

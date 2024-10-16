@@ -1,5 +1,3 @@
-# html2csv.py
-
 from bs4 import BeautifulSoup
 import csv
 
@@ -29,13 +27,14 @@ with open('../html/edgewalker_report_20241016_061957.csv', 'w', newline='', enco
         # Extract text content from the panel
         text_content = panel.get_text(separator='|').split('|')
 
-        # Separate the symbol and stock price
-        ticker_info = text_content[0].split(':')[0].strip()
-        symbol, stock_price = ticker_info.split('(')[1].replace('):', '').strip(), ticker_info.split('(')[0].strip()
+        # The first part of text_content[0] will have the ticker and stock price
+        ticker_info = text_content[0].split(':')
+        symbol_and_price = ticker_info[0].strip()
 
-        # Fix the symbol by removing any trailing parenthesis
-        symbol = symbol.rstrip(')')
-        
+        # Separate symbol and stock price
+        symbol = symbol_and_price.split('(')[1].replace(')', '').strip()
+        stock_price = ticker_info[1].strip().split(' ')[0]  # Extract the stock price (before any space)
+
         # Create a dictionary to hold the row data
         row_data = {
             'Symbol': symbol,
@@ -59,4 +58,4 @@ with open('../html/edgewalker_report_20241016_061957.csv', 'w', newline='', enco
         # Write the row to the CSV
         writer.writerow(row_data)
 
-print("Report has been successfully written to report.csv")
+print("HTML Report has been successfully converted to CSV.")
