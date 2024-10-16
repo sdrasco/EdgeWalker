@@ -63,20 +63,6 @@ The project is organized into the following directories:
 - **/utility**: Contains helpful tools such as ticker scrapers, [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html), and a script `html2csv.py` that converts the HTML reports into CSV format if you prefer to poke around at the results as a spreadsheet.
 """
 
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Understanding the Output](#understanding-the-output)
-- [Customization](#customization)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
-
 ## Features
 
 - Fetches options data for a list of stock tickers using the Polygon.io API.
