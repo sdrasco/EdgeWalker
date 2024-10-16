@@ -1,11 +1,11 @@
 
 # [Edge Walker](https://edgewalker.co.uk)
 
-![Edge Walker Logo](EdgeWalker_small.png)
+![Edge Walker Logo](images/EdgeWalker_small.png)
 
 ## For experienced traders (TLDR)
 
-Edge Walker is a Python tool that uses the [Polygon API](https://polygon.io/) to search stock ticker collections for option contract pairs to construct a novel derivative: the risk-minimizing edge-balanced decoupled strangle. These are put/call contract pairs with unconstrained expirations that are tuned to have identical upper and lower overall breakeven prices.
+Edge Walker is Python tool that uses the [Polygon API](https://polygon.io/) to search stock ticker collections for option contract pairs with the best-balanced strangles (strangles with the smallest breakeven differences).
 
 ## For those without options trading experience
 
@@ -22,17 +22,17 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 - **Upper and Lower Breakeven Prices**: In a straddle, the upper breakeven price is the point at which the stock price needs to rise for the call option to break even. The lower breakeven price is where the stock must fall for the put option to break even. When the stock price is between the upper and lower breakeven prices, exercising would result in a loss. When the stock price is above the upper breakeven price or below the lower breakeven price, exercising would result in a profit.
 - **Strangle**: Similar to a straddle, but the call and put options have different strike prices. They will have a different total cost or premium than a straddle, but will also have a different sized gap between the upper and lower breakeven prices.
 
-Edge Walker searches for "edge-balanced" strangles—those with the smallest difference (ideally zero), or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical. In order to improve the chances of finding this sort of option strangle, EdgeWalker allows the put and call contracts to be decoupled in the sense that they can have different expirations.
+Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
 ## Page layout
 
-Edgewalker's main output it designed to be easily incorporated into [a simple html interface like this](https://edgewalker.co.uk/eventually.html). 
+Edgewalker's main output it designed to be easily incorporated into [a simple html interface like this](https://edgewalker.co.uk/html/edgewalker_report.html). 
 
-![Edge Walker Logo](eventually.png)
+![Edge Walker Logo](images/screenshot.png)
 
 ## Disclaimer
 
-Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had from trading the options themselves.
+Edge Walker does not account for transaction fees, although those could easily be factored into its calculations. It also focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves.
 
 Edge Walker is provided "as is" without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
 
@@ -119,30 +119,37 @@ Tho improve EdgeWalker's effort to minimize breakeven differences, we allow the 
 
 ### Understanding the Output
 
-For each ticker, the script provides:
-
-- Expiration Date: The date when the options contracts expire.
-- Call Strike and Premium: The strike price and premium for the call option.
-- Put Strike and Premium: The strike price and premium for the put option.
-- Cost of Strangle: The total cost to enter the strangle position.
-- Breakeven Points: The upper and lower breakeven prices.
-- Breakeven Difference: The absolute difference between the breakeven points.
-- Normalized Breakeven Difference: The breakeven difference normalized by the average strike price.
-
-An example of the output:
+For each ticker, the script outputs something to the console. It could just be like this example:
 
 ```
-FOUR
-Normalized Breakeven Difference: 0.104
-Cost of strangle: $495.00
-Expiration: 2024-10-18
-Call strike: $95.00
-Put strike: $95.00
-Cost of call: $120.00
-Cost of put: $375.00
-Upper breakeven: $99.950
-Lower breakeven: $90.050
-Breakeven difference: $9.900
+AMZN: Nothing interesting.
+```
+
+which means that the best put/call contract pair isn't sufficiently low risk bother keeping a record of. This is what you should expect to see for most tickers, 
+unless you've set a somewhat large value of `max_normalized_difference`, which you can edit in these lines from `src/main.py`
+
+```
+# Only put interesting results into reports or output
+max_normalized_difference = 0.06
+````
+In cases where something interesting is found (sufficiently small Normalized Breakeven Difference) you will see an output like this example:
+
+```
+PIMCO Active Bond (BOND): $93.05
+Normalized Breakeven Difference: 0.032
+Escape ratio: 0.011
+Variability Ratio: 0.000
+Cost of strangle: $200.00
+Contract pairs tried: 2
+Call expiration: 2024-11-15
+Call strike: $93.00
+Call premium: $0.73
+Put expiration: 2024-11-15
+Put strike: $94.00
+Put premium: $1.27
+Upper breakeven: $95.011
+Lower breakeven: $91.989
+Breakeven difference: $3.021
 ```
 
 ### Execution Statistics
@@ -150,26 +157,11 @@ Breakeven difference: $9.900
 At the end of the execution, statistics are provided with details about the number of tickers processed, the number of requests sent to Polygon.io, the number of HTML panels generated, and the execution time. For example:
 
 ```
-Number of tickers processed: 5
-Number of requests sent to Polygon.io: 5
-Number of HTML panels generated: 5
-Execution time: 155.23 seconds
-Execution time per ticker: 31.05 seconds
+Number of tickers processed: 7,723
+Number of contract pairs tried: 7,146,806
+Execution time: 7301.55 seconds
+Execution time per ticker: 0.95 seconds
 ```
-
-## Customization 
-
-- **Limiting Expiration Dates:**
-By default, the script considers all available expiration dates. To limit the search to the nearest N expiration dates, uncomment and adjust the following lines in the `find_balanced_strangle` function:
-```python
-   # N = 4  
-   # expiration_dates = stock.options[:N]
-```
-
-- **Adjusting the Tickers List**
-Modify the tickers list by editing the `tickers.json` file to include any stocks you’re interested in.
-- **Changing Output Preferences**
-Feel free to adjust the `show_findings` function to customize the output format.
 
 ## Contributing
 
