@@ -208,9 +208,11 @@ Execution time per ticker: 0.95 seconds
 
 Contributions are welcome! If you have suggestions or improvements, please fork the repository and create a pull request.
 
-## License
+## Licensing Information
 
-This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details.
+This project is licensed under the GNU General Public License v3.0 (GPLv3) for open-source use. Under this license, you are free to use, modify, and distribute the project, provided that you comply with the terms of the GPLv3, including making any modifications publicly available under the same license.
+
+For organizations or individuals that wish to use the project without adhering to the GPLv3 terms (for example, for private or commercial use without sharing modifications), a **commercial license** is available. Please contact Steve Drasco at steve.drasco@gmail.com for details on obtaining a commercial license.
 
 ## Contact
 
