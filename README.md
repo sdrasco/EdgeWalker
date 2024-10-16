@@ -52,21 +52,19 @@ Edge Walker focuses entirely on exercising options, not on any profits or losses
 
 Edge Walker is provided "as is" without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
 
-directory_structure = """
 ### Directory Structure
 
 The project is organized into the following directories:
 
-- **/** (root directory): Contains general project files such as the `README.md`, website configuration files (`CNAME`, `requirements.txt`), and other GitHub config files.
+- **/** (root directory): Project website and github configuration files
   
-- **/html**: Stores generated reports, template reports, and recently generated CSV reports from Edge Walker's output.
+- **/html**: Generated reports, template reports, and recently generated CSV reports from Edge Walker's output.
   
-- **/images**: Contains image files including the project logo and any relevant screenshots used for documentation or visualization.
+- **/images**: Project logo and screenshots
   
-- **/src**: This directory contains the main Python modules responsible for Edge Walker's core functionality. It also contains ticker lists and other support files.
+- **/src**: The main Python modules responsible for Edge Walker's core functionality. It also contains ticker lists and other support files.
   
-- **/utility**: Contains helpful tools such as ticker scrapers, [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html), and a script `html2csv.py` that converts the HTML reports into CSV format if you prefer to poke around at the results as a spreadsheet.
-"""
+- **/utility**: Helpful tools such as ticker scrapers, [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html), and a script `html2csv.py` that converts the HTML reports into CSV format if you prefer to poke around at the results as a spreadsheet.
 
 ## Features
 
