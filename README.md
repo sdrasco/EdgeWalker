@@ -30,7 +30,7 @@ Edgewalker's main output is [a simple html report like this](https://edgewalker.
 
 ![HTML Report](images/screenshot.png)
 
-You can use `/utility/html2csv.py` to convert that to a spreadsheet if you want.
+You can use `/utility/html2csv.py` to convert that to [a spreadsheet if you want](https://edgewalker.co.uk/html/display_csv_report/edgewalker_report.csv.html).
 
 ![CSV Report](images/csv_report.png)
 
