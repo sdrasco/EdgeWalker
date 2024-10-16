@@ -210,9 +210,15 @@ Contributions are welcome! If you have suggestions or improvements, please fork 
 
 ## Licensing Information
 
-This project is licensed under the GNU General Public License v3.0 (GPLv3) for open-source use. Under this license, you are free to use, modify, and distribute the project, provided that you comply with the terms of the GPLv3, including making any modifications publicly available under the same license.
+This project is available under two license options:
 
-For organizations or individuals that wish to use the project without adhering to the GPLv3 terms (for example, for private or commercial use without sharing modifications), a **commercial license** is available. Please contact Steve Drasco at steve.drasco@gmail.com for details on obtaining a commercial license.
+1. **Open Source License (GPLv3)**:
+   - You are free to use, modify, and distribute this project under the terms of the GPLv3 license.
+   - If you choose this option, you must comply with the GPLv3 license, including the requirement to make any derivative works public under the same terms.
+
+2. **Commercial License**:
+   - For individuals or organizations wishing to use this project without complying with the GPLv3 terms (e.g., for private use or proprietary modifications), a commercial license is available.
+   - Please contact Steve Drasco at steve.drasco@gmail.com for details on obtaining a commercial license.
 
 For the full text of the GPLv3 license, see the [LICENSE](LICENSE) file in this repository.
 
