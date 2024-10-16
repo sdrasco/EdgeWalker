@@ -83,10 +83,10 @@ class StrangleFinder:
             return None
 
         # Calculate the strangle costs
-        contract_buying_fee = 0.53 + 0.55 # Brokerage-dependent cost
+        contract_buy_and_sell_fee = 0.53 + 0.55 # Brokerage-dependent cost
         merged_df['strangle_costs'] = (
             merged_df['premium_call'] + merged_df['premium_put'] +
-            2.0 * contract_buying_fee / 100.0
+            2.0 * contract_buy_and_sell_fee / 100.0
         )
 
         # Calculate the upper and lower breakeven points

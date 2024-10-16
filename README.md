@@ -32,15 +32,20 @@ Edgewalker's main output is [a simple html report like this](https://edgewalker.
 
 ## Disclaimer
 
-Edge Walker does minimal accounting for transaction fees when working out the cost of each strangle.  You you should edit these accordingly in `strangle_finder.py`.
+Edge Walker does minimal accounting for transaction fees when working out the cost of each strangle.  You you should edit these accordingly in `/src/strangle_finder.py`.
 
 ```
 # Calculate the strangle costs
-contract_buying_fee = 0.53 + 0.55 # Brokerage-dependent cost
+contract_buy_and_sell_fee = 0.53 + 0.55 # Brokerage-dependent cost
 merged_df['strangle_costs'] = (
    merged_df['premium_call'] + merged_df['premium_put'] +
-   2.0 * contract_buying_fee / 100.0
+   2.0 * contract_buy_and_sell_fee / 100.0
 )
+```
+These are also hard coded in the simple html breakeven calculator `/utility/calculator.html`.
+```
+var contract_buy_and_sell_fee = 0.53 + 0.55
+var strangle_costs = callPremium + putPremium + 2.0*contract_buy_and_sell_fee/100.0
 ```
 
 Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves. Often simply selling the options is the easier and more profitable way to close your position, but pricing that kind of close isn't as simple.
