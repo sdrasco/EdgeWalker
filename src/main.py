@@ -86,7 +86,7 @@ def main():
         strangle = strangle_finder.find_balanced_strangle(ticker, market_open)
 
         if strangle is None:
-            print(f"{ticker}: Nothing interesting.\n")
+            print(f"{ticker}") # not interesting
         else:
             num_strangles_considered += strangle.num_strangles_considered
 
@@ -96,7 +96,7 @@ def main():
                 results.append(strangle)
                 report_generator.display_strangle(strangle)
             else:
-                print(f"{ticker}: Nothing interesting.\n")
+                print(f"{ticker}") # not interesting
 
     # Calculate execution time
     execution_time = time.time() - start_time
