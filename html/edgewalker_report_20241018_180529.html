@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edge Walker Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Work Sans', Arial, sans-serif;
+            background-color: #C5D3C5; /* Soft muted green */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh; /* Allow body height to grow with content */
+            overflow: auto; /* Enable scrolling when content overflows */
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .panel {
+            background-color: #F9F9F9; /* Off-white panels */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: left;
+            white-space: pre-wrap; /* Ensures text formatting is maintained */
+            font-size: 12px;
+        }
+
+        /* Header panel styles */
+        .header {
+            grid-column: span 3; /* Make the header span all 3 columns */
+            background-color: #E0E0E0; /* A slightly different color to distinguish it */
+            padding: 10px; /* Reduce the padding for a thinner look */
+            font-size: 16px; /* Slightly larger text for visibility */
+            text-align: center; /* Center-align text */
+            justify-content: center;  /* Center content horizontally */
+            align-items: center;  /* Center content vertically */
+            font-size: 12px;
+        }
+
+        #logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent; /* Makes the background transparent */
+            border-radius: 15px; /* Keeps rounded corners */
+            padding: 0; /* Removes padding from the logo panel */
+            box-shadow: none; /* No shadow for the logo panel */
+        }
+
+        #logo img {
+            width: 60%; /* Makes the logo fill the entire panel */
+            height: 100%; /* Ensures full height */
+            border-radius: 15px; /* Ensures the image has rounded corners like the panel */
+            object-fit: cover; /* Ensures the logo covers the panel without distortion */
+        }
+
+        /* Media query for small screens */
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr; /* Single column layout */
+            }
+
+            #logo {
+                display: none; /* Hide the logo panel */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="grid-container">
+<!-- Placeholder for the header panel, to be dynamically inserted -->
+<div class="panel header" data-position="header">Friday, 18 October, 2024: Processed 5 tickers. Considered 611,014 contract pairs. Finished in 0 minutes, or 4.27 seconds per ticker.</div>
+<!-- Placeholder for trade panels -->
+<!-- These will be dynamically generated and replaced with data -->
+<div class="panel" data-position="1">Alibaba Group Holding (BABA): $101.97<br/>Normalized Breakeven Difference: 0.138<br/>Escape ratio: 0.069<br/>Variability Ratio: 0.652<br/>Cost of strangle: $700.00<br/>Contract pairs tried: 354,025<br/>Call expiration: 2024-11-01<br/>Call strike: $102.00<br/>Call premium: $3.58<br/>Put expiration: 2024-11-01<br/>Put strike: $102.00<br/>Put premium: $3.42<br/>Upper breakeven: $109.022<br/>Lower breakeven: $94.978<br/>Breakeven difference: $14.043</div>
+<div class="panel" data-position="2">Baidu, Inc. (BIDU): $94.32<br/>Normalized Breakeven Difference: 0.139<br/>Escape ratio: 0.066<br/>Variability Ratio: 0.685<br/>Cost of strangle: $649.50<br/>Contract pairs tried: 144,400<br/>Call expiration: 2024-11-01<br/>Call strike: $94.00<br/>Call premium: $3.50<br/>Put expiration: 2024-11-01<br/>Put strike: $94.00<br/>Put premium: $3.00<br/>Upper breakeven: $100.517<br/>Lower breakeven: $87.483<br/>Breakeven difference: $13.033</div>
+<div class="panel" data-position="3">JD.com, Inc. (JD): $39.81<br/>Normalized Breakeven Difference: 0.180<br/>Escape ratio: 0.086<br/>Variability Ratio: 0.831<br/>Cost of strangle: $358.00<br/>Contract pairs tried: 100,489<br/>Call expiration: 2024-11-01<br/>Call strike: $40.00<br/>Call premium: $1.74<br/>Put expiration: 2024-11-01<br/>Put strike: $40.00<br/>Put premium: $1.85<br/>Upper breakeven: $43.602<br/>Lower breakeven: $36.398<br/>Breakeven difference: $7.203</div>
+<div class="panel" data-position="4">Shift4 Payments, Inc. (FOUR): $96.76<br/>Normalized Breakeven Difference: 0.236<br/>Escape ratio: 0.065<br/>Variability Ratio: 0.158<br/>Cost of strangle: $1455.00<br/>Contract pairs tried: 12,100<br/>Call expiration: 2024-11-15<br/>Call strike: $100.00<br/>Call premium: $4.45<br/>Put expiration: 2024-11-15<br/>Put strike: $105.00<br/>Put premium: $10.10<br/>Upper breakeven: $114.572<br/>Lower breakeven: $90.428<br/>Breakeven difference: $24.143</div>
+<div class="panel" data-position="logo" id="logo">
+<img alt="Edge Walker Logo" src="../images/EdgeWalker.png"/>
+</div>
+<div class="panel" data-position="5"></div>
+<div class="panel" data-position="6"></div>
+<div class="panel" data-position="7"></div>
+<div class="panel" data-position="8"></div>
+</div>
+</body>
+</html>

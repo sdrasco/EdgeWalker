@@ -1,5 +1,3 @@
-# strangle_finder.py
-
 import pandas as pd
 from datetime import datetime, timedelta
 from typing import Optional
@@ -7,15 +5,13 @@ from typing import Optional
 from market_data_client import MarketDataClient
 from models import Strangle
 
-
 class StrangleFinder:
     def __init__(self, market_data_client: MarketDataClient, force_coupled: bool = False):
         self.market_data_client = market_data_client
         self.force_coupled = force_coupled
 
-    def find_balanced_strangle(self, ticker: str, market_open: bool) -> Optional[Strangle]:
-        # Get current stock price estimate and make a strike price filter
-        stock_price = self.market_data_client.get_stock_price(ticker, market_open)
+    async def find_balanced_strangle(self, ticker: str, market_open: bool, stock_price: Optional[float], semaphore=None) -> Optional[Strangle]:
+        # use current stock price estimate to make a strike price filter
         max_stock_price = 500.00
         min_stock_price = 25.0
         if stock_price is None or stock_price > max_stock_price or stock_price < min_stock_price:
@@ -26,7 +22,7 @@ class StrangleFinder:
 
         # Do a volatility sanity check (throwing things out if their 30-day-variance is
         # larger than a set factor of their 30-day-mean).
-        stock_sigma, stock_mu = self.market_data_client.stock_sigma_mu(ticker, days=30)
+        stock_sigma, stock_mu = await self.market_data_client.stock_sigma_mu(ticker, days=30, semaphore=semaphore)
         max_fluctuation = 4.0
         if stock_sigma > max_fluctuation * stock_mu:
             return None
@@ -55,8 +51,8 @@ class StrangleFinder:
             "premium.lte": 10.0
         }
 
-        # Pull the option chain for this ticker
-        options_df = self.market_data_client.get_options_chain(ticker, params)
+        # Pull the option chain for this ticker asynchronously
+        options_df = await self.market_data_client.get_options_chain(ticker, params, semaphore=semaphore)
         if options_df.empty or 'contract_type' not in options_df.columns:
             return None
 
@@ -116,7 +112,7 @@ class StrangleFinder:
         best_row = merged_df.loc[merged_df['normalized_difference'].idxmin()].copy()
 
         # Get company name
-        company_name = self.market_data_client.get_ticker_details(ticker)
+        company_name = await self.market_data_client.get_ticker_details(ticker, semaphore=semaphore)
 
         # Create Strangle object
         best_strangle = Strangle(
@@ -149,7 +145,7 @@ class StrangleFinder:
     def _filter_options(
         self, options_df: pd.DataFrame, stock_price: float, max_spread_factor: float = 0.5
     ) -> pd.DataFrame:
-        # Calculate bid and ask based on 'last_quote'
+        # Existing logic for filtering options
         options_df.loc[:, 'bid'] = options_df.apply(
             lambda row: row['last_quote'].get('bid', None)
             if 'last_quote' in row and row['last_quote'] is not None else None,
@@ -160,7 +156,7 @@ class StrangleFinder:
             if 'last_quote' in row and row['last_quote'] is not None else None,
             axis=1
         )
-
+        
         # Calculate the premium using bid-ask midpoint, falling back to last_trade or fair_market_value
         options_df.loc[:, 'premium'] = options_df.apply(
             lambda row: (row['bid'] + row['ask']) / 2.0
@@ -207,8 +203,8 @@ class StrangleFinder:
             ~options_df['suspicious_premium']
         ].copy()
 
-        # Strip off the columns that we are done with
+        # only keep necessary columns
         keep_columns = ['expiration_date', 'strike_price', 'premium']
-        filtered_options_df = filtered_options_df[keep_columns]
+        filtered_options_df = options_df[keep_columns]
 
         return filtered_options_df

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edge Walker Options</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Work Sans', Arial, sans-serif;
+            background-color: #C5D3C5; /* Soft muted green */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh; /* Allow body height to grow with content */
+            overflow: auto; /* Enable scrolling when content overflows */
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .panel {
+            background-color: #F9F9F9; /* Off-white panels */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: left;
+            white-space: pre-wrap; /* Ensures text formatting is maintained */
+            font-size: 12px;
+        }
+
+        /* Header panel styles */
+        .header {
+            grid-column: span 3; /* Make the header span all 3 columns */
+            background-color: #E0E0E0; /* A slightly different color to distinguish it */
+            padding: 10px; /* Reduce the padding for a thinner look */
+            font-size: 16px; /* Slightly larger text for visibility */
+            text-align: center; /* Center-align text */
+            justify-content: center;  /* Center content horizontally */
+            align-items: center;  /* Center content vertically */
+            font-size: 12px;
+        }
+
+        #logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: transparent; /* Makes the background transparent */
+            border-radius: 15px; /* Keeps rounded corners */
+            padding: 0; /* Removes padding from the logo panel */
+            box-shadow: none; /* No shadow for the logo panel */
+        }
+
+        #logo img {
+            width: 60%; /* Makes the logo fill the entire panel */
+            height: 100%; /* Ensures full height */
+            border-radius: 15px; /* Ensures the image has rounded corners like the panel */
+            object-fit: cover; /* Ensures the logo covers the panel without distortion */
+        }
+
+        /* Media query for small screens */
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr; /* Single column layout */
+            }
+
+            #logo {
+                display: none; /* Hide the logo panel */
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="grid-container">
+<!-- Placeholder for the header panel, to be dynamically inserted -->
+<div class="panel header" data-position="header">Friday, 18 October, 2024: Processed 24 tickers. Considered 5,695,454 contract pairs. Finished in 1 minutes, or 1.77 seconds per ticker.</div>
+<!-- Placeholder for trade panels -->
+<!-- These will be dynamically generated and replaced with data -->
+<div class="panel" data-position="1">Invesco QQQ Trust, (QQQ): $494.91<br/>Normalized Breakeven Difference: 0.053<br/>Escape ratio: 0.019<br/>Variability Ratio: 0.215<br/>Cost of strangle: $1323.50<br/>Contract pairs tried: 1,106,704<br/>Call expiration: 2024-11-01<br/>Call strike: $499.00<br/>Call premium: $5.13<br/>Put expiration: 2024-11-01<br/>Put strike: $499.00<br/>Put premium: $8.11<br/>Upper breakeven: $512.257<br/>Lower breakeven: $485.743<br/>Breakeven difference: $26.513</div>
+<div class="panel" data-position="2">iShares Russell 2000 (IWM): $225.84<br/>Normalized Breakeven Difference: 0.059<br/>Escape ratio: 0.024<br/>Variability Ratio: 0.229<br/>Cost of strangle: $662.50<br/>Contract pairs tried: 772,641<br/>Call expiration: 2024-11-01<br/>Call strike: $227.00<br/>Call premium: $2.92<br/>Put expiration: 2024-11-01<br/>Put strike: $227.00<br/>Put premium: $3.71<br/>Upper breakeven: $233.647<br/>Lower breakeven: $220.353<br/>Breakeven difference: $13.293</div>
+<div class="panel" data-position="3">Apple Inc. (AAPL): $235.70<br/>Normalized Breakeven Difference: 0.083<br/>Escape ratio: 0.034<br/>Variability Ratio: 0.174<br/>Cost of strangle: $987.50<br/>Contract pairs tried: 173,056<br/>Call expiration: 2024-11-01<br/>Call strike: $237.50<br/>Call premium: $4.28<br/>Put expiration: 2024-11-01<br/>Put strike: $237.50<br/>Put premium: $5.60<br/>Upper breakeven: $247.397<br/>Lower breakeven: $227.603<br/>Breakeven difference: $19.793</div>
+<div class="panel" data-position="4">Airbnb, Inc. Class (ABNB): $136.27<br/>Normalized Breakeven Difference: 0.095<br/>Escape ratio: 0.043<br/>Variability Ratio: 0.288<br/>Cost of strangle: $550.00<br/>Contract pairs tried: 105,625<br/>Call expiration: 2024-11-01<br/>Call strike: $138.00<br/>Call premium: $2.42<br/>Put expiration: 2024-11-01<br/>Put strike: $136.00<br/>Put premium: $3.08<br/>Upper breakeven: $143.522<br/>Lower breakeven: $130.478<br/>Breakeven difference: $13.043</div>
+<div class="panel" data-position="logo" id="logo">
+<img alt="Edge Walker Logo" src="../images/EdgeWalker.png"/>
+</div>
+<div class="panel" data-position="5">Microsoft Corp (MSFT): $417.40<br/>Normalized Breakeven Difference: 0.102<br/>Escape ratio: 0.045<br/>Variability Ratio: 0.188<br/>Cost of strangle: $2137.50<br/>Contract pairs tried: 429,025<br/>Call expiration: 2024-11-01<br/>Call strike: $420.00<br/>Call premium: $9.82<br/>Put expiration: 2024-11-01<br/>Put strike: $420.00<br/>Put premium: $11.55<br/>Upper breakeven: $441.397<br/>Lower breakeven: $398.603<br/>Breakeven difference: $42.793</div>
+<div class="panel" data-position="6">Alphabet Inc. Class (GOOGL): $163.74<br/>Normalized Breakeven Difference: 0.126<br/>Escape ratio: 0.056<br/>Variability Ratio: 0.089<br/>Cost of strangle: $1040.00<br/>Contract pairs tried: 131,769<br/>Call expiration: 2024-11-01<br/>Call strike: $165.00<br/>Call premium: $4.78<br/>Put expiration: 2024-11-01<br/>Put strike: $165.00<br/>Put premium: $5.62<br/>Upper breakeven: $175.422<br/>Lower breakeven: $154.578<br/>Breakeven difference: $20.843</div>
+<div class="panel" data-position="7">Amazon.Com Inc (AMZN): $190.46<br/>Normalized Breakeven Difference: 0.138<br/>Escape ratio: 0.059<br/>Variability Ratio: 0.131<br/>Cost of strangle: $1322.50<br/>Contract pairs tried: 105,625<br/>Call expiration: 2024-11-01<br/>Call strike: $192.50<br/>Call premium: $5.75<br/>Put expiration: 2024-11-01<br/>Put strike: $192.50<br/>Put premium: $7.47<br/>Upper breakeven: $205.747<br/>Lower breakeven: $179.253<br/>Breakeven difference: $26.493</div>
+<div class="panel" data-position="8">Alibaba Group Holding (BABA): $101.97<br/>Normalized Breakeven Difference: 0.138<br/>Escape ratio: 0.069<br/>Variability Ratio: 0.652<br/>Cost of strangle: $700.00<br/>Contract pairs tried: 354,025<br/>Call expiration: 2024-11-01<br/>Call strike: $102.00<br/>Call premium: $3.58<br/>Put expiration: 2024-11-01<br/>Put strike: $102.00<br/>Put premium: $3.42<br/>Upper breakeven: $109.022<br/>Lower breakeven: $94.978<br/>Breakeven difference: $14.043</div>
+<div class="panel" data-position="9">Baidu, Inc. (BIDU): $94.32<br/>Normalized Breakeven Difference: 0.139<br/>Escape ratio: 0.066<br/>Variability Ratio: 0.685<br/>Cost of strangle: $649.50<br/>Contract pairs tried: 144,400<br/>Call expiration: 2024-11-01<br/>Call strike: $94.00<br/>Call premium: $3.50<br/>Put expiration: 2024-11-01<br/>Put strike: $94.00<br/>Put premium: $3.00<br/>Upper breakeven: $100.517<br/>Lower breakeven: $87.483<br/>Breakeven difference: $13.033</div><div class="panel" data-position="10">Nvidia Corp (NVDA): $138.29<br/>Normalized Breakeven Difference: 0.140<br/>Escape ratio: 0.058<br/>Variability Ratio: 0.403<br/>Cost of strangle: $975.00<br/>Contract pairs tried: 1,416,100<br/>Call expiration: 2024-11-01<br/>Call strike: $140.00<br/>Call premium: $4.22<br/>Put expiration: 2024-11-01<br/>Put strike: $140.00<br/>Put premium: $5.53<br/>Upper breakeven: $149.772<br/>Lower breakeven: $130.228<br/>Breakeven difference: $19.543</div><div class="panel" data-position="11">Boeing Company (BA): $154.87<br/>Normalized Breakeven Difference: 0.146<br/>Escape ratio: 0.065<br/>Variability Ratio: 0.112<br/>Cost of strangle: $1010.00<br/>Contract pairs tried: 101,761<br/>Call expiration: 2024-11-01<br/>Call strike: $157.50<br/>Call premium: $4.53<br/>Put expiration: 2024-11-01<br/>Put strike: $155.00<br/>Put premium: $5.58<br/>Upper breakeven: $167.622<br/>Lower breakeven: $144.878<br/>Breakeven difference: $22.743</div><div class="panel" data-position="12">Uber Technologies, Inc. (UBER): $79.03<br/>Normalized Breakeven Difference: 0.165<br/>Escape ratio: 0.077<br/>Variability Ratio: 0.282<br/>Cost of strangle: $705.00<br/>Contract pairs tried: 120,409<br/>Call expiration: 2024-11-01<br/>Call strike: $79.00<br/>Call premium: $3.35<br/>Put expiration: 2024-11-01<br/>Put strike: $80.00<br/>Put premium: $3.70<br/>Upper breakeven: $86.072<br/>Lower breakeven: $72.928<br/>Breakeven difference: $13.143</div><div class="panel" data-position="13">Arm Holdings plc (ARM): $152.52<br/>Normalized Breakeven Difference: 0.169<br/>Escape ratio: 0.077<br/>Variability Ratio: 0.247<br/>Cost of strangle: $1425.00<br/>Contract pairs tried: 155,236<br/>Call expiration: 2024-11-01<br/>Call strike: $152.50<br/>Call premium: $6.65<br/>Put expiration: 2024-11-01<br/>Put strike: $155.00<br/>Put premium: $7.60<br/>Upper breakeven: $166.772<br/>Lower breakeven: $140.728<br/>Breakeven difference: $26.043</div><div class="panel" data-position="14">Tesla, Inc. Common (TSLA): $221.08<br/>Normalized Breakeven Difference: 0.175<br/>Escape ratio: 0.082<br/>Variability Ratio: 0.370<br/>Cost of strangle: $1950.00<br/>Contract pairs tried: 466,489<br/>Call expiration: 2024-11-01<br/>Call strike: $222.50<br/>Call premium: $9.15<br/>Put expiration: 2024-11-01<br/>Put strike: $222.50<br/>Put premium: $10.35<br/>Upper breakeven: $242.022<br/>Lower breakeven: $202.978<br/>Breakeven difference: $39.043</div><div class="panel" data-position="15">JD.com, Inc. (JD): $39.81<br/>Normalized Breakeven Difference: 0.180<br/>Escape ratio: 0.088<br/>Variability Ratio: 0.836<br/>Cost of strangle: $330.50<br/>Contract pairs tried: 100,489<br/>Call expiration: 2024-11-01<br/>Call strike: $40.00<br/>Call premium: $1.74<br/>Put expiration: 2024-11-01<br/>Put strike: $39.50<br/>Put premium: $1.57<br/>Upper breakeven: $43.327<br/>Lower breakeven: $36.173<br/>Breakeven difference: $7.153</div><div class="panel" data-position="16">Shift4 Payments, Inc. (FOUR): $96.76<br/>Normalized Breakeven Difference: 0.236<br/>Escape ratio: 0.065<br/>Variability Ratio: 0.158<br/>Cost of strangle: $1455.00<br/>Contract pairs tried: 12,100<br/>Call expiration: 2024-11-15<br/>Call strike: $100.00<br/>Call premium: $4.45<br/>Put expiration: 2024-11-15<br/>Put strike: $105.00<br/>Put premium: $10.10<br/>Upper breakeven: $114.572<br/>Lower breakeven: $90.428<br/>Breakeven difference: $24.143</div></div>
+</body>
+</html>

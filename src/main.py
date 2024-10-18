@@ -1,9 +1,8 @@
-# main.py 
-
 import os
 import sys
 import time
 import json
+import asyncio
 from datetime import datetime, timedelta
 
 # Adjust the Python path to ensure modules can be imported when running main.py directly
@@ -14,7 +13,7 @@ from market_data_client import MarketDataClient
 from strangle_finder import StrangleFinder
 from report_generator import ReportGenerator
 
-def main():
+async def main():  # Make main an async function
     # Start the timer
     start_time = time.time()
 
@@ -26,10 +25,10 @@ def main():
     # Define the collections you want to include
     collections_to_include = [
         #'1_tickers',
-        '5_tickers',
+        #'5_tickers',
         #'25_tickers',
         #'100_tickers',
-        #'sp500_tickers',
+        'sp500_tickers',
         #'russell1000_tickers',
         #'nyse_tickers',
         #'nasdaq_tickers'
@@ -62,6 +61,10 @@ def main():
         f"({completion_time.strftime('%Y-%m-%d')}).\n"
     )
 
+    # set a semaphore limit for the asynchronous calls to the API
+    concurrent_requests = 5
+    semaphore = asyncio.Semaphore(concurrent_requests) 
+
     # Initialize the MarketDataClient
     polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
     market_data_client = MarketDataClient(api_key=polygonio_api_key)
@@ -73,31 +76,42 @@ def main():
     report_generator = ReportGenerator(template_file='../html/template_report.html')
 
     # Get market status (affects pricing estimate used)
-    market_open = market_data_client.is_market_open()
+    market_open = await market_data_client.is_market_open()
+
+    # Fetch all stock prices once (in batches)
+    stock_prices = await market_data_client.fetch_all_stock_prices(tickers, market_open, semaphore=semaphore)
 
     # Initialize results storage
     results = []
     num_tickers_processed = 0
     num_strangles_considered = 0
 
-    # Main loop over tickers
+    # Main loop over tickers with asynchronous execution
+    tasks = []
     for ticker in tickers:
+        stock_price = stock_prices.get(ticker)  # Get the stock price from the fetched prices
+        if stock_price is not None:  # Only process if a valid stock price was found
+            tasks.append(strangle_finder.find_balanced_strangle(ticker, market_open, stock_price, semaphore=semaphore))
+
+    # Process all tasks concurrently
+    strangle_results = await asyncio.gather(*tasks)
+
+    # After all the tasks complete, process the results
+    for ticker, strangle in zip(tickers, strangle_results):
         num_tickers_processed += 1
-        strangle = strangle_finder.find_balanced_strangle(ticker, market_open)
 
         if strangle is None:
-            print(f"{ticker}") # not interesting
+            print(f"{ticker}")  # not interesting
         else:
             num_strangles_considered += strangle.num_strangles_considered
 
             # Only put interesting results into reports or output
-            #max_normalized_difference = 0.11
-            max_normalized_difference = 10.0
+            max_normalized_difference = 0.11  # Adjust as needed
             if strangle.normalized_difference < max_normalized_difference:
                 results.append(strangle)
                 report_generator.display_strangle(strangle)
             else:
-                print(f"{ticker}") # not interesting
+                print(f"{ticker}")  # not interesting
 
     # Calculate execution time
     execution_time = time.time() - start_time
@@ -120,9 +134,12 @@ def main():
     print(f"Execution time: {execution_time:.2f} seconds")
     print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
 
+def run_async_main():
+    asyncio.run(main())
+
 if __name__ == "__main__":
     if '--profile' in sys.argv:
         import cProfile
-        cProfile.run('main()', 'profile_output.prof')
+        cProfile.run('run_async_main()', 'profile_output.prof')
     else:
-        main()
+        run_async_main()
