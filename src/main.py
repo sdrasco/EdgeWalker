@@ -64,7 +64,8 @@ async def main():  # Make main an async function
     # set a semaphore limit for the asynchronous calls to the API
     # You'll need to tune.  It's hard to know when you will break 
     # the API pull rate limit. Advice: start from 2 and build up.
-    concurrent_requests = 2
+    # you should also tune the batch size for the fetch_all_stock_prices.
+    concurrent_requests = 10
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
