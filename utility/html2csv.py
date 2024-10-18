@@ -2,11 +2,11 @@ from bs4 import BeautifulSoup
 import csv
 
 # Load the HTML file
-with open('../html/edgewalker_report_20241016_061957.html', 'r', encoding='utf-8') as file:
+with open('../html/edgewalker_report_20241018_111309.html', 'r', encoding='utf-8') as file:
     soup = BeautifulSoup(file, 'html.parser')
 
 # Create a CSV file to write the report
-with open('../html/edgewalker_report_20241016_061957.csv', 'w', newline='', encoding='utf-8') as csvfile:
+with open('../html/edgewalker_report_20241018_111309.csv', 'w', newline='', encoding='utf-8') as csvfile:
     # Define the CSV header
     fieldnames = ['Symbol', 'Stock Price', 'Normalized Breakeven Difference', 'Escape Ratio', 'Variability Ratio',
                   'Cost of Strangle', 'Contract Pairs Tried', 'Call Expiration', 'Call Strike', 'Call Premium',

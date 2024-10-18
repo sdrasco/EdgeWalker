@@ -151,12 +151,12 @@ class StrangleFinder:
     ) -> pd.DataFrame:
         # Calculate bid and ask based on 'last_quote'
         options_df.loc[:, 'bid'] = options_df.apply(
-            lambda row: row['last_quote'].bid
+            lambda row: row['last_quote'].get('bid', None)
             if 'last_quote' in row and row['last_quote'] is not None else None,
             axis=1
         )
         options_df.loc[:, 'ask'] = options_df.apply(
-            lambda row: row['last_quote'].ask
+            lambda row: row['last_quote'].get('ask', None)
             if 'last_quote' in row and row['last_quote'] is not None else None,
             axis=1
         )
@@ -166,9 +166,9 @@ class StrangleFinder:
             lambda row: (row['bid'] + row['ask']) / 2.0
             if pd.notna(row['bid']) and pd.notna(row['ask'])
             else (
-                row['last_trade'].price
+                row['last_trade'].get('price', None)
                 if 'last_trade' in row and row['last_trade'] is not None and
-                row['last_trade'].price is not None
+                row['last_trade'].get('price', None) is not None
                 else row['fair_market_value']
             ),
             axis=1
@@ -181,11 +181,12 @@ class StrangleFinder:
             axis=1
         )
 
-        # Sanity check: throw out suspicious premiums
         options_df.loc[:, 'suspicious_premium'] = options_df.apply(
             lambda row: row['premium'] < max(0, row['strike_price'] - stock_price)
-            if row['contract_type'] == 'put'
-            else row['premium'] < max(0, stock_price - row['strike_price']),
+            if row['contract_type'] == 'put' and pd.notna(row['premium']) and pd.notna(row['strike_price'])
+            else row['premium'] < max(0, stock_price - row['strike_price'])
+            if pd.notna(row['premium']) and pd.notna(row['strike_price'])
+            else False,
             axis=1
         )
 
