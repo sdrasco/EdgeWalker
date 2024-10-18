@@ -28,8 +28,8 @@ async def main():  # Make main an async function
         #'5_tickers',
         #'25_tickers',
         #'100_tickers',
-        'sp500_tickers',
-        #'russell1000_tickers',
+        #'sp500_tickers',
+        'russell1000_tickers',
         #'nyse_tickers',
         #'nasdaq_tickers'
     ]
@@ -62,7 +62,9 @@ async def main():  # Make main an async function
     )
 
     # set a semaphore limit for the asynchronous calls to the API
-    concurrent_requests = 5
+    # You'll need to tune.  It's hard to know when you will break 
+    # the API pull rate limit. Advice: start from 2 and build up.
+    concurrent_requests = 2
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -79,7 +81,7 @@ async def main():  # Make main an async function
     market_open = await market_data_client.is_market_open()
 
     # Fetch all stock prices once (in batches)
-    stock_prices = await market_data_client.fetch_all_stock_prices(tickers, market_open, semaphore=semaphore)
+    stock_prices = await market_data_client.fetch_all_stock_prices(tickers, market_open, batch_size = 25, semaphore=semaphore)
 
     # Initialize results storage
     results = []
