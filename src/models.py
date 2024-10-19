@@ -21,6 +21,7 @@ class Strangle:
     breakeven_difference: float
     normalized_difference: float
     variability_ratio: float
+    implied_volatility: float
     escape_ratio: float
     num_strangles_considered: int
 

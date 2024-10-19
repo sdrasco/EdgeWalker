@@ -13,7 +13,7 @@ from market_data_client import MarketDataClient
 from strangle_finder import StrangleFinder
 from report_generator import ReportGenerator
 
-async def main():  # Make main an async function
+async def main():  
     # Start the timer
     start_time = time.time()
 
@@ -29,9 +29,9 @@ async def main():  # Make main an async function
         #'25_tickers',
         #'100_tickers',
         #'sp500_tickers',
-        'russell1000_tickers',
-        #'nyse_tickers',
-        #'nasdaq_tickers'
+        #'russell1000_tickers',
+        'nyse_tickers',
+        'nasdaq_tickers'
     ]
 
     # Initialize an empty set to store tickers and avoid duplicates
@@ -46,7 +46,7 @@ async def main():  # Make main an async function
 
     # Calculate the total number of tickers and estimated time
     num_tickers = len(tickers)
-    seconds_per_ticker = 2.13
+    seconds_per_ticker = 0.1
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
     # Calculate the current time and the completion time
@@ -64,8 +64,7 @@ async def main():  # Make main an async function
     # set a semaphore limit for the asynchronous calls to the API
     # You'll need to tune.  It's hard to know when you will break 
     # the API pull rate limit. Advice: start from 2 and build up.
-    # you should also tune the batch size for the fetch_all_stock_prices.
-    concurrent_requests = 3
+    concurrent_requests = 100
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -81,9 +80,6 @@ async def main():  # Make main an async function
     # Get market status (affects pricing estimate used)
     market_open = await market_data_client.is_market_open()
 
-    # Fetch all stock prices once (in batches)
-    stock_prices = await market_data_client.fetch_all_stock_prices(tickers, market_open, batch_size = 25, semaphore=semaphore)
-
     # Initialize results storage
     results = []
     num_tickers_processed = 0
@@ -92,9 +88,7 @@ async def main():  # Make main an async function
     # Main loop over tickers with asynchronous execution
     tasks = []
     for ticker in tickers:
-        stock_price = stock_prices.get(ticker)  # Get the stock price from the fetched prices
-        if stock_price is not None:  # Only process if a valid stock price was found
-            tasks.append(strangle_finder.find_balanced_strangle(ticker, market_open, stock_price, semaphore=semaphore))
+        tasks.append(strangle_finder.find_balanced_strangle(ticker, market_open, semaphore=semaphore))
 
     # Process all tasks concurrently
     strangle_results = await asyncio.gather(*tasks)
@@ -135,7 +129,7 @@ async def main():  # Make main an async function
     print(f"Number of tickers processed: {num_tickers_processed}")
     print(f"Number of contract pairs tried: {num_strangles_considered:,}")
     print(f"Execution time: {execution_time:.2f} seconds")
-    print(f"Execution time per ticker: {execution_time_per_ticker:.2f} seconds\n")
+    print(f"Execution time per ticker: {execution_time_per_ticker:.4f} seconds\n")
 
 def run_async_main():
     asyncio.run(main())
