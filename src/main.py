@@ -61,10 +61,10 @@ async def main():
         f"({completion_time.strftime('%Y-%m-%d')}).\n"
     )
 
-    # set a semaphore limit for the asynchronous calls to the API
-    # You'll need to tune.  It's hard to know when you will break 
-    # the API pull rate limit. Advice: start from 2 and build up.
-    concurrent_requests = 100
+    # Set a limit for the concurrent API requests.
+    # Hard to know when you will break the limits.
+    # Advice: start from 2 and build up.
+    concurrent_requests = 200
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient

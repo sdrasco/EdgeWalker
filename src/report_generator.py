@@ -92,8 +92,8 @@ class ReportGenerator:
             f'{current_date}: '
             f'Processed {num_tickers_processed} tickers. '
             f'Considered {num_strangles_considered:,} contract pairs. '
-            f'Finished in {execution_time/60.0:.0f} minutes, or '
-            f'{execution_time_per_ticker:.2f} seconds per ticker.'
+            f'Finished in {execution_time:.0f} seconds, or '
+            f'{execution_time_per_ticker:.4f} seconds per ticker.'
         )
 
         # Find the header panel and insert the content
