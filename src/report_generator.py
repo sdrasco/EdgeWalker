@@ -21,7 +21,7 @@ class ReportGenerator:
         # Display the strangle details
         print(f"{strangle.company_name} ({strangle.ticker}): ${strangle.stock_price:.2f}")
         print(f"Normalized breakeven difference: {strangle.normalized_difference:.3f}")
-        print(f"Variability Ratio: {strangle.variability_ratio:.3f}")
+        print(f"Profitability Profitability: {strangle.profitability_probability:.3f}")
         print(f"Escape Ratio: {strangle.escape_ratio:.3f}")
         print(f"Cost of strangle: ${strangle.cost_call + strangle.cost_put:.2f}")
         print(f"Contract pairs tried: {strangle.num_strangles_considered:,}")
@@ -39,7 +39,7 @@ class ReportGenerator:
         # Check if any of the required fields are None
         required_fields = [
             'company_name', 'ticker', 'stock_price', 'normalized_difference',
-            'escape_ratio', 'variability_ratio', 'cost_call', 'cost_put',
+            'escape_ratio', 'profitability_probability', 'cost_call', 'cost_put',
             'num_strangles_considered', 'expiration_date_call', 'strike_price_call',
             'cost_call', 'expiration_date_put', 'strike_price_put', 'cost_put',
             'upper_breakeven', 'lower_breakeven', 'breakeven_difference'
@@ -48,13 +48,13 @@ class ReportGenerator:
         if any(getattr(strangle, field) is None for field in required_fields):
             return None  # Skip this strangle if any required value is None
 
-        # Generate the HTML with the company name (or fallback to ticker symbol)
+        # Generate the result card for the HTML report
         return ''.join([
             f'<div class="panel" data-position="{position}">',
             f'{strangle.company_name} ({strangle.ticker}): ${strangle.stock_price:.2f}<br>',
             f'Normalized Breakeven Difference: {strangle.normalized_difference:.3f}<br>',
             f'Escape ratio: {strangle.escape_ratio:.3f}<br>',
-            f'Variability Ratio: {strangle.variability_ratio:.3f}<br>',
+            f'Profitability Probability: {strangle.profitability_probability:.3f}<br>',
             f'Cost of strangle: ${strangle.cost_call + strangle.cost_put:.2f}<br>',
             f'Contract pairs tried: {strangle.num_strangles_considered:,}<br>',
             f'Call expiration: {strangle.expiration_date_call}<br>',
@@ -106,20 +106,15 @@ class ReportGenerator:
         filtered_results = [
             x for x in results
             if (
-                x.cost_call is not None and
-                x.cost_put is not None and
                 x.normalized_difference is not None and
-                x.num_strangles_considered is not None
+                x.profitability_probability is not None
             )
         ]
-
         sorted_results = sorted(
             filtered_results,
             key=lambda x: (
                 x.normalized_difference,   # First priority (ascending)
-                -x.variability_ratio,      # Second priority (descending)
-                -x.num_strangles_considered,  # Third priority (descending)
-                x.cost_call + x.cost_put,  # Fourth priority (ascending)
+                -x.profitability_probability # second priority (descending)
             )
         )
 

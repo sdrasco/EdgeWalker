@@ -12,12 +12,6 @@ class StrangleFinder:
 
     async def find_balanced_strangle(self, ticker: str, market_open: bool, semaphore=None) -> Optional[Strangle]:
         
-        # # volatility filter
-        # stock_sigma, stock_mu = await self.market_data_client.stock_sigma_mu(ticker, days=30, semaphore=semaphore)
-        # max_fluctuation = 4.0
-        # if stock_sigma > max_fluctuation * stock_mu:
-        #     return None
-
         # set date limits
         date_min = datetime.today() + timedelta(days=14)
         date_max = date_min + timedelta(days=120)
@@ -111,14 +105,14 @@ class StrangleFinder:
             breakeven_difference=best_row['breakeven_difference'],
             normalized_difference=best_row['normalized_difference'],
             implied_volatility=best_row['implied_volatility_call'], # **
-            variability_ratio=0.0,  # Will be calculated
+            profitability_probability= 0.0, # Will be calculated
             escape_ratio=0.0,       # Will be calculated
             num_strangles_considered=len(calls_df) * len(puts_df)
         )
 
-        # Calculate additional ratios (these are in the modles module)
-        #best_strangle.calculate_variability_ratio(stock_sigma)
+        # Calculate some model parameters (methods are in models module)
         best_strangle.calculate_escape_ratio()
+        best_strangle.calculate_profitability_probability()
 
         return best_strangle
 

@@ -158,40 +158,14 @@ The next major milestone for **Edge Walker** is transitioning from synchronous R
 4. **View the results**
    The script will output the best-balanced strangle for each ticker, along with detailed information about the options contracts.
 
-### Understanding the Output
+### The Output
 
-For each ticker, the script outputs something to the console. It could just be like this example:
-
-```
-AMZN: Nothing interesting.
-```
-
-which means that the best put/call contract pair isn't sufficiently low risk bother keeping a record of. This is what you should expect to see for most tickers, 
-unless you've set a somewhat large value of `max_normalized_difference`, which you can edit in these lines from `src/main.py`
+Each time the code finds a ticker symbol with an interesting pair of options contracts, it creates a new card for the html report.  You can control what qualifies as interesting by setting the value of `max_normalized_difference`, in these lines from `src/main.py`
 
 ```
 # Only put interesting results into reports or output
 max_normalized_difference = 0.06
 ````
-In cases where something interesting is found (sufficiently small Normalized Breakeven Difference) you will see an output like this example:
-
-```
-PIMCO Active Bond (BOND): $93.05
-Normalized Breakeven Difference: 0.032
-Escape ratio: 0.011
-Variability Ratio: 0.000
-Cost of strangle: $200.00
-Contract pairs tried: 2
-Call expiration: 2024-11-15
-Call strike: $93.00
-Call premium: $0.73
-Put expiration: 2024-11-15
-Put strike: $94.00
-Put premium: $1.27
-Upper breakeven: $95.011
-Lower breakeven: $91.989
-Breakeven difference: $3.021
-```
 
 ### Execution Statistics
 

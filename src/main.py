@@ -3,7 +3,6 @@ import sys
 import time
 import json
 import asyncio
-from datetime import datetime, timedelta
 
 # Adjust the Python path to ensure modules can be imported when running main.py directly
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -46,25 +45,20 @@ async def main():
 
     # Calculate the total number of tickers and estimated time
     num_tickers = len(tickers)
-    seconds_per_ticker = 0.1
+    seconds_per_ticker = 0.008
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
-    # Calculate the current time and the completion time
-    current_time = datetime.now()
-    completion_time = current_time + timedelta(seconds=estimated_time_seconds)
-
-    # Print a descriptive summary with the expected completion time
+    # Print a descriptive summary with the estimated time remaining
     print(f"Using collections: {', '.join(collections_to_include)}\n")
     print(
         f"We will process {num_tickers} unique tickers "
-        f"and will finish around {completion_time.strftime('%H:%M')} "
-        f"({completion_time.strftime('%Y-%m-%d')}).\n"
+        f"and expect to finish in approximately {estimated_time_seconds:.0f} seconds.\n"
     )
 
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 200
+    concurrent_requests = 99
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -97,18 +91,15 @@ async def main():
     for ticker, strangle in zip(tickers, strangle_results):
         num_tickers_processed += 1
 
-        if strangle is None:
-            print(f"{ticker}")  # not interesting
-        else:
+        if strangle is not None:
             num_strangles_considered += strangle.num_strangles_considered
 
             # Only put interesting results into reports or output
             max_normalized_difference = 0.11  # Adjust as needed
             if strangle.normalized_difference < max_normalized_difference:
                 results.append(strangle)
-                report_generator.display_strangle(strangle)
-            else:
-                print(f"{ticker}")  # not interesting
+                #report_generator.display_strangle(strangle)
+
 
     # Calculate execution time
     execution_time = time.time() - start_time

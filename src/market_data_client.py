@@ -36,39 +36,6 @@ class MarketDataClient:
             print(f"Warning: Error fetching market status: {e}")
             return False
 
-    async def stock_sigma_mu(self, ticker: str, days: int = 30, semaphore=None) -> Tuple[float, float]:
-        end_date = datetime.today()
-        start_date = end_date - timedelta(days=days)
-        start_date_str = start_date.strftime('%Y-%m-%d')
-        end_date_str = end_date.strftime('%Y-%m-%d')
-        
-        url = f"{self.historical_url}/{ticker}/range/1/day/{start_date_str}/{end_date_str}"
-        closing_prices = []
-        
-        try:
-            async with aiohttp.ClientSession() as session:
-                while url:
-                    async with session.get(url, params={"apiKey": self.api_key}) as response:
-                        if response.status == 200:
-                            data = await response.json()
-                            if 'results' in data and len(data['results']) > 0:
-                                closing_prices.extend([agg['c'] for agg in data['results']])
-                            url = data.get('next_url')
-                        else:
-                            print(f"Failed to fetch historical data. Status code: {response.status}")
-                            return 0.0, 0.0
-
-                if closing_prices:
-                    fluctuation = np.std(closing_prices)
-                    mean_price = np.mean(closing_prices)
-                    return fluctuation, mean_price
-                else:
-                    print(f"No price data available for {ticker} in the last {days} days.")
-                    return 0.0, 0.0
-        except Exception as e:
-            print(f"Error fetching historical prices for {ticker}: {e}")
-            return 0.0, 0.0
-
     async def get_options_chain(self, ticker: str, params: dict, semaphore=None) -> pd.DataFrame:
         options_chain = []
         url = f"{self.options_url}/{ticker}"
