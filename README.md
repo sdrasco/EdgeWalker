@@ -92,22 +92,16 @@ The project is organized into the following directories:
 
 ## Progress Status Notes
 
-### Modular OOP Refactor Complete
-
-The **Edge Walker** project has recently undergone a significant refactor to adopt a **modular, object-oriented (OOP)** architecture. Previously, the core logic was housed in a single script, but now the functionality has been broken out into well-structured modules to improve maintainability, readability, and scalability.
-
 #### Key Improvements:
+- Significant speed optimization, by factor of about 1,000, by refactoring to asynchronous API calls. Searching all of NYSE and Nasdaq takes under a minute now.
+- HTML reports now have buttons leading to calculator utility and to downloading CSV version of data.
+- Convert all API calls to cusomized URL http get requests
 - Modular code organization: The project is now divided into multiple `/src/*.py` files, making it easier to extend and reuse components.
-- Cleaner separation of concerns: Each module is focused on a specific area of functionality, following common OOP principles.
-- Easier future development: This new structure is designed with future growth in mind, laying the groundwork for further optimizations and feature expansions.
 
-### Current Development Focus: Asynchronous Processing and Polygon API Shift
 
-The next major milestone for **Edge Walker** is transitioning from synchronous REST API calls to fully **asynchronous processing**. This will greatly improve the tool's efficiency by enabling it to handle real-time data in parallel, rather than sequentially.
+### Current Development Focus: pushbutton functionality to cards in HTML reports
 
-#### Upcoming Changes:
-- **Asynchronous API calls**: switching from Polygon's current REST-based API client (`polygon.RESTClient`) to its **URL-based endpoints** using async requests. This will fetch data for multiple stock tickers concurrently, reducing bottlenecks in the pipeline.
-- **Enhanced performance**: This move is expected to drastically reduce execution time, particularly when processing large volumes of data.
+Clicking cards could, for example, swap view from card to various historical data plots.
 
 ## Requirements
 
