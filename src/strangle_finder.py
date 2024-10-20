@@ -10,7 +10,7 @@ class StrangleFinder:
         self.market_data_client = market_data_client
         self.force_coupled = force_coupled
 
-    async def find_balanced_strangle(self, ticker: str, market_open: bool, semaphore=None) -> Optional[Strangle]:
+    async def find_balanced_strangle(self, ticker: str, semaphore=None) -> Optional[Strangle]:
         
         # set date limits
         date_min = datetime.today() + timedelta(days=14)

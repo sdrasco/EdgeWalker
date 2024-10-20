@@ -30,16 +30,20 @@ Edgewalker's main output is [a simple html report like this](https://edgewalker.
 
 ![HTML Report](images/screenshot.png)
 
-You can use `/utility/html2csv.py` to convert that to [a spreadsheet if you want](https://edgewalker.co.uk/html/display_csv_report/edgewalker_report.csv.html).
+At the right of its header are two buttons
 
-![CSV Report](images/csv_report.png)
+![CSV Report](images/buttons.png)
 
-Another handy utility is [the simple html calculator for breakeven prices](https://edgewalker.co.uk/utility/calculator.html)
+The first leads to a [simple html calculator for breakeven prices](https://edgewalker.co.uk/utility/calculator.html)
 
 <p align="center">
   <img src="images/empty_calculator.png" alt="Empty Calculator" width="45%" valign="center"/>
   <img src="images/full_calculator.png" alt="Full Calculator" width="45%" valign="center"/>
 </p>
+
+The second downloads the data in the html report as a csv file.
+
+![CSV Report](images/csv_report.png)
 
 ## Disclaimer
 
@@ -75,7 +79,7 @@ The project is organized into the following directories:
   
 - **/src**: The main Python modules responsible for Edge Walker's core functionality. It also contains ticker lists and other support files.
   
-- **/utility**: Helpful tools such as ticker scrapers, [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html), and a script `html2csv.py` that converts the HTML reports into CSV format if you prefer to poke around at the results as a spreadsheet.
+- **/utility**: Helpful tools such as ticker scrapers and [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html).
 
 ## Features
 

@@ -18,23 +18,7 @@ class MarketDataClient:
 
         # initialize base URLs for the various API endpoints
         self.options_url = "https://api.polygon.io/v3/snapshot/options"
-        self.market_status_url = "https://api.polygon.io/v1/marketstatus/now"
-        self.historical_url = "https://api.polygon.io/v2/aggs/ticker"
         self.ticker_details_url = "https://api.polygon.io/v3/reference/tickers"
-
-    async def is_market_open(self) -> bool:
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(self.market_status_url, params={"apiKey": self.api_key}) as response:
-                    if response.status == 200:
-                        result = await response.json()
-                        return result.get('market') == 'open'
-                    else:
-                        print(f"Warning: Failed to fetch market status, HTTP status code: {response.status}")
-                        return False
-        except Exception as e:
-            print(f"Warning: Error fetching market status: {e}")
-            return False
 
     async def get_options_chain(self, ticker: str, params: dict, semaphore=None) -> pd.DataFrame:
         options_chain = []
@@ -75,19 +59,20 @@ class MarketDataClient:
     async def get_ticker_details(self, ticker: str, semaphore=None) -> Optional[str]:
         try:
             url = f"{self.ticker_details_url}/{ticker}"
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, params={"apiKey": self.api_key}) as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        if 'results' in data and data['results'].get('name'):
-                            max_words = 3
-                            company_name = ' '.join(data['results']['name'].split()[:max_words])
-                            return company_name
+            async with semaphore:
+                async with aiohttp.ClientSession() as session:
+                    async with session.get(url, params={"apiKey": self.api_key}) as response:
+                        if response.status == 200:
+                            data = await response.json()
+                            if 'results' in data and data['results'].get('name'):
+                                max_words = 3
+                                company_name = ' '.join(data['results']['name'].split()[:max_words])
+                                return company_name
+                            else:
+                                return f"({ticker})"
                         else:
+                            print(f"Warning: Failed to fetch details for {ticker}. Status code: {response.status}")
                             return f"({ticker})"
-                    else:
-                        print(f"Warning: Failed to fetch details for {ticker}. Status code: {response.status}")
-                        return f"({ticker})"
         except Exception as e:
             print(f"Warning: Could not fetch company name for {ticker}: {e}")
             return ""

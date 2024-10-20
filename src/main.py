@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # Import classes from the EdgeWalker package (src directory)
 from market_data_client import MarketDataClient
 from strangle_finder import StrangleFinder
-from report_generator import ReportGenerator
+from report_writer import ReportWriter
 
 async def main():  
     # Start the timer
@@ -45,7 +45,7 @@ async def main():
 
     # Calculate the total number of tickers and estimated time
     num_tickers = len(tickers)
-    seconds_per_ticker = 0.008
+    seconds_per_ticker = 0.0056
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
     # Print a descriptive summary with the estimated time remaining
@@ -58,7 +58,7 @@ async def main():
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 99
+    concurrent_requests = 200
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -68,12 +68,6 @@ async def main():
     # Initialize the StrangleFinder
     strangle_finder = StrangleFinder(market_data_client=market_data_client)
 
-    # Initialize the ReportGenerator
-    report_generator = ReportGenerator(template_file='../html/template_report.html')
-
-    # Get market status (affects pricing estimate used)
-    market_open = await market_data_client.is_market_open()
-
     # Initialize results storage
     results = []
     num_tickers_processed = 0
@@ -82,7 +76,7 @@ async def main():
     # Main loop over tickers with asynchronous execution
     tasks = []
     for ticker in tickers:
-        tasks.append(strangle_finder.find_balanced_strangle(ticker, market_open, semaphore=semaphore))
+        tasks.append(strangle_finder.find_balanced_strangle(ticker, semaphore=semaphore))
 
     # Process all tasks concurrently
     strangle_results = await asyncio.gather(*tasks)
@@ -114,7 +108,9 @@ async def main():
     }
 
     # Write reports
-    report_generator.write_reports(results, execution_details)
+    report_writer = ReportWriter(results, execution_details)
+    report_writer.write_html()
+    report_writer.write_csv()
 
     # Print summary
     print(f"Number of tickers processed: {num_tickers_processed}")

@@ -46,10 +46,42 @@
             background-color: #E0E0E0; /* A slightly different color to distinguish it */
             padding: 10px; /* Reduce the padding for a thinner look */
             font-size: 16px; /* Slightly larger text for visibility */
-            text-align: center; /* Center-align text */
-            justify-content: center;  /* Center content horizontally */
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space between title and buttons */
             align-items: center;  /* Center content vertically */
-            font-size: 12px;
+        }
+
+        /* Make the text take up most of the header's space */
+        .header-text {
+            flex-grow: 1; /* Allow the text to take up available space */
+            text-align: left; /* Align the text to the left */
+            padding-right: 20px; /* Add space between the text and the buttons */
+        }
+
+        .button-panel {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .button-panel a {
+            text-decoration: none; /* Disable the underline */
+            margin-left: 5px; /* Tiny space between the buttons */
+        }
+
+        .button-panel a:first-child {
+            margin-left: 0; /* No margin before the first button */
+        }
+
+        .button-panel a img {
+            width: 30px; /* Button size */
+            height: 30px;
+            border-radius: 5px; /* Slight rounding for button images */
+            object-fit: contain;
+            cursor: pointer;
+            border: none; /* Remove borders */
+            outline: none; /* Remove outline */
+            padding: 0; /* Remove padding */
         }
 
         #logo {
@@ -83,14 +115,15 @@
 </head>
 <body>
     <div class="grid-container">
-        <!-- Placeholder for the header panel, to be dynamically inserted -->
+        <!-- Header panel with buttons aligned to the right -->
         <div class="panel header" data-position="header">
-            <!-- Summary Report Header -->
-            <!-- This will be replaced dynamically in the report generation process -->
+            <!-- Title in the center with more space -->
+            <div class="header-text">Edge Walker Options</div>
+            <!-- Button panel on the right -->
+            <div class="button-panel"><a href="../utility/calculator.html" title="Calculator"><img src="../images/calculator.png" alt="Calculator Button"></a><a href="edgewalker_report.csv" title="Download Report"><img src="../images/download.png" alt="Download Report Button"></a></div>
         </div>
 
-        <!-- Placeholder for trade panels -->
-        <!-- These will be dynamically generated and replaced with data -->
+        <!-- Main grid of panels -->
         <div class="panel" data-position="1"></div>
         <div class="panel" data-position="2"></div>
         <div class="panel" data-position="3"></div>
