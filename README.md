@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker is Python tool that uses the [Polygon API](https://polygon.io/) to search stock ticker collections for option contract pairs with the best-balanced strangles (strangles with the smallest breakeven differences).
+Edge Walker is Python tool that uses the [Polygon API](https://polygon.io/) to search for options contract pairs with the smallest possible difference between their upper and lower breakeven points, minimizing the conditions for losses.
 
 ## For those without options trading experience
 
