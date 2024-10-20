@@ -45,7 +45,7 @@ The second downloads the data in the html report as a csv file.
 
 ![CSV Report](images/csv_report.png)
 
-## Disclaimer
+## Fees etc.
 
 Edge Walker does minimal accounting for transaction fees when working out the cost of each strangle.  You you should edit these accordingly in `/src/strangle_finder.py`.
 
@@ -65,9 +65,11 @@ var strangle_costs = callPremium + putPremium + 2.0*contract_buy_and_sell_fee/10
 
 Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves. Often simply selling the options is the easier and more profitable way to close your position, but pricing that kind of close isn't as simple.
 
+## Disclaimer
+
 Edge Walker is provided "as is" without any guarantees or warranties. Use this code at your own risk. The author makes no promises about the code being error-free or trustworthy.
 
-### Directory Structure
+## Directory Structure
 
 The project is organized into the following directories:
 
@@ -90,18 +92,17 @@ The project is organized into the following directories:
 - Measures execution time and provides performance metrics.
 - Stores ticker collections in an external `tickers.json` file for easy management and customization.
 
-## Progress Status Notes
-
-#### Key Improvements:
+## Recent improvements:
 - Significant speed optimization, by factor of about 1,000, by refactoring to asynchronous API calls. Searching all of NYSE and Nasdaq takes under a minute now.
 - HTML reports now have buttons leading to calculator utility and to downloading CSV version of data.
 - Convert all API calls to cusomized URL http get requests
 - Modular code organization: The project is now divided into multiple `/src/*.py` files, making it easier to extend and reuse components.
 
 
-### Current Development Focus: pushbutton functionality to cards in HTML reports
+## Future improvements
 
-Clicking cards could, for example, swap view from card to various historical data plots.
+Pushbutton functionality to cards in HTML reports would be nice.
+Clicking cards could, cylce though historical data or other analytics.
 
 ## Requirements
 
