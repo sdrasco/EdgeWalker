@@ -37,7 +37,6 @@ At the right of its header are two buttons
 The first leads to a [simple html calculator for breakeven prices](https://edgewalker.co.uk/utility/calculator.html)
 
 <p align="center">
-  <img src="images/empty_calculator.png" alt="Empty Calculator" width="45%" valign="center"/>
   <img src="images/full_calculator.png" alt="Full Calculator" width="45%" valign="center"/>
 </p>
 
