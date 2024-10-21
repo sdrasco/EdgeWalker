@@ -52,9 +52,19 @@ Edge Walker computes and compiles key statistics, such as breakeven prices, for 
 
 ### Implied Volatility
 
-Implied volatility (IV) is a measure unique to option contracts.  It reflects the market’s expectations for future stock price fluctuations. One can simply measure previous or historical volatility, which looks at past price movements.  Unlike historical volatility, IV is not directly observed but is inferred from the market price for a contract and from models for how the market might arrive at that price. 
+Implied volatility (IV) is a measure unique to option contracts.  It is a prediction of future stock price fluctuations. One can simply measure previous or historical volatility, which looks at past price movements. Unlike historical volatility, IV is not directly observed but is inferred from the market price for a contract and from models for how the market might arrive at that price. 
 
-There are a variety of theoretical models used to predict the price of options contracts, such as the Black-Scholes model. These models contain a “free parameter”, future volatility, that must be set in order to predict the price of the contract. However, if instead of trying to work out the price of an option contract, we simply have a contract whose price has been set by market presures or dynamics, we can reverse-engineer the future volatility (IV) that makes the model’s price match the market price. In that sense, IV tells us how volatile the market expects, or the market price implies, the stock to be in the future. IV can then be treated as a prediction for the future. This enables other predictions, like probability of profit, expected gain, and so on. IV and things that are based on it are of course wrapped up in the model details, and the market may not in fact work in the way that the model might "think" it works.  Still, having a way to make even uncertain predictions about the future is handy.
+There are a variety of theoretical models used to predict the price of options contracts, such as the Black-Scholes model. 
+These models contain a “free parameter”, future volatility, that must be set in order to predict the price of the contract. 
+However, if instead of trying to work out the price of an option contract, we simply have a contract whose price has been set 
+by market presures or dynamics, we can reverse-engineer the future volatility (IV) that makes the model’s price match the 
+market price. In that sense, IV tells us how volatile the market expects, or the market price implies, the stock to be in the 
+future. IV can then be treated as a prediction for the future. This enables other predictions, like probability of profit, 
+expected gain, and so on. IV and things that are based on it are of course wrapped up in the model details, and the market may 
+not in fact work in the way that the model might "think" it works.  Moreover, IV is different for each contract. So if a contract 
+is especially unusual in terms of volume or other parameters (such as being a part of a strangle with near zero breakeven spread), 
+it could very well also have an anamolous corrresponding IV.  Still, having a way to make even uncertain predictions about 
+the future is handy.
 
 Edge Walker doesn’t calculate implied volatility directly; instead, it retrieves this data from the Polygon API. If you're new to this and want to know more about implied volatility, [check out this Khan Academy video](https://youtu.be/VIHldsSmASU?si=Ri7P8Yjwt6U_s2bK). It gives a pretty clear and accessible introduction to the concept.
 
