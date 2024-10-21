@@ -31,7 +31,7 @@ class Strangle:
     expected_gain: Optional[float] = None  
 
     # Class variable for brokerage fee per contract
-    brokerage_fee_per_contract: ClassVar[float] = 0.53  # Default value (adjust as needed)
+    brokerage_fee_per_contract: ClassVar[float] = 0.53 + 0.55 # Default value (adjust as needed)
 
     def calculate_escape_ratio(self) -> None:
         self.escape_ratio = min(

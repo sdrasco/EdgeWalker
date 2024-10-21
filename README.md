@@ -24,10 +24,6 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
-## Expected Gains
-
-Edge Walker calculates expected gains for each idealized strangle it finds. It’s important to note that negative expected gains are commonplace. While this might seem like something of a letdown, maximizing gain is not the primary focus of Edge Walker’s search. The goal is to uncover strangles with near-zero differences between upper and lower breakeven prices, to see how close to zero they can get, and to explore their unique characteristics. While the potential for profit is important, it is secondary to identifying and analyzing these intriguing setups.
-
 ## Screenshots
 
 Edgewalker's main output is [a simple html report like this](https://edgewalker.co.uk/html/edgewalker_report.html). 
@@ -48,25 +44,55 @@ The second downloads the data in the html report as a csv file.
 
 ![CSV Report](images/csv_report.png)
 
-## Fees etc.
+## Key Metrics and Calculations
 
-Edge Walker does minimal accounting for transaction fees when working out the cost of each strangle.  You you should edit these accordingly in `/src/strangle_finder.py`.
+Edge Walker computes and compiles key statistics, such as breakeven prices, for each strangle it identifies as potentially interesting. Below are explanations of additional metrics that may not be immediately clear based on their names alone.
+
+### Implied Volatility
+
+Implied volatility (IV) is a measure of the market’s expectations for future stock price fluctuations, typically derived from options prices. Unlike historical volatility, which looks at past price movements, IV is “backed out” from options pricing models like the Black-Scholes model, based on the option’s current market price. Essentially, it reflects how volatile the market expects the stock to be in the future.
+
+Edge Walker doesn’t calculate implied volatility directly; instead, it retrieves this data from the Polygon API. If you're new to this and want to know more about implied volatility, [check out this Khan Academy video](https://youtu.be/VIHldsSmASU?si=Ri7P8Yjwt6U_s2bK). It gives a pretty clear and accessible introduction to the concept.
+
+### Probability of Profit
+
+Edge Walker calculates the probability of profit (POP) for each strangle by estimating the likelihood that the stock price will move beyond either the upper or lower breakeven point at expiration. This probability is influenced by factors such as implied volatility, time to expiration, and the current stock price. By accounting for potential stock price movement and including brokerage fees, Edge Walker uses statistical models to assess how likely it is that the strangle will result in a profitable outcome. 
+
+In practice, our probability of profit tends to average around 30%, with the highest values reaching just beyond 50%. While these values are modest, Edge Walker is not aiming to maximize them. The goal is instead to uncover strangles with near-zero differences between upper and lower breakeven prices, to see how close to zero they can get, and to explore their unique characteristics. While profit is of course important, for the purpose of this code it is secondary to identifying and analyzing these intriguing setups.
+
+### Expected Gain
+
+Edge Walker calculates expected gains by estimating the potential outcomes of each strangle at the time of expiration. The calculation considers the premiums paid, brokerage fees, and the probability of the stock price moving beyond the breakeven points. Using historical stock data and implied volatility, Edge Walker models a range of possible stock prices at expiration and weights these outcomes by their likelihood. The result is an estimate of the expected gain for each strangle, which reflects the potential profit or loss under typical market conditions. However, as with any estimate, there is uncertainty due to the unpredictable nature of market factors like volatility and stock price movements.
+
+It’s important to note that negative expected gains are commonplace in our results. These are of course estimates that have inherent uncertainty, and as with probability of profit, maximizing gain is not the aim of Edge Walker’s search. 
+
+### Escape Ratio
+
+The escape ratio is just a simple measure used in Edge Walker to gauge how close the current stock price is to the nearest breakeven point. It is calculated by comparing the distance between the stock price and both breakeven points, then dividing by the current stock price. While not a profound metric, the escape ratio offers a quick snapshot of how much the stock needs to move to reach a breakeven position, helping to provide additional context when evaluating strangles.
+
+## Search Parameters
+
+A host of search parameters are scattered throught the code.  The greatest number of these are in `stranger_finder.py`, but some are also in `main.py` and `report_writer.py`.
+
+## Fees
+
+Edge Walker does minimal accounting for transaction fees when working out the cost of each strangle.  You you should edit these accordingly in `/src/strangle_finder.py`, 
 
 ```
-# Calculate the strangle costs
-contract_buy_and_sell_fee = 0.53 + 0.55 # Brokerage-dependent cost
-merged_df['strangle_costs'] = (
-   merged_df['premium_call'] + merged_df['premium_put'] +
-   2.0 * contract_buy_and_sell_fee / 100.0
-)
+contract_buy_and_sell_fee = 0.53 + 0.55
 ```
-These are also hard coded in the simple html breakeven calculator `/utility/calculator.html`.
+the simple html breakeven calculator `/utility/calculator.html`,
+
 ```
 var contract_buy_and_sell_fee = 0.53 + 0.55
 var strangle_costs = callPremium + putPremium + 2.0*contract_buy_and_sell_fee/100.0
 ```
 
-Edge Walker focuses entirely on exercising options, not on any profits or losses that could be had by selling or trading the options themselves. Often simply selling the options is the easier and more profitable way to close your position, but pricing that kind of close isn't as simple.
+and also in `/src/models.py`.
+
+```
+ brokerage_fee_per_contract: ClassVar[float] = 0.53 + 0.55
+```
 
 ## Disclaimer
 
