@@ -58,7 +58,7 @@ async def main():
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 200
+    concurrent_requests = 99
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -92,8 +92,6 @@ async def main():
             max_normalized_difference = 0.11  # Adjust as needed
             if strangle.normalized_difference < max_normalized_difference:
                 results.append(strangle)
-                #report_generator.display_strangle(strangle)
-
 
     # Calculate execution time
     execution_time = time.time() - start_time

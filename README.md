@@ -24,6 +24,10 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.
 
+## Expected Gains
+
+Edge Walker calculates expected gains for each idealized strangle it finds. It’s important to note that negative expected gains are commonplace. While this might seem like something of a letdown, maximizing gain is not the primary focus of Edge Walker’s search. The goal is to uncover strangles with near-zero differences between upper and lower breakeven prices, to see how close to zero they can get, and to explore their unique characteristics. While the potential for profit is important, it is secondary to identifying and analyzing these intriguing setups.
+
 ## Screenshots
 
 Edgewalker's main output is [a simple html report like this](https://edgewalker.co.uk/html/edgewalker_report.html). 

@@ -13,8 +13,8 @@ class StrangleFinder:
     async def find_balanced_strangle(self, ticker: str, semaphore=None) -> Optional[Strangle]:
         
         # set date limits
-        date_min = datetime.today() + timedelta(days=0)
-        date_max = date_min + timedelta(days=90)
+        date_min = datetime.today() + timedelta(days=1)
+        date_max = date_min + timedelta(days=180)
         date_min = date_min.strftime('%Y-%m-%d')
         date_max = date_max.strftime('%Y-%m-%d')
 
@@ -87,11 +87,12 @@ class StrangleFinder:
         # Get company name
         company_name = await self.market_data_client.get_ticker_details(ticker, semaphore=semaphore)
 
-        # Create Strangle object (** means _call suffix is no different from _put)
+        # Create Strangle object
+        # (**) means _call suffix is no different from _put
         best_strangle = Strangle(
             ticker=ticker,
             company_name=company_name,
-            stock_price=best_row['stock_price_call'], # **
+            stock_price=best_row['stock_price_call'],  # (**)
             expiration_date_call=best_row['expiration_date_call'],
             expiration_date_put=best_row['expiration_date_put'],
             strike_price_call=best_row['strike_price_call'],
@@ -104,21 +105,18 @@ class StrangleFinder:
             lower_breakeven=best_row['lower_breakeven'],
             breakeven_difference=best_row['breakeven_difference'],
             normalized_difference=best_row['normalized_difference'],
-            implied_volatility=best_row['implied_volatility_call'], # **
-            profitability_probability= 0.0, # Will be calculated
-            escape_ratio=0.0,       # Will be calculated
+            implied_volatility=best_row['implied_volatility_call'],  # (**)
             num_strangles_considered=len(calls_df) * len(puts_df)
         )
 
-        # Calculate some model parameters (methods are in models module)
+        # After instantiation, calculate the optional fields
         best_strangle.calculate_escape_ratio()
-        best_strangle.calculate_profitability_probability()
+        best_strangle.calculate_probability_of_profit()
+        best_strangle.calculate_expected_gain()
 
         return best_strangle
 
-    def _filter_options(
-        self, options_df: pd.DataFrame
-    ) -> pd.DataFrame:
+    def _filter_options(self, options_df: pd.DataFrame) -> pd.DataFrame:
 
         # Make a copy to avoid SettingWithCopyWarning
         options_df = options_df.copy()

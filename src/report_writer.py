@@ -45,45 +45,23 @@ class ReportWriter:
             x for x in self.results
             if (
                 x.normalized_difference is not None and
-                x.profitability_probability is not None
+                x.probability_of_profit is not None
             )
         ]
         sorted_results = sorted(
             filtered_results,
             key=lambda x: (
                 x.normalized_difference,   # First priority (ascending)
-                -x.profitability_probability # second priority (descending)
+                -x.probability_of_profit # second priority (descending)
             )
         )
         self.results = sorted_results
-
-    def display_strangle(self, strangle: Strangle) -> None:
-        if not strangle:
-            return
-
-        # Display the strangle details
-        print(f"{strangle.company_name} ({strangle.ticker}): ${strangle.stock_price:.2f}")
-        print(f"Normalized breakeven difference: {strangle.normalized_difference:.3f}")
-        print(f"Implied Volatility: {strangle.implied_volatility:.3f}")
-        print(f"Implied Profitability: {strangle.profitability_probability:.3f}")
-        print(f"Escape Ratio: {strangle.escape_ratio:.3f}")
-        print(f"Cost of strangle: ${strangle.cost_call + strangle.cost_put:.2f}")
-        print(f"Contract pairs tried: {strangle.num_strangles_considered:,}")
-        print(f"Call Expiration: {strangle.expiration_date_call}")
-        print(f"Call strike: {strangle.strike_price_call:.2f}")
-        print(f"Call premium: ${strangle.cost_call / 100.0:.2f}")
-        print(f"Put Expiration: {strangle.expiration_date_put}")
-        print(f"Put strike: {strangle.strike_price_put:.2f}")
-        print(f"Put premium: ${strangle.cost_put / 100.0:.2f}")
-        print(f"Upper breakeven: ${strangle.upper_breakeven:.3f}")
-        print(f"Lower breakeven: ${strangle.lower_breakeven:.3f}")
-        print(f"Breakeven difference: ${strangle.breakeven_difference:.3f}\n")
 
     def generate_html_table(self, strangle: Strangle, position: int) -> Optional[str]:
         # Check if any of the required fields are None
         required_fields = [
             'company_name', 'ticker', 'stock_price', 'normalized_difference',
-            'escape_ratio', 'profitability_probability', 'cost_call', 'cost_put',
+            'escape_ratio', 'probability_of_profit', 'cost_call', 'cost_put',
             'num_strangles_considered', 'expiration_date_call', 'strike_price_call',
             'cost_call', 'expiration_date_put', 'strike_price_put', 'cost_put',
             'upper_breakeven', 'lower_breakeven', 'breakeven_difference'
@@ -98,16 +76,17 @@ class ReportWriter:
             f'{strangle.company_name} ({strangle.ticker}): ${strangle.stock_price:.2f}<br>',
             f'Normalized Breakeven Difference: {strangle.normalized_difference:.3f}<br>',
             f'Implied Volatility: {strangle.implied_volatility:.3f}<br>',
-            f'Implied Profitability: {strangle.profitability_probability:.3f}<br>',
+            f'Probability of Profit: {strangle.probability_of_profit:.3f}<br>',
+            f'Expected Gain: {"-$" if strangle.expected_gain < 0 else "$"}{abs(strangle.expected_gain):.2f}<br>'
             f'Escape ratio: {strangle.escape_ratio:.3f}<br>',
             f'Cost of strangle: ${strangle.cost_call + strangle.cost_put:.2f}<br>',
             f'Contract pairs tried: {strangle.num_strangles_considered:,}<br>',
             f'Call expiration: {strangle.expiration_date_call}<br>',
             f'Call strike: ${strangle.strike_price_call:.2f}<br>',
-            f'Call premium: ${strangle.cost_call / 100.0:.2f}<br>',
+            f'Call premium: ${strangle.premium_call:.2f}<br>',
             f'Put expiration: {strangle.expiration_date_put}<br>',
             f'Put strike: ${strangle.strike_price_put:.2f}<br>',
-            f'Put premium: ${strangle.cost_put / 100.0:.2f}<br>',
+            f'Put premium: ${strangle.premium_put:.2f}<br>',
             f'Upper breakeven: ${strangle.upper_breakeven:.3f}<br>',
             f'Lower breakeven: ${strangle.lower_breakeven:.3f}<br>',
             f'Breakeven difference: ${strangle.breakeven_difference:.3f}',
@@ -176,7 +155,7 @@ class ReportWriter:
         # Define the header for the CSV file
         csv_header = ["Company", "Symbol", "Stock Price", "Normalized Breakeven Difference",
                       "Lower Breakeven", "Upper Breakeven", "Breakeven Difference",
-                      "Implied Volatility", "Implied Profitability", "Escape Ratio",
+                      "Implied Volatility", "Probability of Profit", "Expected Gain", "Escape Ratio",
                       "Strangle Cost", "Pairs Tried", "Call Expiration", "Call Strike", 
                       "Call Premium", "Put Expiration", "Put Strike", "Put Premium"]
 
@@ -196,14 +175,15 @@ class ReportWriter:
                     "Upper Breakeven": strangle.upper_breakeven,
                     "Breakeven Difference": strangle.breakeven_difference,
                     "Implied Volatility": strangle.implied_volatility,
-                    "Implied Profitability": strangle.profitability_probability,
+                    "Probability of Profit": strangle.probability_of_profit,
+                    "Expected Gain": strangle.expected_gain,
                     "Escape Ratio": strangle.escape_ratio,
                     "Strangle Cost": strangle.cost_call,
                     "Pairs Tried": strangle.num_strangles_considered,
                     "Call Expiration": strangle.expiration_date_call,
                     "Call Strike": strangle.strike_price_call,
-                    "Call Premium": strangle.cost_call / 100.0,
+                    "Call Premium": strangle.premium_call,
                     "Put Expiration": strangle.expiration_date_put,
                     "Put Strike": strangle.strike_price_put,
-                    "Put Premium": strangle.cost_put / 100.0
+                    "Put Premium": strangle.premium_put
                 })
