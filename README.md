@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker is Python tool that uses the [Polygon API](https://polygon.io/) to search for options contract pairs with the smallest possible difference between their upper and lower breakeven points, minimizing the conditions for losses.
+Edge Walker is a Python tool leveraging the Polygon API to identify options contract pairs with the narrowest possible spread between their upper and lower breakeven points, minimizing potential losses. With its asynchronous architecture, Edge Walker can scan the entire NYSE and Nasdaq in under a minute.
 
 ## For those without options trading experience
 
