@@ -199,7 +199,7 @@ class StrangleFinder:
             (stock_price <= 500) &
             (options_df['open_interest'] > 1) &
             (options_df['volume'] > 1) &
-            (options_df['premium'] > 0) & 
+            (options_df['premium'] > 0.01*stock_price) & 
             (options_df['premium'] < 20.0) &
             (options_df['strike_price'] >= strike_min) & 
             (options_df['strike_price'] <= strike_max) &
@@ -221,7 +221,7 @@ class StrangleFinder:
             return pd.DataFrame() 
 
         # Calculate the spread and filter (tune as you like)
-        max_spread_factor = 0.5
+        max_spread_factor = 0.3
         options_df['spread'] = abs(options_df['ask'] - options_df['bid'])
         options_df = options_df[(options_df['spread'] <= max_spread_factor * options_df['premium'])]
         if options_df.empty:

@@ -58,7 +58,7 @@ async def main():
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 200
+    concurrent_requests = 75
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
