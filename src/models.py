@@ -96,22 +96,20 @@ class Strangle:
             self.expected_gain = - (total_premium + total_brokerage_fees)
             return
 
-        iv = self.implied_volatility
         current_price = self.stock_price
         upper_strike = self.strike_price_call
         lower_strike = self.strike_price_put
         total_premium_per_share = self.premium_call + self.premium_put  # Sum of premiums paid per share
         total_brokerage_fees_per_share = (self.brokerage_fee_per_contract * 2) / 100  # Two contracts, convert to per share
-        T = days_to_expiration / 365.0
-        sigma = current_price * iv * np.sqrt(T)
+        sigma = current_price * self.implied_volatility * np.sqrt(days_to_expiration / 365.0)
 
         def integrand(S):
             """
             Integrand function to calculate the expected gain.
             """
             # Calculate the probability density function of stock prices at expiration
-            pdf = (1 / (S * sigma * np.sqrt(2 * np.pi * T))) * np.exp(
-                -((np.log(S / current_price) - (-0.5 * sigma ** 2) * T) ** 2) / (2 * sigma ** 2 * T)
+            pdf = (1 / (S * sigma * np.sqrt(2 * np.pi))) * np.exp(
+                -((np.log(S / current_price) - (-0.5 * sigma ** 2) ) ** 2) / (2 * sigma ** 2)
             )
 
             # Calculate the payoff for each possible stock price per share
@@ -125,7 +123,7 @@ class Strangle:
             return payoff_per_share * pdf
 
         # Perform Gaussian quadrature over the range of stock prices at expiration
-        expected_gain_per_share, _ = quad(integrand, current_price * 0.1, current_price * 10)
+        expected_gain_per_share, _ = quad(integrand, current_price / 2, current_price * 2)
 
         # Convert to expected gain per contract (100 shares per option)
         expected_gain_per_contract = expected_gain_per_share * 100
