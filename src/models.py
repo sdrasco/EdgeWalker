@@ -108,18 +108,22 @@ class Strangle:
 
         # the call payoff per share: int_{call_strike}^inf S*pdf(S) dS
         d_1 = (np.log(current_price / upper_strike) + 0.5 * sigma ** 2) / sigma
+        d_2 = d_1 - sigma
         N_d1 = norm.cdf(d_1)
-        call_payoff_per_share = current_price * N_d1
+        N_d2 = norm.cdf(d_2)
+        call_payoff_per_share = current_price * N_d1 - upper_strike * N_d2
 
         # the put payoff per share: int_0^{put_strike} S*pdf(S) dS
         d_1_put = (np.log(current_price / lower_strike) + 0.5 * sigma ** 2) / sigma
-        N_d1_put = norm.cdf(-d_1_put)
-        put_payoff_per_share = current_price * N_d1_put
-    
+        d_2_put = d_1_put - sigma
+        N_d1_put_neg = norm.cdf(-d_1_put)
+        N_d2_put_neg = norm.cdf(-d_2_put)
+        put_payoff_per_share = lower_strike * N_d2_put_neg - current_price * N_d1_put_neg
+
         # the cost payoff part (the loss): int_0^inf costs*PDF(S) dS = costs * 1
         loss_per_share = -(total_premium_per_share + total_brokerage_fees_per_share)
 
-        # expected gain per share
+        # total expected gain or payoff per share
         expected_gain_per_share = loss_per_share + call_payoff_per_share + put_payoff_per_share
 
         # Convert to expected gain per contract (100 shares per option)
