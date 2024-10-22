@@ -58,7 +58,7 @@ async def main():
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 75
+    concurrent_requests = 50
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -89,7 +89,7 @@ async def main():
             num_strangles_considered += strangle.num_strangles_considered
 
             # Only put interesting results into reports or output
-            max_normalized_difference = 0.2  # Adjust as needed
+            max_normalized_difference = 0.1  # Adjust as needed
             if strangle.normalized_difference < max_normalized_difference:
                 results.append(strangle)
 

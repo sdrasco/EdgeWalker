@@ -77,7 +77,7 @@ class ReportWriter:
             f'Normalized Breakeven Difference: {strangle.normalized_difference:.3f}<br>',
             f'Implied Volatility: {strangle.implied_volatility:.3f}<br>',
             f'Probability of Profit: {strangle.probability_of_profit:.3f}<br>',
-            f'Expected Gain: {"-$" if strangle.expected_gain < 0 else "$"}{abs(strangle.expected_gain):.2f}<br>'
+            f'Expected Gain: {strangle.expected_gain/(strangle.cost_call + strangle.cost_put):.3f}<br>'
             f'Escape ratio: {strangle.escape_ratio:.3f}<br>',
             f'Cost of strangle: ${strangle.cost_call + strangle.cost_put:.2f}<br>',
             f'Contract pairs tried: {strangle.num_strangles_considered:,}<br>',
@@ -176,7 +176,7 @@ class ReportWriter:
                     "Breakeven Difference": strangle.breakeven_difference,
                     "Implied Volatility": strangle.implied_volatility,
                     "Probability of Profit": strangle.probability_of_profit,
-                    "Expected Gain": strangle.expected_gain,
+                    "Expected Gain": strangle.expected_gain/(strangle.cost_call + strangle.cost_put),
                     "Escape Ratio": strangle.escape_ratio,
                     "Strangle Cost": strangle.cost_call + strangle.cost_put,
                     "Pairs Tried": strangle.num_strangles_considered,
