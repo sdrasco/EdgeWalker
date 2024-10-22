@@ -178,7 +178,7 @@ class ReportWriter:
                     "Probability of Profit": strangle.probability_of_profit,
                     "Expected Gain": strangle.expected_gain,
                     "Escape Ratio": strangle.escape_ratio,
-                    "Strangle Cost": strangle.cost_call,
+                    "Strangle Cost": strangle.cost_call + strangle.cost_put,
                     "Pairs Tried": strangle.num_strangles_considered,
                     "Call Expiration": strangle.expiration_date_call,
                     "Call Strike": strangle.strike_price_call,

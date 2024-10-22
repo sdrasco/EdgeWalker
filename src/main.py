@@ -89,7 +89,7 @@ async def main():
             num_strangles_considered += strangle.num_strangles_considered
 
             # Only put interesting results into reports or output
-            max_normalized_difference = 0.11  # Adjust as needed
+            max_normalized_difference = 0.2  # Adjust as needed
             if strangle.normalized_difference < max_normalized_difference:
                 results.append(strangle)
 

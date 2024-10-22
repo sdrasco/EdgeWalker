@@ -13,8 +13,8 @@ class StrangleFinder:
     async def find_balanced_strangle(self, ticker: str, semaphore=None) -> Optional[Strangle]:
         
         # set date limits
-        date_min = datetime.today() + timedelta(days=0)
-        date_max = date_min + timedelta(days=180)
+        date_min = datetime.today() + timedelta(days=30)
+        date_max = date_min + timedelta(days=90)
         date_min = date_min.strftime('%Y-%m-%d')
         date_max = date_max.strftime('%Y-%m-%d')
 
@@ -189,7 +189,7 @@ class StrangleFinder:
         )
 
         # First level requirements (tune as you like)
-        strike_buffer_factor = 4.0
+        strike_buffer_factor = 10.0
         strike_min = stock_price / strike_buffer_factor
         strike_max = stock_price * strike_buffer_factor
         options_df = options_df[
@@ -199,8 +199,8 @@ class StrangleFinder:
             (stock_price <= 500) &
             (options_df['open_interest'] > 1) &
             (options_df['volume'] > 1) &
-            (options_df['premium'] > 0.5) & 
-            (options_df['premium'] < 10.0) &
+            (options_df['premium'] > 0) & 
+            (options_df['premium'] < 20.0) &
             (options_df['strike_price'] >= strike_min) & 
             (options_df['strike_price'] <= strike_max) &
             (options_df['implied_volatility'] > 0)

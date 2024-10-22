@@ -72,13 +72,9 @@ Edge Walker doesn’t calculate implied volatility directly; instead, it retriev
 
 Edge Walker calculates the probability of profit (POP) for each strangle by estimating the likelihood that the stock price will move beyond either the upper or lower breakeven point at expiration. This probability is influenced by factors such as implied volatility, time to expiration, and the current stock price. By accounting for potential stock price movement and including brokerage fees, Edge Walker uses statistical models to assess how likely it is that the strangle will result in a profitable outcome. 
 
-In practice, our probability of profit tends to average around 30%, with the highest values reaching just beyond 50%. While these values are modest, Edge Walker is not aiming to maximize them. The goal is instead to uncover strangles with near-zero differences between upper and lower breakeven prices, to see how close to zero they can get, and to explore their unique characteristics. While profit is of course important, for the purpose of this code it is secondary to identifying and analyzing these intriguing setups.
-
 ### Expected Gain
 
-Edge Walker calculates expected gains by estimating the potential outcomes of each strangle at the time of expiration. The calculation considers the premiums paid, brokerage fees, and the probability of the stock price moving beyond the breakeven points. Using historical stock data and implied volatility, Edge Walker models a range of possible stock prices at expiration and weights these outcomes by their likelihood. The result is an estimate of the expected gain for each strangle, which reflects the potential profit or loss under typical market conditions. However, as with any estimate, there is uncertainty due to the unpredictable nature of market factors like volatility and stock price movements.
-
-It’s important to note that negative expected gains are commonplace in our results. These are of course estimates that have inherent uncertainty, and as with probability of profit, maximizing gain is not the aim of Edge Walker’s search. 
+Edge Walker calculates expected gains by estimating the potential outcomes of each strangle at the time of expiration. The calculation considers the premiums paid, brokerage fees, and the probability of the stock price moving beyond the breakeven points. Using historical stock data and implied volatility, Edge Walker models a range of possible stock prices at expiration and weights these outcomes by their likelihood. The result is an estimate of the expected gain for each strangle, which reflects the potential profit or loss under typical market conditions. 
 
 ### Escape Ratio
 
