@@ -114,6 +114,9 @@ class Strangle:
         lower_strike = self.strike_price_put
         total_premium_per_share = self.premium_call + self.premium_put  # Sum of premiums paid per share
         total_brokerage_fees_per_share = (self.brokerage_fee_per_contract * 2) / 100  # Two contracts, convert to per share
+        if days_to_expiration < 0:
+            self.expected_gain = 0
+            return 
         sigma = self.implied_volatility * np.sqrt(days_to_expiration / 365.0)
         if sigma <= 0:
             self.expected_gain = 0
