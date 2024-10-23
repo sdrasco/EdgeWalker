@@ -62,9 +62,19 @@ class Strangle:
         move_to_lower_breakeven = (self.stock_price - self.lower_breakeven) / self.stock_price
 
         # Convert price movements to z-scores (standard deviations)
-        sigma = self.implied_volatility * math.sqrt(days_to_expiration / 365.0)
-        z_up = move_to_upper_breakeven / sigma
-        z_down = move_to_lower_breakeven / sigma
+        if days_to_expiration > 0:
+            sigma = self.implied_volatility * math.sqrt(days_to_expiration / 365.0)
+        else:
+            self.probability_of_profit = 0.0
+            return
+        if sigma > 0:
+            z_up = move_to_upper_breakeven / sigma
+            z_down = move_to_lower_breakeven / sigma
+        else:
+            self.probability_of_profit = 0.0
+            return
+
+
 
         # Use normal distribution CDF to calculate probabilities
         probability_up = 1 - norm.cdf(z_up)      # Probability of price going above adjusted upper breakeven
@@ -105,6 +115,9 @@ class Strangle:
         total_premium_per_share = self.premium_call + self.premium_put  # Sum of premiums paid per share
         total_brokerage_fees_per_share = (self.brokerage_fee_per_contract * 2) / 100  # Two contracts, convert to per share
         sigma = self.implied_volatility * np.sqrt(days_to_expiration / 365.0)
+        if sigma <= 0:
+            self.expected_gain = 0
+            return 
 
         # the call payoff per share: int_{call_strike}^inf S*pdf(S) dS
         d_1 = (np.log(current_price / upper_strike) + 0.5 * sigma ** 2) / sigma
