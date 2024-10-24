@@ -107,7 +107,7 @@ class ReportWriter:
         # Create a wide header panel that spans all columns and includes the current date
         header_panel = (
             f'{self.current_date}: '
-            f'From {self.num_tickers_processed:,} tickers sumbols '
+            f'From {self.num_tickers_processed:,} tickers symbols '
             f'modeled {self.num_strangles_considered:,} contract pairs '
             f'in {self.execution_time:.0f} seconds '
             f'({self.execution_time_per_ticker*1000:.2f} ms per ticker)'
