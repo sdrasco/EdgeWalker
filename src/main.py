@@ -45,7 +45,7 @@ async def main():
 
     # Calculate the total number of tickers and estimated time
     num_tickers = len(tickers)
-    seconds_per_ticker = 0.0056
+    seconds_per_ticker = 0.007
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
     # Print a descriptive summary with the estimated time remaining
@@ -58,7 +58,7 @@ async def main():
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 200
+    concurrent_requests = 50
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
