@@ -1,5 +1,8 @@
-# Third-party dependencies
-beautifulsoup4:q==latest
-numpy==latest
-pandas==latest
-polygon-api-client==latest
+aiohttp==3.9.5
+beautifulsoup4==4.12.3
+numpy==1.24.2
+pandas==1.5.3
+polygon==1.2.5
+report_generator==0.1.10
+Requests==2.32.3
+scipy==1.14.1
