@@ -1,4 +1,5 @@
 import os
+import logging
 import sys
 import time
 import json
@@ -11,6 +12,18 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from market_data_client import MarketDataClient
 from strangle_finder import StrangleFinder
 from report_writer import ReportWriter
+
+# Configure basic logging.  show warning or higher for external modules.
+logging.basicConfig(
+    level=logging.WARNING,  
+    format='%(message)s'
+)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+
+# Show info level logger events for this module
+logger.setLevel(logging.INFO)
 
 async def main():  
     # Start the timer
@@ -49,8 +62,8 @@ async def main():
     estimated_time_seconds = num_tickers * seconds_per_ticker
 
     # Print a descriptive summary with the estimated time remaining
-    print(f"Using collections: {', '.join(collections_to_include)}\n")
-    print(
+    logger.info(f"Using collections: {', '.join(collections_to_include)}\n")
+    logger.info(
         f"We will process {num_tickers} unique tickers "
         f"and expect to finish in approximately {estimated_time_seconds:.0f} seconds.\n"
     )
@@ -111,10 +124,10 @@ async def main():
     report_writer.write_csv()
 
     # Print summary
-    print(f"Number of tickers processed: {num_tickers_processed}")
-    print(f"Number of contract pairs tried: {num_strangles_considered:,}")
-    print(f"Execution time: {execution_time:.2f} seconds")
-    print(f"Execution time per ticker: {execution_time_per_ticker:.4f} seconds\n")
+    logger.info(f"Number of tickers processed: {num_tickers_processed}")
+    logger.info(f"Number of contract pairs tried: {num_strangles_considered:,}")
+    logger.info(f"Execution time: {execution_time:.2f} seconds")
+    logger.info(f"Execution time per ticker: {execution_time_per_ticker:.4f} seconds\n")
 
 def run_async_main():
     asyncio.run(main())

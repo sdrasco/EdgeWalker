@@ -1,6 +1,7 @@
 # report_writer.py
 
 import os
+import logging
 import csv 
 from datetime import datetime
 from typing import List, Optional
@@ -9,6 +10,17 @@ from bs4 import BeautifulSoup
 
 from models import Strangle
 
+# Configure basic logging.  show warning or higher for external modules.
+logging.basicConfig(
+    level=logging.WARNING,  
+    format='%(message)s'
+)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+
+# Show info level logger events for this module
+logger.setLevel(logging.INFO)
 
 class ReportWriter:
     def __init__(self, results: List[Strangle], execution_details: dict):
@@ -19,7 +31,7 @@ class ReportWriter:
         try:
             os.makedirs(self.report_directory, exist_ok=True)
         except OSError as e:
-            print(f"Error: Failed to create directory for {self.report_directory}. {e}")
+            logger.error(f"Error: Failed to create directory for {self.report_directory}. {e}")
             return  # Exit the function if the report directory doesn't exist
 
         # make a base filename for report writing
@@ -101,7 +113,7 @@ class ReportWriter:
             with open(template_file, 'r') as file:
                 soup = BeautifulSoup(file, 'html.parser')
         except FileNotFoundError:
-            print(f"Error: Template file '{template_file}' not found. Aborting report generation.")
+            logger.error(f"Error: Template file '{template_file}' not found. Aborting report generation.")
             return  # Exit the function if the template file is not found
 
         # Create a wide header panel that spans all columns and includes the current date

@@ -1,6 +1,7 @@
 # market_data_client.py
 
 import os
+import logging
 from datetime import datetime, timedelta
 from typing import Optional, Tuple
 
@@ -9,6 +10,18 @@ import pandas as pd
 import requests
 import aiohttp
 import asyncio
+
+# Configure basic logging.  show warning or higher for external modules.
+logging.basicConfig(
+    level=logging.WARNING,  
+    format='%(message)s'
+)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+
+# Show info level logger events for this module
+logger.setLevel(logging.INFO)
 
 class MarketDataClient:
     def __init__(self, api_key: str):
@@ -46,11 +59,11 @@ class MarketDataClient:
                                 else:
                                     break  # No more pages
                             else:
-                                print(f"Failed to fetch options chain for {ticker}. Status code: {response.status}")
+                                logger.warning(f"Failed to fetch options chain for {ticker}. Status code: {response.status}")
                                 return pd.DataFrame()  # Return an empty DataFrame on failure
 
         except Exception as e:
-            print(f"Warning: Error fetching options chain for {ticker}: {e}")
+            logger.warning(f"Warning: Error fetching options chain for {ticker}: {e}")
             return pd.DataFrame()  # Return an empty DataFrame on error
         # Convert options_chain to pandas DataFrame
         options_df = pd.DataFrame(options_chain)
@@ -71,8 +84,8 @@ class MarketDataClient:
                             else:
                                 return f"({ticker})"
                         else:
-                            print(f"Warning: Failed to fetch details for {ticker}. Status code: {response.status}")
+                            logger.warning(f"Warning: Failed to fetch details for {ticker}. Status code: {response.status}")
                             return f"({ticker})"
         except Exception as e:
-            print(f"Warning: Could not fetch company name for {ticker}: {e}")
+            logger.warning(f"Warning: Could not fetch company name for {ticker}: {e}")
             return ""

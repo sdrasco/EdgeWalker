@@ -2,11 +2,24 @@
 
 from dataclasses import dataclass
 from typing import Optional, ClassVar
+import logging
 import math
 import numpy as np
 from scipy.stats import norm
 from scipy.integrate import quad
 from datetime import datetime
+
+# Configure basic logging.  show warning or higher for external modules.
+logging.basicConfig(
+    level=logging.WARNING,  
+    format='%(message)s'
+)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+
+# Show info level logger events for this module
+logger.setLevel(logging.INFO)
 
 @dataclass
 class Strangle:

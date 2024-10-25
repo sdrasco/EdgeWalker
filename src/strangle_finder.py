@@ -1,9 +1,22 @@
 import pandas as pd
+import logging
 from datetime import datetime, timedelta
 from typing import Optional
 
 from market_data_client import MarketDataClient
 from models import Strangle
+
+# Configure basic logging.  show warning or higher for external modules.
+logging.basicConfig(
+    level=logging.WARNING,  
+    format='%(message)s'
+)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+
+# Show info level logger events for this module
+logger.setLevel(logging.INFO)
 
 class StrangleFinder:
     def __init__(self, market_data_client: MarketDataClient, force_coupled: bool = False):
