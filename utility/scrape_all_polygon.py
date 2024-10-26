@@ -4,7 +4,7 @@ import json
 
 # Set up your API key from environment variables
 polygonio_api_key = os.getenv("POLYGONIO_API_KEY")
-filename = "tickers.json"
+filename = "../src/tickers.json"
 
 def fetch_all_tickers():
     base_url = "https://api.polygon.io/v3/reference/tickers"
