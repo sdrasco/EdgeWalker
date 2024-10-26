@@ -42,8 +42,9 @@ async def main():
         #'100_tickers',
         #'sp500_tickers',
         #'russell1000_tickers',
-        'nyse_tickers',
-        'nasdaq_tickers'
+        #'nyse_tickers',
+        #'nasdaq_tickers',
+        'all_polygon'
     ]
 
     # Initialize an empty set to store tickers and avoid duplicates
@@ -64,7 +65,7 @@ async def main():
     # Print a descriptive summary with the estimated time remaining
     logger.info(f"Using collections: {', '.join(collections_to_include)}\n")
     logger.info(
-        f"We will process {num_tickers} unique tickers "
+        f"We will process {num_tickers:,} unique tickers "
         f"and expect to finish in approximately {estimated_time_seconds:.0f} seconds.\n"
     )
 
@@ -124,7 +125,7 @@ async def main():
     report_writer.write_csv()
 
     # Print summary
-    logger.info(f"Number of tickers processed: {num_tickers_processed}")
+    logger.info(f"Number of tickers processed: {num_tickers_processed}:,")
     logger.info(f"Number of contract pairs tried: {num_strangles_considered:,}")
     logger.info(f"Execution time: {execution_time:.2f} seconds")
     logger.info(f"Execution time per ticker: {execution_time_per_ticker:.4f} seconds\n")
