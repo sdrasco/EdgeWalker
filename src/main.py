@@ -74,7 +74,7 @@ async def main():
     # Set a limit for the concurrent API requests.
     # Hard to know when you will break the limits.
     # Advice: start from 2 and build up.
-    concurrent_requests = 250
+    concurrent_requests = 150
     semaphore = asyncio.Semaphore(concurrent_requests) 
 
     # Initialize the MarketDataClient
@@ -127,7 +127,7 @@ async def main():
     report_writer.write_csv()
 
     # Print summary
-    logger.info(f"Number of tickers processed: {num_tickers_processed}:,")
+    logger.info(f"Number of tickers processed: {num_tickers_processed:,}")
     logger.info(f"Number of contract pairs tried: {num_strangles_considered:,}")
     logger.info(f"Execution time: {execution_time:.2f} seconds")
     logger.info(f"Execution time per ticker: {execution_time_per_ticker:.4f} seconds\n")
