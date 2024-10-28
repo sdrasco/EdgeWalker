@@ -146,7 +146,7 @@ We have a bisic monitor of your strangle positions with a clunky yet functional 
 - Each plot has your ticker, company name, and expiration date on the x-axis (edit the `strangles = []` object to reflect your holdings)
 
 <p align="center">
-  <img src="images/holdings.png" alt="Early example of Strangle Tracker" width="45%" valign="center"/>
+  <img src="images/holdings.png" alt="Early example of Strangle Tracker" width="75%" valign="center"/>
 </p>
 
 Run `holdings.py` to see it in action on your local server at `http://127.0.0.1:8050/`.
