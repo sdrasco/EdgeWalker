@@ -100,12 +100,19 @@ class StrangleFinder:
         # Get company name
         company_name = await self.market_data_client.get_ticker_details(ticker, semaphore=semaphore)
 
+        # We'll use a weighted IV for the strangle IV. Other choices exist.
+        total_premium = best_row['premium_call'] + best_row['premium_put']
+        if total_premium != 0:
+            strangle_iv = (best_row['premium_call'] * best_row['implied_volatility_call'] +
+                           best_row['premium_put'] * best_row['implied_volatility_put']) / total_premium
+        else:
+            return None
+
         # Create Strangle object
-        # (**) means _call suffix is no different from _put
         best_strangle = Strangle(
             ticker=ticker,
             company_name=company_name,
-            stock_price=best_row['stock_price_call'],  # (**)
+            stock_price=best_row['stock_price_call'],  # no different from _put
             expiration_date_call=best_row['expiration_date_call'],
             expiration_date_put=best_row['expiration_date_put'],
             strike_price_call=best_row['strike_price_call'],
@@ -118,7 +125,7 @@ class StrangleFinder:
             lower_breakeven=best_row['lower_breakeven'],
             breakeven_difference=best_row['breakeven_difference'],
             normalized_difference=best_row['normalized_difference'],
-            implied_volatility=best_row['implied_volatility_call'],  # (**)
+            implied_volatility=strangle_iv, 
             num_strangles_considered=len(calls_df) * len(puts_df)
         )
 
