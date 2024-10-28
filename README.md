@@ -145,7 +145,9 @@ We have a bisic monitor of your strangle positions with a clunky yet functional 
 - Green lines show breakeven ranges and a big red dots mark the current prices.
 - Each plot has your ticker, company name, and expiration date on the x-axis (edit the `strangles = []` object to reflect your holdings)
 
-![Early example of Strangle Tracker graphics](images/holdings.png)
+<p align="center">
+  <img src="images/holdings.png" alt="Early example of Strangle Tracker" width="45%" valign="center"/>
+</p>
 
 Run `holdings.py` to see it in action on your local server at `http://127.0.0.1:8050/`.
 
