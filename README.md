@@ -147,7 +147,7 @@ Clicking cards could, cylce though historical data or other analytics.
 
 - Python 3.11.5 or higher
 - A Polygon.io API key with access to options data
-- various python librarys described in `requirements.txt`
+- various python librarys described in `src/requirements.txt`
 
 ## Installation
 
@@ -166,7 +166,7 @@ Clicking cards could, cylce though historical data or other analytics.
 3. Install the required packages
 
    ```bash
-   pip install -r requirements.txt
+   pip install -r src/requirements.txt
    ```
 
 ## Usage
