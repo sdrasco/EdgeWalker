@@ -137,6 +137,17 @@ The project is organized into the following directories:
 - Convert all API calls to cusomized URL http get requests
 - Modular code organization: The project is now divided into multiple `/src/*.py` files, making it easier to extend and reuse components.
 
+## Strangle Tracker Dashboard (Very Early Prototype)
+
+We have a bisic monitor of your strangle positions with a clunky yet functional dashboard. The **Strangle Tracker** in `src/holdings.py` pulls live data from the Polygon.io API and keeps you updated every minute on your portfolio’s breakeven range and current price.  This is very much a *first draft*, so no points for aesthetics just yet. It's not yet pretty, but it works nicely.
+
+**Features**:
+- Green lines show breakeven range, a bold red line and dot mark the current price.
+- Each plot has your ticker, company name, and expiration date on the x-axis (edit the `strangles = []` object to reflect your holdings)
+
+![Early example of Strangle Tracker graphics](images/holdings.png)
+
+Run `holdings.py` to see it in action on your local server at `http://127.0.0.1:8050/`.
 
 ## Future improvements
 
