@@ -43,9 +43,18 @@ class Strangle:
     escape_ratio: Optional[float] = None  
     probability_of_profit: Optional[float] = None
     expected_gain: Optional[float] = None  
+    call_contract: Optional[str] = None 
+    put_contract: Optional[str] = None  
 
     # Class variable for brokerage fee per contract
     brokerage_fee_per_contract: ClassVar[float] = 0.53 + 0.55 # Default value (adjust as needed)
+
+    def __post_init__(self):
+        # Build call and put contract tickers once
+        expiration_call = self.expiration_date_call[2:].replace("-", "")
+        expiration_put = self.expiration_date_put[2:].replace("-", "")
+        self.call_contract_ticker = f"O:{self.ticker}{expiration_call}C{int(self.strike_price_call * 1000):08}"
+        self.put_contract_ticker = f"O:{self.ticker}{expiration_put}P{int(self.strike_price_put * 1000):08}"
 
     def calculate_escape_ratio(self) -> None:
         self.escape_ratio = min(
@@ -86,8 +95,6 @@ class Strangle:
         else:
             self.probability_of_profit = 0.0
             return
-
-
 
         # Use normal distribution CDF to calculate probabilities
         probability_up = 1 - norm.cdf(z_up)      # Probability of price going above adjusted upper breakeven

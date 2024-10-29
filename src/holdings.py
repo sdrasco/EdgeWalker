@@ -18,73 +18,60 @@ Requirements:
 - Python environment with Dash installed
 - Polygon.io API access with the API key in the environment
 """
-
 import os
+import logging
 import dash
+import json
 from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
-import pandas as pd
-import requests
+import aiohttp
+import asyncio
 from models import Strangle
-from datetime import datetime
 
 app = dash.Dash(__name__)
 
-# Sample list of strangles
-strangles = [
-    Strangle("GILD", "Gilead Sciences", 0, "2024-11-01", "2024-11-01", 88, 88, 0.0, 0.0, 0.0, 0.0, 90.83, 85.17, 90.83 - 85.17, 0.0, 0.0, 1),
-    Strangle("VZ", "Verizon Communications", 0, "2024-11-08", "2024-11-08", 42.5, 42, 0.0, 0.0, 0.0, 0.0, 43.67, 40.83, 43.67 - 40.83, 0.0, 0.0, 1),
-    Strangle("VZ", "Verizon Communications", 0, "2024-11-15", "2024-11-15", 42, 42, 0.0, 0.0, 0.0, 0.0, 43.56, 40.44, 43.56 - 40.44, 0.0, 0.0, 1),
-    Strangle("VCLT", "Vanguard Long-Term Corporate Bond ETF", 0, "2024-11-15", "2024-11-15", 79, 79, 0.0, 0.0, 0.0, 0.0, 81.33, 76.67, 81.33 - 76.67, 0.0, 0.0, 1),
-    Strangle("CAG", "Conagra Brands", 0, "2024-11-15", "2024-11-15", 29, 30, 0.0, 0.0, 0.0, 0.0, 30.82, 28.18, 30.82 - 28.18, 0.0, 0.0, 2),
-    Strangle("SHY", "iShares 1-3 Year Treasury Bond ETF", 0, "2024-11-15", "2024-11-15", 83, 82, 0.0, 0.0, 0.0, 0.0, 83.43, 81.57, 83.43 - 81.57, 0.0, 0.0, 2),
-    Strangle("IGIB", "iShares Intermediate-Term Corporate Bond ETF", 0, "2024-11-15", "2024-11-15", 53, 53, 0.0, 0.0, 0.0, 0.0, 53.79, 52.21, 53.79 - 52.21, 0.0, 0.0, 1),
-    Strangle("IEI", "iShares 3-7 Year Treasury Bond ETF", 0, "2024-11-15", "2024-11-15", 118, 118, 0.0, 0.0, 0.0, 0.0, 119.48, 116.52, 119.48 - 116.52, 0.0, 0.0, 1),
-    Strangle("TRP", "TC Energy Corporation", 0, "2024-11-15", "2024-11-15", 47.5, 47.5, 0.0, 0.0, 0.0, 0.0, 49.87, 45.13, 49.87 - 45.13, 0.0, 0.0, 1),
-    Strangle("D", "Dominion Energy", 0, "2024-11-15", "2024-11-15", 60, 60, 0.0, 0.0, 0.0, 0.0, 62.95, 57.05, 62.95 - 57.05, 0.0, 0.0, 1),
-    Strangle("BCE", "BCE Inc.", 0, "2024-11-15", "2024-11-15", 33, 33, 0.0, 0.0, 0.0, 0.0, 34.39, 31.61, 34.39 - 31.61, 0.0, 0.0, 1),
-    Strangle("DX", "Dynex Capital", 0, "2024-11-15", "2024-11-15", 12.5, 12.5, 0.0, 0.0, 0.0, 0.0, 13.01, 11.99, 13.01 - 11.99, 0.0, 0.0, 3),
-    Strangle("SCHD", "Schwab U.S. Dividend Equity ETF", 0, "2024-11-15", "2024-11-15", 28.67, 38.33, 0.0, 0.0, 0.0, 0.0, 29.29, 27.71, 29.29 - 27.71, 0.0, 0.0, 1),
-    Strangle("JNJ", "Johnson & Johnson", 0, "2024-11-22", "2024-11-22", 165, 165, 0.0, 0.0, 0.0, 0.0, 170.9, 159.1, 170.9 - 159.1, 0.0, 0.0, 1),
-    Strangle("VZ", "Verizon Communications", 0, "2024-11-29", "2024-11-29", 42, 42, 0.0, 0.0, 0.0, 0.0, 43.96, 40.04, 43.96 - 40.04, 0.0, 0.0, 1),
-    Strangle("VCSH", "Vanguard Short-Term Corporate Bond ETF", 0, "2024-12-20", "2024-12-20", 79, 78, 0.0, 0.0, 0.0, 0.0, 79.92, 77.8, 79.92 - 77.8, 0.0, 0.0, 1),
-    Strangle("NLY", "Annaly Capital Management", 0, "2024-12-20", "2024-12-20", 20, 20, 0.0, 0.0, 0.0, 0.0, 21.15, 18.85, 21.15 - 18.85, 0.0, 0.0, 1)
-]
+# Configure basic logging.  show warning or higher for external modules.
+logging.basicConfig(
+    level=logging.WARNING,  
+    format='%(message)s'
+)
+
+# Create a logger for this module
+logger = logging.getLogger(__name__)
+
+# Show info level logger events for this module
+logger.setLevel(logging.INFO)
+
+# Suppress werkzeug HTTP request logs
+werkzeug_logger = logging.getLogger('werkzeug')
+werkzeug_logger.setLevel(logging.ERROR)
+
+# Load strangles from holdings.json
+with open('holdings.json', 'r') as f:
+    strangles_data = json.load(f)
+
+# Initialize strangle objects
+strangles = [Strangle(**data) for data in strangles_data]
 
 # Get the API key from environment variable
 API_KEY = os.getenv("POLYGONIO_API_KEY")
 
-# Function to get stock price via options chain
-def get_stock_price(ticker: str) -> float:
-    url = f"https://api.polygon.io/v3/snapshot/options/{ticker}?limit=10&apiKey={API_KEY}"
-    response = requests.get(url)
-
-    try:
-        data = response.json()
-        # Retrieve stock price from the first result's underlying asset
-        if 'results' in data and data['results']:
-            return data['results'][0]['underlying_asset']['price']
-        else:
-            print("No results found for stock price.")
-            return None
-    except requests.exceptions.JSONDecodeError:
-        print("Failed to decode JSON. Response content:")
-        print(response.text)  # Display response for debugging
-        return None
-
-def get_contract_details(underlying_asset: str, option_contract: str) -> dict:
-    # URL using the updated snapshot options format
+# Unified asynchronous function to get stock price, premium, and implied volatility
+async def get_contract_details(session, underlying_asset: str, option_contract: str) -> dict:
     url = f"https://api.polygon.io/v3/snapshot/options/{underlying_asset}/{option_contract}?apiKey={API_KEY}"
-    print(f"Requesting contract details with URL: {url}")  # Print URL for debugging
-    response = requests.get(url)
+    async with session.get(url) as response:
+        if response.status == 200:
+            contract_data = await response.json()
+            contract_data = contract_data.get("results", {})
+            stock_price = contract_data.get("underlying_asset", {}).get("price", 0)
+            iv = contract_data.get("implied_volatility", 0)
+            premium = contract_data.get("fmv", contract_data.get("last_quote", {}).get("midpoint", 0))
 
-    try:
-        return response.json().get("results", {})
-    except requests.exceptions.JSONDecodeError:
-        print("Failed to decode JSON. Response content:")
-        print(response.text)  # Print the raw response to understand the issue
-        return {}
+            return {"stock_price": stock_price, "implied_volatility": iv, "premium": premium}
+        else:
+            logger.info(f"Failed to fetch details for {option_contract} with status {response.status}")
+            return {"stock_price": 0, "implied_volatility": 0, "premium": 0}
 
 # Dash layout
 app.layout = html.Div([
@@ -99,67 +86,134 @@ app.layout = html.Div([
 def update_strangles(n):
     display_list = []
     
-    for strangle in strangles:
-        try:
-            # Get the latest stock price
-            strangle.stock_price = get_stock_price(strangle.ticker)
-            
-            # Create a line chart for the breakeven window
-            fig = go.Figure()
-
-            # Solid green line for breakeven range
-            fig.add_trace(go.Scatter(
-                x=[strangle.lower_breakeven, strangle.upper_breakeven],
-                y=[0, 0],
-                mode="lines",
-                line=dict(color="green", width=2),
-                name="Breakeven Range"
-            ))
-
-            # Solid, thicker red line for current price
-            fig.add_trace(go.Scatter(
-                x=[strangle.stock_price, strangle.stock_price],
-                y=[-1, 1],  # Standard vertical range
-                mode="lines",
-                line=dict(color="red", width=5),
-                name="Current Price"
-            ))
-
-            # Red marker at the current price
-            fig.add_trace(go.Scatter(
-                x=[strangle.stock_price],
-                y=[0],
-                mode="markers",
-                marker=dict(color="red", size=12, symbol="circle", line=dict(color="black", width=1)),
-                name="Current Price Marker"
-            ))
-
-            # Update layout: set background to white, add expiration in x-axis label, hide y-ticks
-            fig.update_layout(
-                showlegend=False,
-                xaxis=dict(
-                    showgrid=False,
-                    zeroline=False,
-                    title=f"{strangle.ticker} - {strangle.company_name} (Exp: {strangle.expiration_date_call})"
-                ),
-                yaxis=dict(showticklabels=False, showgrid=True, zeroline=True, range=[-2, 2]),
-                height=200,
-                plot_bgcolor="white",
-                paper_bgcolor="white"
-            )
-
-            # Display with reduced padding and margin
-            display_list.append(
-                html.Div([
-                    dcc.Graph(figure=fig)
-                ], style={'padding': '0px 0', 'margin': '0px 0'})  # Reduced padding and margin
-            )
-        except Exception as e:
-            print(f"Error updating strangle {strangle.ticker}: {e}")
-            continue
-
-    return display_list
+    # Run the async fetch function
+    asyncio.run(fetch_and_update_strangles(display_list))
     
+    return display_list
+
+# Asynchronous function to fetch and update strangles concurrently
+async def fetch_and_update_strangles(display_list):
+    async with aiohttp.ClientSession() as session:
+        tasks = [
+            fetch_and_update_single_strangle(session, strangle)
+            for strangle in strangles
+        ]
+        
+        # Await all tasks and ensure updates are done
+        await asyncio.gather(*tasks)
+    
+    # Sort strangles by ticker symbol alphabetically after all updates
+    strangles.sort(key=lambda s: s.ticker)
+    
+    # Build the display list after sorting
+    for strangle in strangles:
+        x_min = strangle.lower_breakeven - (strangle.breakeven_difference * 0.25)
+        x_max = strangle.upper_breakeven + (strangle.breakeven_difference * 0.25)
+        
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=[x_min, x_max],
+            y=[0, 0],
+            mode="lines",
+            line=dict(color="black", width=1),
+            name="Axis Line",
+            showlegend=False
+        ))
+        fig.add_trace(go.Scatter(
+            x=[strangle.lower_breakeven, strangle.upper_breakeven],
+            y=[0, 0],
+            mode="lines",
+            line=dict(color="green", width=2),
+            name="Breakeven Range"
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[strangle.lower_breakeven],
+            y=[0], 
+            mode="markers",
+            marker=dict(color="green", size=12, symbol="cross", line_width=0),
+            name="Breakeven Marker"
+        ))
+        fig.add_trace(go.Scatter(
+            x=[strangle.upper_breakeven],
+            y=[0], 
+            mode="markers",
+            marker=dict(color="green", size=12, symbol="cross", line_width=0),
+            name="Breakeven Marker"
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=[strangle.stock_price],
+            y=[0],
+            mode="markers",
+            marker=dict(color="red", size=12, symbol="circle", line=dict(color="black", width=1)),
+            name="Current Price Marker"
+        ))
+
+        fig.update_layout(
+            showlegend=False,
+            xaxis=dict(
+                showgrid=False,
+                zeroline=False,
+                title=(
+                    f"{strangle.ticker} -- Expires: {strangle.expiration_date_call} "
+                    f"-- Probability of Profit: {strangle.probability_of_profit:.0%}"
+                ),
+                range=[x_min, x_max]
+            ),
+            yaxis=dict(
+                showticklabels=False,
+                showgrid=True,
+                zeroline=True,
+                range=[0, 0],  
+                automargin=True
+            ),
+            height=200,
+            plot_bgcolor="rgba(0,0,0,0)",  
+            paper_bgcolor="rgba(0,0,0,0)",
+            shapes=[
+                dict(
+                    type="line",
+                    x0=x_min,
+                    x1=x_max,
+                    y0=0,
+                    y1=0,
+                    line=dict(color="black", width=1),
+                    layer="below"
+                )
+            ]
+        )
+
+        display_list.append(
+            html.Div([
+                dcc.Graph(
+                    figure=fig,
+                    config={'displayModeBar': False},
+                    style={'height': '200px', 'padding': '0', 'margin': '0'}
+                )
+            ], style={'padding': '0', 'margin': '0'})
+        )
+
+# Fetch details for a single strangle and update its fields
+async def fetch_and_update_single_strangle(session, strangle):
+    call_details = await get_contract_details(session, strangle.ticker, strangle.call_contract_ticker)
+    put_details = await get_contract_details(session, strangle.ticker, strangle.put_contract_ticker)
+
+    strangle.stock_price = call_details["stock_price"]
+
+    premium_call = call_details["premium"]
+    premium_put = put_details["premium"]
+    iv_call = call_details["implied_volatility"]
+    iv_put = put_details["implied_volatility"]
+
+    total_premium = premium_call + premium_put
+    if total_premium != 0:
+        strangle.implied_volatility = (premium_call * iv_call + premium_put * iv_put) / total_premium
+    else:
+        strangle.implied_volatility = 0
+
+    strangle.calculate_probability_of_profit()
+
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
