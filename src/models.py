@@ -45,6 +45,7 @@ class Strangle:
     expected_gain: Optional[float] = None  
     call_contract: Optional[str] = None 
     put_contract: Optional[str] = None  
+    total_in: Optional[float] = None
 
     # Class variable for brokerage fee per contract
     brokerage_fee_per_contract: ClassVar[float] = 0.53 + 0.55 # Default value (adjust as needed)

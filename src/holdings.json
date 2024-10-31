@@ -16,7 +16,8 @@
         "breakeven_difference": 5.66,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 282.06
     },
     {
         "ticker": "VZ",
@@ -35,7 +36,8 @@
         "breakeven_difference": 2.84,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 166.06
     },
     {
         "ticker": "VZ",
@@ -54,7 +56,8 @@
         "breakeven_difference": 3.12,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 155.06
     },
     {
         "ticker": "VCLT",
@@ -73,7 +76,8 @@
         "breakeven_difference": 4.66,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 233
     },
     {
         "ticker": "CAG",
@@ -92,7 +96,8 @@
         "breakeven_difference": 2.64,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 2
+        "num_strangles_considered": 2,
+        "total_in": 162.12
     },
         {
         "ticker": "SHY",
@@ -111,7 +116,8 @@
         "breakeven_difference": 1.86,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 2
+        "num_strangles_considered": 2,
+        "total_in": 284.12
     },
     {
         "ticker": "IGIB",
@@ -130,7 +136,8 @@
         "breakeven_difference": 1.58,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 78.06
     },
     {
         "ticker": "IEI",
@@ -149,7 +156,8 @@
         "breakeven_difference": 2.96,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 147.06
     },
     {
         "ticker": "TRP",
@@ -168,7 +176,8 @@
         "breakeven_difference": 4.74,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 236.06
     },
     {
         "ticker": "D",
@@ -187,7 +196,8 @@
         "breakeven_difference": 5.9,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 294.06
     },
     {
         "ticker": "BCE",
@@ -206,7 +216,8 @@
         "breakeven_difference": 2.78,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 138.06
     },
     {
         "ticker": "DX",
@@ -225,7 +236,8 @@
         "breakeven_difference": 1.02,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 3
+        "num_strangles_considered": 3,
+        "total_in": 150.16
     },
     {
         "ticker": "SCHD",
@@ -244,7 +256,8 @@
         "breakeven_difference": 1.58,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 95.06
     },
     {
         "ticker": "JNJ",
@@ -263,7 +276,8 @@
         "breakeven_difference": 11.8,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 589.06
     },
     {
         "ticker": "VZ",
@@ -282,26 +296,28 @@
         "breakeven_difference": 3.92,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 195.06
     },
     {
-    "ticker": "VCSH",
-    "company_name": "Vanguard Short-Term Corporate Bond ETF",
-    "stock_price": 0,
-    "expiration_date_call": "2024-12-20",
-    "expiration_date_put": "2024-12-20",
-    "strike_price_call": 79,
-    "strike_price_put": 78,
-    "premium_call": 0.0,
-    "premium_put": 0.0,
-    "cost_call": 0.0,
-    "cost_put": 0.0,
-    "upper_breakeven": 79.92,
-    "lower_breakeven": 77.8,
-    "breakeven_difference": 2.12,
-    "normalized_difference": 0.0,
-    "implied_volatility": 0.0,
-    "num_strangles_considered": 1
+        "ticker": "VCSH",
+        "company_name": "Vanguard Short-Term Corporate Bond ETF",
+        "stock_price": 0,
+        "expiration_date_call": "2024-12-20",
+        "expiration_date_put": "2024-12-20",
+        "strike_price_call": 79,
+        "strike_price_put": 78,
+        "premium_call": 0.0,
+        "premium_put": 0.0,
+        "cost_call": 0.0,
+        "cost_put": 0.0,
+        "upper_breakeven": 79.92,
+        "lower_breakeven": 77.8,
+        "breakeven_difference": 2.12,
+        "normalized_difference": 0.0,
+        "implied_volatility": 0.0,
+        "num_strangles_considered": 1,
+        "total_in": 191.06
     },
     {
         "ticker": "NLY",
@@ -320,6 +336,7 @@
         "breakeven_difference": 2.3,
         "normalized_difference": 0.0,
         "implied_volatility": 0.0,
-        "num_strangles_considered": 1
+        "num_strangles_considered": 1,
+        "total_in": 114.06
     }
 ]

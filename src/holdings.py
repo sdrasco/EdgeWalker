@@ -156,8 +156,12 @@ async def fetch_and_update_strangles(display_list):
                 showgrid=False,
                 zeroline=False,
                 title=(
-                    f"{strangle.ticker} -- Expires: {strangle.expiration_date_call} "
-                    f"-- Probability of Profit: {strangle.probability_of_profit:.0%}"
+                    f"({strangle.ticker}) "
+                    f"(call: ${strangle.strike_price_call}, {strangle.expiration_date_call}) "
+                    f"(put: ${strangle.strike_price_put}, {strangle.expiration_date_put}) "
+                    f"(in: ${strangle.total_in:.2f}) "
+                    f"(POP: {strangle.probability_of_profit:.0%})"
+                    
                 ),
                 range=[x_min, x_max]
             ),
