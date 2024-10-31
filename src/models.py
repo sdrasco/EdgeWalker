@@ -128,11 +128,17 @@ class Strangle:
         - Adjust 'brokerage_fee_per_contract' at the class level as necessary to match your brokerage's fees.
         """
 
-        # Use the earliest expiration date to work out days to expiration
+        # Use the earliest expiration date and set it to market close time (4:00 PM ET)
         expiration_date_str = min(self.expiration_date_call, self.expiration_date_put)
         expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d')
-        today = datetime.today()
-        days_to_expiration = (expiration_date - today).days
+        market_close_time = datetime(
+            expiration_date.year, expiration_date.month, expiration_date.day, 16, 0
+        )
+        expiration_datetime_utc = market_close_time - timedelta(hours=5)  # Convert 4 PM ET to UTC
+
+        # Calculate seconds to expiration
+        today = datetime.utcnow()  # Use UTC for consistency
+        seconds_to_expiration = (expiration_datetime_utc - today).total_seconds()
 
         # make some constants, for tidiness
         current_price = self.stock_price
@@ -140,10 +146,13 @@ class Strangle:
         lower_strike = self.strike_price_put
         total_premium_per_share = self.premium_call + self.premium_put  # Sum of premiums paid per share
         total_brokerage_fees_per_share = (self.brokerage_fee_per_contract * 2) / 100  # Two contracts, convert to per share
-        if days_to_expiration < 0:
+        
+        if seconds_to_expiration < 0:
             self.expected_gain = 0
             return 
-        sigma = self.implied_volatility * np.sqrt(days_to_expiration / 365.0)
+
+        # Calculate sigma for seconds resolution (scale implied volatility for seconds)
+        sigma = self.implied_volatility * math.sqrt(seconds_to_expiration / 31536000.0)  # 31,536,000 seconds in a year
         if sigma <= 0:
             self.expected_gain = 0
             return 
