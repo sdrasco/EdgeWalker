@@ -7,7 +7,7 @@ import math
 import numpy as np
 from scipy.stats import norm
 from scipy.integrate import quad
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Configure basic logging.  show warning or higher for external modules.
 logging.basicConfig(
@@ -66,17 +66,25 @@ class Strangle:
     def calculate_probability_of_profit(self) -> None:
         """
         Calculates the Probability of Profit (POP) for the strangle strategy, incorporating brokerage fees.
-
+        
         Estimates the likelihood that the strangle will reach a profitable position at expiration,
         based on implied volatility (IV), current stock price, expiration date, both breakeven points.
         """
-        # Use the earliest expiration date
+        # Use the earliest expiration date and set it to market close time (4:00 PM ET)
         expiration_date_str = min(self.expiration_date_call, self.expiration_date_put)
         expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d')
-        today = datetime.today()
-        days_to_expiration = (expiration_date - today).days
+        
+        # Add market close time in Eastern Time and convert to UTC
+        market_close_time = datetime(
+            expiration_date.year, expiration_date.month, expiration_date.day, 16, 0
+        )
+        expiration_datetime_utc = market_close_time - timedelta(hours=5)  # Convert 4 PM ET to UTC
 
-        if days_to_expiration <= 0:
+        # Calculate seconds to expiration from the current UTC time
+        today = datetime.utcnow()  # Use UTC for consistency
+        seconds_to_expiration = (expiration_datetime_utc - today).total_seconds()
+
+        if seconds_to_expiration <= 0:
             self.profitability_probability = 0.0  # If expiration is today or has passed, probability is 0
             return
 
@@ -84,12 +92,9 @@ class Strangle:
         move_to_upper_breakeven = (self.upper_breakeven - self.stock_price) / self.stock_price
         move_to_lower_breakeven = (self.stock_price - self.lower_breakeven) / self.stock_price
 
-        # Convert price movements to z-scores (standard deviations)
-        if days_to_expiration > 0:
-            sigma = self.implied_volatility * math.sqrt(days_to_expiration / 365.0)
-        else:
-            self.probability_of_profit = 0.0
-            return
+        # Convert price movements to z-scores (standard deviations), scaling IV for seconds
+        sigma = self.implied_volatility * math.sqrt(seconds_to_expiration / (31536000.0))  # 31,536,000 seconds in a year
+
         if sigma > 0:
             z_up = move_to_upper_breakeven / sigma
             z_down = move_to_lower_breakeven / sigma
