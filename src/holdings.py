@@ -109,6 +109,11 @@ async def fetch_and_update_strangles(display_list):
     for strangle in strangles:
         x_min = strangle.lower_breakeven - (strangle.breakeven_difference * 0.25)
         x_max = strangle.upper_breakeven + (strangle.breakeven_difference * 0.25)
+        # Adjust if stock_price is outside the range
+        if strangle.stock_price < x_min:
+            x_min = strangle.stock_price - (strangle.breakeven_difference * 0.1)
+        if strangle.stock_price > x_max:
+            x_max = strangle.stock_price + (strangle.breakeven_difference * 0.1)
         
         fig = go.Figure()
         fig.add_trace(go.Scatter(
