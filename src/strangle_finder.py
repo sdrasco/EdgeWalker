@@ -26,7 +26,7 @@ class StrangleFinder:
     async def find_balanced_strangle(self, ticker: str, semaphore=None) -> Optional[Strangle]:
         
         # set date limits
-        date_min = datetime.today() + timedelta(days=14)
+        date_min = datetime.today() + timedelta(days=21)
         date_max = date_min + timedelta(days=180)
         date_min = date_min.strftime('%Y-%m-%d')
         date_max = date_max.strftime('%Y-%m-%d')
