@@ -29,7 +29,7 @@ class StrangleFinder:
         
         # set date limits
         date_min = datetime.today() + timedelta(days=1)
-        date_max = date_min + timedelta(days=21)
+        date_max = date_min + timedelta(days=180)
         date_min = date_min.strftime('%Y-%m-%d')
         date_max = date_max.strftime('%Y-%m-%d')
 
