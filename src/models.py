@@ -84,8 +84,6 @@ class Strangle:
         # Use the earliest expiration date and set it to market close time (4:00 PM ET)
         expiration_date_str = min(self.expiration_date_call, self.expiration_date_put)
         expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d')
-        
-        # Add market close time in Eastern Time and convert to UTC
         market_close_time = datetime(
             expiration_date.year, expiration_date.month, expiration_date.day, 16, 0
         )
@@ -93,50 +91,19 @@ class Strangle:
 
         # Calculate seconds to expiration from the current UTC time
         today = datetime.utcnow()  # Use UTC for consistency
-        seconds_to_expiration = (expiration_datetime_utc - today).total_seconds()
+        seconds_to_expiration = int((expiration_datetime_utc - today).total_seconds())
 
-        if seconds_to_expiration <= 0:
-            self.profitability_probability = 0.0  # If expiration is today or has passed, probability is 0
-            return
-
-        # Calculate required price movements (as percentages) for both adjusted breakeven points
-        move_to_upper_breakeven = (self.upper_breakeven - self.stock_price) / self.stock_price
-        move_to_lower_breakeven = (self.stock_price - self.lower_breakeven) / self.stock_price
-
-        # Convert price movements to z-scores (standard deviations), scaling IV for seconds
-        sigma = self.implied_volatility * math.sqrt(seconds_to_expiration / (31536000.0))  # 31,536,000 seconds in a year
-
-        if sigma > 0:
-            z_up = move_to_upper_breakeven / sigma
-            z_down = move_to_lower_breakeven / sigma
-        else:
-            self.probability_of_profit = 0.0
-            return
-
-        # Use normal distribution CDF to calculate probabilities
-        probability_up = 1 - norm.cdf(z_up)      # Probability of price going above adjusted upper breakeven
-        probability_down = norm.cdf(-z_down)     # Probability of price going below adjusted lower breakeven
-
-        # Total probability of profit (moving beyond either adjusted breakeven point)
-        self.probability_of_profit = probability_up + probability_down
+        # Use the C++ function to calculate probability of profit
+        self.probability_of_profit = strangle_module.Strangle.calculate_probability_of_profit(
+            self.stock_price, self.upper_breakeven, self.lower_breakeven,
+            self.implied_volatility, seconds_to_expiration
+        )
 
     def calculate_expected_gain(self) -> None:
         """
         Calculates the expected gain of the strangle by analytically computing the payoffs for both the 
         call and put options, weighted by their probabilities under a log-normal stock price distribution 
         at expiration.
-
-        The method integrates the expected payoffs for stock prices above the call strike (for the call option) 
-        and below the put strike (for the put option), along with subtracting the cost of the strangle 
-        (premiums paid plus brokerage fees), without requiring numerical integration.
-
-        The expected gain is returned as per strangle (assuming contracts of 100 shares per contract), not per share.
-
-        Key points:
-        - Drift is set to zero, and implied volatility is used to compute sigma for the log-normal distribution.
-        - The call and put payoffs are computed using closed-form solutions based on cumulative normal distribution functions.
-        - Total costs (premiums and brokerage fees) are deducted using an analytical formula based on expected stock price growth.
-        - Adjust 'brokerage_fee_per_contract' at the class level as necessary to match your brokerage's fees.
         """
 
         # Use the earliest expiration date and set it to market close time (4:00 PM ET)
@@ -149,46 +116,21 @@ class Strangle:
 
         # Calculate seconds to expiration
         today = datetime.utcnow()  # Use UTC for consistency
-        seconds_to_expiration = (expiration_datetime_utc - today).total_seconds()
+        seconds_to_expiration = int((expiration_datetime_utc - today).total_seconds())
 
-        # make some constants, for tidiness
-        current_price = self.stock_price
-        upper_strike = self.strike_price_call
-        lower_strike = self.strike_price_put
-        total_premium_per_share = self.premium_call + self.premium_put  # Sum of premiums paid per share
-        total_brokerage_fees_per_share = (self.brokerage_fee_per_contract * 2) / 100  # Two contracts, convert to per share
-        
-        if seconds_to_expiration < 0:
-            self.expected_gain = 0
-            return 
+        # Sum the premiums and brokerage fees per share
+        total_premium_per_share = float(self.premium_call + self.premium_put)
+        total_brokerage_fees_per_share = float((self.brokerage_fee_per_contract * 2) / 100)  # Convert to per share
 
-        # Calculate sigma for seconds resolution (scale implied volatility for seconds)
-        sigma = self.implied_volatility * math.sqrt(seconds_to_expiration / 31536000.0)  # 31,536,000 seconds in a year
-        if sigma <= 0:
-            self.expected_gain = 0
-            return 
+        # Ensure all parameters are explicitly cast to float as needed
+        stock_price = float(self.stock_price)
+        strike_price_call = float(self.strike_price_call)
+        strike_price_put = float(self.strike_price_put)
+        implied_volatility = float(self.implied_volatility)
 
-        # the call payoff per share: int_{call_strike}^inf S*pdf(S) dS
-        d_1 = (np.log(current_price / upper_strike) + 0.5 * sigma ** 2) / sigma
-        d_2 = d_1 - sigma
-        N_d1 = norm.cdf(d_1)
-        N_d2 = norm.cdf(d_2)
-        call_payoff_per_share = current_price * N_d1 - upper_strike * N_d2
-
-        # the put payoff per share: int_0^{put_strike} S*pdf(S) dS
-        d_1_put = (np.log(current_price / lower_strike) + 0.5 * sigma ** 2) / sigma
-        d_2_put = d_1_put - sigma
-        N_d1_put_neg = norm.cdf(-d_1_put)
-        N_d2_put_neg = norm.cdf(-d_2_put)
-        put_payoff_per_share = lower_strike * N_d2_put_neg - current_price * N_d1_put_neg
-
-        # the cost payoff part (the loss): int_0^inf costs*PDF(S) dS = costs * 1
-        loss_per_share = -(total_premium_per_share + total_brokerage_fees_per_share)
-
-        # total expected gain or payoff per share
-        expected_gain_per_share = loss_per_share + call_payoff_per_share + put_payoff_per_share
-
-        # Convert to expected gain per contract (100 shares per option)
-        expected_gain_per_contract = expected_gain_per_share * 100
-
-        self.expected_gain = expected_gain_per_contract
+        # Call the C++ function to calculate the expected gain
+        self.expected_gain = strangle_module.Strangle.calculate_expected_gain(
+            stock_price, strike_price_call, strike_price_put,
+            implied_volatility, seconds_to_expiration,
+            total_premium_per_share, total_brokerage_fees_per_share
+        )
