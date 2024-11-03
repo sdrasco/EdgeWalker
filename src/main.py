@@ -6,7 +6,8 @@ import json
 import asyncio
 
 # Adjust the Python path to ensure modules can be imported when running main.py directly
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+src_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(src_path)
 
 # Import classes from the EdgeWalker package (src directory)
 from market_data_client import MarketDataClient

@@ -1,13 +1,23 @@
 # models.py
 
+import os  
+import sys
 from dataclasses import dataclass
 from typing import Optional, ClassVar
 import logging
 import math
 import numpy as np
 from scipy.stats import norm
-from scipy.integrate import quad
 from datetime import datetime, timedelta
+
+
+# Add the cpp/build directory to the path for importing strangle_module
+src_path = os.path.dirname(os.path.abspath(__file__))
+cpp_build_path = os.path.join(src_path, "cpp/build")
+sys.path.append(cpp_build_path)
+
+# Import the C++ module
+import strangle_module
 
 # Configure basic logging.  show warning or higher for external modules.
 logging.basicConfig(
@@ -58,10 +68,11 @@ class Strangle:
         self.put_contract_ticker = f"O:{self.ticker}{expiration_put}P{int(self.strike_price_put * 1000):08}"
 
     def calculate_escape_ratio(self) -> None:
-        self.escape_ratio = min(
-            abs(self.stock_price - self.upper_breakeven),
-            abs(self.stock_price - self.lower_breakeven)
-        ) / self.stock_price
+        # Use the C++ function from strangle_module to calculate the escape ratio
+        cpp_strangle = strangle_module.Strangle(
+            self.stock_price, self.upper_breakeven, self.lower_breakeven
+        )
+        self.escape_ratio = cpp_strangle.calculate_escape_ratio()
 
     def calculate_probability_of_profit(self) -> None:
         """
