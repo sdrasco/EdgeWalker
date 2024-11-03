@@ -3,3 +3,16 @@
 
 # Ignore compiled cache
 __pycache__/
+
+# Ignore CMake build artifacts
+cpp/build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Ignore compiled shared libraries
+*.so
+*.dylib
+*.dll
