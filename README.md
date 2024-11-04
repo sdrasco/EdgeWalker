@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker is a Python tool leveraging the Polygon API to identify options contract pairs with the narrowest possible spread between their upper and lower breakeven points, minimizing potential losses. With its asynchronous architecture, Edge Walker takes about a minute to model all contract pairs in the 11,229 unique stock tickers that polygon knows of.
+Edge Walker searches real-time market data for options contract pairs with minimal breakeven spread. With its blend of asynchronous python and C++ modules (found in the hybrid branch), Edge Walker takes about 30 seconds to model all contract pairs from all the 11,229 unique stock tickers that the Polygon API knows of.
 
 ## For those without options trading experience
 
@@ -131,8 +131,9 @@ The project is organized into the following directories:
 - Measures execution time and provides performance metrics.
 - Stores ticker collections in an external `tickers.json` file for easy management and customization.
 
-## Recent improvements:
-- Significant speed optimization, by factor of about 1,000, by refactoring to asynchronous API calls. Searching all of NYSE and Nasdaq takes under a minute now.
+## Recent improvements: (starting from most recent)
+- Hybrid Python/C++ Architecture: The hybrid branch of the code now integrates C++ for critical calculations, resulting in a 2x to 3x speed boost over the pure Python version. By offloading intensive operations to C++, the hybrid approach maximizes efficiency while retaining the flexibility of Python. Pulling option chains from all of polygon's stock tickers, and modeling all corresponding contract pairs, takes about 30 seconds on an aging desktop machine.
+- Significant speed optimization, by factor of about 1,000, by refactoring to asynchronous API calls. 
 - HTML reports now have buttons leading to calculator utility and to downloading CSV version of data.
 - Convert all API calls to cusomized URL http get requests
 - Modular code organization: The project is now divided into multiple `/src/*.py` files, making it easier to extend and reuse components.
