@@ -134,7 +134,7 @@ The project is organized into the following directories:
 - Stores ticker collections in an external `tickers.json` file for easy management and customization.
 
 ## Recent improvements: (from most recent)
-- Hybrid Python/C++ Architecture: The hybrid branch of the code now integrates C++ for critical calculations, resulting in a 2x to 3x speed boost over the monolingual (pure Python) branch. 
+- Hybrid Python/C++ Architecture: The (main) hybrid branch of the code now integrates C++ for critical calculations, resulting in a 2x to 3x speed boost over the monolingual (pure Python) branch. 
 - Significant speed optimization, by factor of about 1,000, by refactoring to asynchronous API calls. Searching all of NYSE and Nasdaq takes under a minute now.
 - HTML reports now have buttons leading to calculator utility and to downloading CSV version of data.
 - Convert all API calls to cusomized URL http get requests
