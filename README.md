@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker searches real-time market data for options strangles with minimal breakeven spread. Its asynchronous python and C++ modules pull and model all US stock option chains in about 30 seconds.
+Edge Walker searches real-time market data for options strangles with minimal breakeven spread. Its asynchronous python and C++ modules pull and model all US stock option chains in about 30 seconds. Edge Walker gets its data with the [Polygon.io API](https://polygon.io/).
 
 ## For those without options trading experience
 
@@ -162,7 +162,7 @@ Clicking cards could, cylce though historical data or other analytics.
 ## Requirements
 
 - **Python 3.11.5 or higher**
-- **Polygon.io API key** with access to options data
+- **Polygon.io API key** with access to options data (get yours from [polygon.io](https://polygon.io/))
 - **C++ compiler** compatible with your system (e.g., Clang, GCC) to build and run C++ components within the project
 - **CMake** to manage and build C++ code integrations
 - Various Python libraries as described in `src/requirements.txt`
@@ -205,7 +205,7 @@ Adjust `-mcpu` and `-mtune` according to your system’s architecture (e.g., `-m
    make
    ```
 5. Set up the Polygon.io API key
-Ensure you have your [Polygon.io](Polygon.io) API key configured as an environment variable so the project can access it. To set it permanently, add it to your `.bash_profile` (or `.zshrc` for zsh users) as follows:
+Ensure you have your Polygon.io API key configured as an environment variable so the project can access it. To set it permanently, add it to your `.bash_profile` (or `.zshrc` for zsh users) as follows:
    ```bash
    echo 'export POLYGONIO_API_KEY="your_api_key_here"' >> ~/.bash_profile
    source ~/.bash_profile
@@ -218,7 +218,7 @@ Now you’re ready to run `main.py` to start the application:
    ```bash
    python3 src/main.py
    ```
-Replace `"your_api_key_here"`` with your actual [Polygon.io](Polygon.io) API key. This will allow the key to be available every time you open a terminal.
+Replace `"your_api_key_here"`` with your actual Polygon.io API key. This will allow the key to be available every time you open a terminal.
 
 ## Usage
 
