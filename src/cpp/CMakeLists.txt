@@ -20,7 +20,7 @@ add_library(strangle_module MODULE src/bindings.cpp src/strangle.cpp src/find_mi
 target_link_libraries(strangle_module PRIVATE pybind11::module)
 
 # Optimization flags
-target_compile_options(strangle_module PRIVATE -O3 -march=native)
+target_compile_options(strangle_module PRIVATE -Ofast -mcpu=apple-m1 -mtune=apple-m1)
 
 # Remove the 'lib' prefix from the output file
 set_target_properties(strangle_module PROPERTIES PREFIX "")

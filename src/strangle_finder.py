@@ -117,101 +117,60 @@ class StrangleFinder:
         return best_strangle
 
     def _filter_options(self, options_df: pd.DataFrame) -> pd.DataFrame:
-        # Filtering logic remains the same as provided
-        options_df = options_df.copy()
-        required_columns = ['open_interest', 'day', 'details', 'underlying_asset', 'implied_volatility']
-        
-        for column in required_columns:
-            if column not in options_df.columns:
-                return pd.DataFrame()
+        # Immediately return if critical columns are missing
+        required_columns = ['details', 'underlying_asset', 'last_quote', 'implied_volatility']
+        if not all(col in options_df.columns for col in required_columns):
+            return pd.DataFrame()
 
-        options_df = options_df[
-            pd.notna(options_df['open_interest']) &
-            pd.notna(options_df['day']) &
-            pd.notna(options_df['details']) &
-            pd.notna(options_df['underlying_asset']) &
-            pd.notna(options_df['implied_volatility'])
-        ]
+        # Filter on implied volatility before extracting other fields
+        options_df = options_df[options_df['implied_volatility'] > 0]
         if options_df.empty:
             return pd.DataFrame()
 
-        options_df['expiration_date'] = options_df['details'].map(lambda x: x.get('expiration_date', None))
-        options_df['strike_price'] = options_df['details'].map(lambda x: x.get('strike_price', None))
-        options_df['exercise_style'] = options_df['details'].map(lambda x: x.get('exercise_style', None))
-        options_df['shares_per_contract'] = options_df['details'].map(lambda x: x.get('shares_per_contract', None))
-        options_df['contract_type'] = options_df['details'].map(lambda x: x.get('contract_type', None))
-        options_df = options_df[
-            pd.notna(options_df['expiration_date']) &
-            pd.notna(options_df['strike_price']) &
-            pd.notna(options_df['exercise_style']) &
-            pd.notna(options_df['contract_type']) &
-            pd.notna(options_df['shares_per_contract'])
-        ]
+        # Use vectorized assignments to extract required fields from nested dictionaries
+        options_df = options_df.assign(
+            expiration_date=[x.get('expiration_date') for x in options_df['details']],
+            strike_price=[x.get('strike_price') for x in options_df['details']],
+            exercise_style=[x.get('exercise_style') for x in options_df['details']],
+            shares_per_contract=[x.get('shares_per_contract') for x in options_df['details']],
+            contract_type=[x.get('contract_type') for x in options_df['details']],
+            stock_price=[x.get('price') for x in options_df['underlying_asset']],
+            bid=[x.get('bid') for x in options_df['last_quote']],
+            ask=[x.get('ask') for x in options_df['last_quote']],
+            midpoint=[x.get('midpoint') for x in options_df['last_quote']],
+            premium=[x.get('fmv', None) for x in options_df['details']]
+        ).dropna(subset=[
+            'expiration_date', 'strike_price', 'exercise_style', 'shares_per_contract',
+            'contract_type', 'stock_price', 'bid', 'ask', 'midpoint'
+        ])
+
         if options_df.empty:
             return pd.DataFrame()
 
-        options_df['volume'] = options_df['day'].map(lambda x: x.get('volume', None))
-        options_df = options_df[pd.notna(options_df['volume'])]
-        if options_df.empty:
-            return pd.DataFrame()
+        # Fill missing premiums with midpoint
+        options_df['premium'].fillna(options_df['midpoint'], inplace=True)
 
-        stock_price = options_df['underlying_asset'].iloc[0].get('price', None) if not options_df.empty else None
-        options_df['stock_price'] = stock_price
-        if stock_price is None:
-            return pd.DataFrame()
+        # Store stock price once to avoid repeated access
+        stock_price = options_df['stock_price'].iloc[0]
 
-        options_df['bid'] = options_df['last_quote'].map(lambda x: x.get('bid', None))
-        options_df['ask'] = options_df['last_quote'].map(lambda x: x.get('ask', None))
-        options_df['midpoint'] = options_df['last_quote'].map(lambda x: x.get('midpoint', None))
-        options_df = options_df[
-            pd.notna(options_df['bid']) &
-            pd.notna(options_df['ask']) &
-            pd.notna(options_df['midpoint'])
-        ]
-        if options_df.empty:
-            return pd.DataFrame()
-
-        options_df['premium'] = options_df.apply(
-            lambda row: row.get('fmv', None) if row.get('fmv', None) else row['midpoint'],
-            axis=1
-        )
-
-        strike_buffer_factor = 10.0
-        strike_min = stock_price / strike_buffer_factor
-        strike_max = stock_price * strike_buffer_factor
+        # Apply all filtering conditions in a single step
         options_df = options_df[
             (options_df['exercise_style'] == 'american') &
             (options_df['shares_per_contract'] == 100) &
-            (stock_price >= 10) & 
-            (stock_price <= 500) &
             (options_df['open_interest'] > 5) &
-            (options_df['volume'] > 5) &
-            (options_df['premium'] > 0.01 * stock_price) & 
+            (options_df['premium'] > 0.01 * stock_price) &
             (options_df['premium'] < 20.0) &
-            (options_df['strike_price'] >= strike_min) & 
-            (options_df['strike_price'] <= strike_max) &
-            (options_df['implied_volatility'] > 0)
+            (options_df['strike_price'].between(stock_price / 10, stock_price * 10)) &
+            ((options_df['ask'] - options_df['bid']).abs() <= 0.3 * options_df['premium']) &
+            ~(
+                ((options_df['contract_type'] == 'put') & (options_df['premium'] < (options_df['strike_price'] - stock_price))) |
+                ((options_df['contract_type'] == 'call') & (options_df['premium'] < (stock_price - options_df['strike_price'])))
+            )
         ]
-        if options_df.empty:
-            return pd.DataFrame()
 
-        options_df['suspicious_premium'] = options_df.apply(
-            lambda row: row['premium'] < max(0, row['strike_price'] - stock_price)
-            if row['contract_type'] == 'put'
-            else row['premium'] < max(0, stock_price - row['strike_price']),
-            axis=1
-        )
-        options_df = options_df[~options_df['suspicious_premium']]
-        if options_df.empty:
-            return pd.DataFrame()
+        # Define columns to return
+        columns_to_return = ['stock_price', 'expiration_date', 'strike_price', 'contract_type', 'premium', 'implied_volatility']
 
-        max_spread_factor = 0.3
-        options_df['spread'] = abs(options_df['ask'] - options_df['bid'])
-        options_df = options_df[(options_df['spread'] <= max_spread_factor * options_df['premium'])]
-        if options_df.empty:
-            return pd.DataFrame()
+        return options_df[columns_to_return]
 
-        keep_columns = ['stock_price', 'expiration_date', 'strike_price', 'contract_type', 'premium', 'implied_volatility']
-        filtered_options_df = options_df[keep_columns]
 
-        return filtered_options_df

@@ -5,15 +5,19 @@
 #include <limits>
 #include <vector>
 #include <string>
+#include <cmath>
 
 // Function to find the best strangle with minimum normalized difference
 StrangleCombination find_min_spread(const std::vector<Option>& calls, const std::vector<Option>& puts) {
     double min_normalized_diff = std::numeric_limits<double>::max();
     StrangleCombination best_combination;
 
+    // Precompute the constant part of the strangle cost to avoid repeated calculations
+    const double base_strangle_cost = 2 * (0.53 + 0.55) / 100.0;
+
     for (const auto& call : calls) {
         for (const auto& put : puts) {
-            double strangle_costs = call.premium + put.premium + 2 * (0.53 + 0.55) / 100.0;
+            double strangle_costs = call.premium + put.premium + base_strangle_cost;
             double upper_breakeven = call.strike_price + strangle_costs;
             double lower_breakeven = put.strike_price - strangle_costs;
             double breakeven_difference = std::abs(upper_breakeven - lower_breakeven);

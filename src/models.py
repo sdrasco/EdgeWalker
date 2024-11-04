@@ -106,7 +106,7 @@ class Strangle:
         at expiration.
         """
 
-        # Use the earliest expiration date and set it to market close time (4:00 PM ET)
+        # Use the earliest expiration date at 4:00 PM ET
         expiration_date_str = min(self.expiration_date_call, self.expiration_date_put)
         expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d')
         market_close_time = datetime(
