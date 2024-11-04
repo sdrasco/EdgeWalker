@@ -15,8 +15,8 @@ find_package(pybind11 REQUIRED)
 # Include directories
 include_directories(include)
 
-# Define the library
-add_library(strangle_module MODULE src/bindings.cpp src/strangle.cpp)
+# Define the library with updated sources
+add_library(strangle_module MODULE src/bindings.cpp src/strangle.cpp src/find_min_spread.cpp)
 target_link_libraries(strangle_module PRIVATE pybind11::module)
 
 # Optimization flags
