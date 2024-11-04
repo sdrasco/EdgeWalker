@@ -5,7 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker is a Python tool leveraging the Polygon API to identify options contract pairs with the narrowest possible spread between their upper and lower breakeven points, minimizing potential losses. With its asynchronous architecture, Edge Walker takes about a minute to model all contract pairs in the 11,229 unique stock tickers that polygon knows of.
+Edge Walker searches real-time market data for options strangles with minimal breakeven spread. Its asynchronous python and C++ modules pull and model all US stock option chains in about 30 seconds.
 
 ## For those without options trading experience
 
@@ -112,15 +112,17 @@ Edge Walker is provided "as is" without any guarantees or warranties. Use this c
 
 The project is organized into the following directories:
 
-- **/** (root directory): Project website and github configuration files
-  
-- **/html**: Generated reports, template reports, and recently generated CSV reports from Edge Walker's output.
-  
+- **/** (root directory): Project website and GitHub configuration files
+
+- **/html**: Generated reports, template reports, and recently generated CSV reports from Edge Walker's output
+
 - **/images**: Project logo and screenshots
-  
-- **/src**: The main Python modules responsible for Edge Walker's core functionality. It also contains ticker lists and other support files.
-  
-- **/utility**: Helpful tools such as ticker scrapers and [a simple html-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html).
+
+- **/src**: The main Python modules responsible for Edge Walker's core functionality. It also contains ticker lists, support files, and the `requirements.txt` file for Python dependencies.
+
+- **/src/cpp**: C++ source files and `CMakeLists.txt` for compiling performance-critical components of Edge Walker. This directory contains code that accelerates certain calculations through C++ integration.
+
+- **/utility**: Helpful tools such as ticker scrapers and [a simple HTML-based strangle breakeven calculator](https://edgewalker.co.uk/utility/calculator.html)
 
 ## Features
 
@@ -131,7 +133,8 @@ The project is organized into the following directories:
 - Measures execution time and provides performance metrics.
 - Stores ticker collections in an external `tickers.json` file for easy management and customization.
 
-## Recent improvements:
+## Recent improvements: (from most recent)
+- Hybrid Python/C++ Architecture: The hybrid branch of the code now integrates C++ for critical calculations, resulting in a 2x to 3x speed boost over the monolingual (pure Python) branch. 
 - Significant speed optimization, by factor of about 1,000, by refactoring to asynchronous API calls. Searching all of NYSE and Nasdaq takes under a minute now.
 - HTML reports now have buttons leading to calculator utility and to downloading CSV version of data.
 - Convert all API calls to cusomized URL http get requests
@@ -158,9 +161,11 @@ Clicking cards could, cylce though historical data or other analytics.
 
 ## Requirements
 
-- Python 3.11.5 or higher
-- A Polygon.io API key with access to options data
-- various python librarys described in `src/requirements.txt`
+- **Python 3.11.5 or higher**
+- **Polygon.io API key** with access to options data
+- **C++ compiler** compatible with your system (e.g., Clang, GCC) to build and run C++ components within the project
+- **CMake** to manage and build C++ code integrations
+- Various Python libraries as described in `src/requirements.txt`
 
 ## Installation
 
@@ -181,6 +186,39 @@ Clicking cards could, cylce though historical data or other analytics.
    ```bash
    pip install -r src/requirements.txt
    ```
+
+4. Build the C++ components 
+
+Ensure you have a compatible C++ compiler and CMake installed.  Ensure you have a compatible C++ compiler and CMake installed.
+Edit the optimization flags in src/cpp/CMakeLists.txt to match your system:
+
+   ```cmake
+   # Optimization flags
+   target_compile_options(strangle_module PRIVATE -Ofast -mcpu=apple-m1 -mtune=apple-m1)
+   ```
+Adjust `-mcpu` and `-mtune` according to your system’s architecture (e.g., `-mcpu=native` for a generic setup or specific values for Intel processors). Then, build the C++ components:
+
+   ```bash
+   mkdir build
+   cd build
+   cmake ..
+   make
+   ```
+5. Set up the Polygon.io API key
+Ensure you have your [Polygon.io](Polygon.io) API key configured as an environment variable so the project can access it. To set it permanently, add it to your `.bash_profile` (or `.zshrc` for zsh users) as follows:
+   ```bash
+   echo 'export POLYGONIO_API_KEY="your_api_key_here"' >> ~/.bash_profile
+   source ~/.bash_profile
+   ```
+
+6. Run the main script
+
+Now you’re ready to run `main.py` to start the application:
+
+   ```bash
+   python3 src/main.py
+   ```
+Replace `"your_api_key_here"`` with your actual [Polygon.io](Polygon.io) API key. This will allow the key to be available every time you open a terminal.
 
 ## Usage
 
