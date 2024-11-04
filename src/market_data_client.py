@@ -37,7 +37,7 @@ class MarketDataClient:
         options_chain = []
         url = f"{self.options_url}/{ticker}"
         params['apiKey'] = self.api_key
-        params['limit'] = 25  # Set a limit for pagination
+        params['limit'] = 250  # Set a limit for pagination
 
         try:
             # Use the semaphore to limit concurrency
