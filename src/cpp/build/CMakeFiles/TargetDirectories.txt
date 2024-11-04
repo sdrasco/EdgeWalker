@@ -1,0 +1,3 @@
+/Users/sdrasco/Desktop/EdgeWalker/src/cpp/build/CMakeFiles/strangle_module.dir
+/Users/sdrasco/Desktop/EdgeWalker/src/cpp/build/CMakeFiles/edit_cache.dir
+/Users/sdrasco/Desktop/EdgeWalker/src/cpp/build/CMakeFiles/rebuild_cache.dir
