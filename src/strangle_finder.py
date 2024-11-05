@@ -28,7 +28,7 @@ class StrangleFinder:
     async def find_balanced_strangle(self, ticker: str, semaphore=None) -> Optional[Strangle]:
         
         # Set date limits
-        date_min = datetime.today() + timedelta(days=1)
+        date_min = datetime.today() + timedelta(days=9)
         date_max = date_min + timedelta(days=30)
         date_min = date_min.strftime('%Y-%m-%d')
         date_max = date_max.strftime('%Y-%m-%d')
@@ -92,7 +92,7 @@ class StrangleFinder:
         best_strangle = Strangle(
             ticker=ticker,
             company_name=company_name,
-            stock_price=best_combination.call.strike_price,  # no different from _put
+            stock_price=options_df['stock_price'].iloc[0],
             expiration_date_call=expiration_date_call,
             expiration_date_put=expiration_date_put,
             strike_price_call=best_combination.call.strike_price,
