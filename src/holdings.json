@@ -60,26 +60,6 @@
         "total_in": 0.0
     },
     {
-        "ticker": "CAG",
-        "company_name": "Conagra Brands",
-        "stock_price": 0,
-        "expiration_date_call": "2024-11-15",
-        "expiration_date_put": "2024-11-15",
-        "strike_price_call": 30,
-        "strike_price_put": 29,
-        "premium_call": 0.4,
-        "premium_put": 0.4,
-        "cost_call": 0.0,
-        "cost_put": 0.0,
-        "upper_breakeven": 0.0,
-        "lower_breakeven": 0.0,
-        "breakeven_difference": 0.0,
-        "normalized_difference": 0.0,
-        "implied_volatility": 0.0,
-        "num_strangles_considered": 2,
-        "total_in": 0.0
-    },
-        {
         "ticker": "SHY",
         "company_name": "iShares 1-3 Year Treasury Bond ETF",
         "stock_price": 0,

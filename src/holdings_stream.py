@@ -5,6 +5,7 @@ import dash
 import asyncio
 import websockets
 import threading
+from threading import Lock
 from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
@@ -14,8 +15,11 @@ from models import Strangle
 app = dash.Dash(__name__)
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, force=True)
 logger = logging.getLogger(__name__)
+
+# create a lock for thread safety
+data_lock = Lock()
 
 # Polygon WebSocket URL and API Key
 WS_URL = "wss://socket.polygon.io/stocks"
@@ -60,96 +64,102 @@ strangle_dict = {strangle.ticker: strangle for strangle in strangles}
 
 # Dash layout
 app.layout = html.Div([
-    html.Div(id='strangle-display')
+    html.Div(id='strangle-display'),
+    dcc.Interval(
+        id='interval-component',
+        interval=10*1000,  # in miliseconds
+        n_intervals=0
+    )
 ])
 
 @app.callback(
     Output('strangle-display', 'children'),
-    Input('strangle-display', 'children')
+    Input('interval-component', 'n_intervals')
 )
-def update_strangles(_):
+def update_strangles(n_intervals):
     display_list = []
     logger.info("Updating Dash display with latest prices...")
-    for strangle in strangles:
-        x_min = strangle.lower_breakeven - (strangle.breakeven_difference * 0.25)
-        x_max = strangle.upper_breakeven + (strangle.breakeven_difference * 0.25)
-        
-        if strangle.stock_price > 0:
-            if strangle.stock_price < x_min:
-                x_min = strangle.stock_price - (strangle.breakeven_difference * 0.1)
-            if strangle.stock_price > x_max:
-                x_max = strangle.stock_price + (strangle.breakeven_difference * 0.1)
-        
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(
-            x=[x_min, x_max],
-            y=[0, 0],
-            mode="lines",
-            line=dict(color="black", width=1),
-            showlegend=False
-        ))
-        fig.add_trace(go.Scatter(
-            x=[strangle.lower_breakeven, strangle.upper_breakeven],
-            y=[0, 0],
-            mode="lines",
-            line=dict(color="green", width=2),
-            name="Breakeven Range"
-        ))
-        fig.add_trace(go.Scatter(
-            x=[strangle.lower_breakeven],
-            y=[0], 
-            mode="markers",
-            marker=dict(color="green", size=12, symbol="cross", line_width=0),
-            name="Breakeven Marker"
-        ))
-        fig.add_trace(go.Scatter(
-            x=[strangle.upper_breakeven],
-            y=[0], 
-            mode="markers",
-            marker=dict(color="green", size=12, symbol="cross", line_width=0),
-            name="Breakeven Marker"
-        ))
-        if strangle.stock_price > 0:
+    with data_lock:
+        for strangle in strangles:
+            x_min = strangle.lower_breakeven - (strangle.breakeven_difference * 0.25)
+            x_max = strangle.upper_breakeven + (strangle.breakeven_difference * 0.25)
+            
+            if strangle.stock_price > 0:
+                if strangle.stock_price < x_min:
+                    x_min = strangle.stock_price - (strangle.breakeven_difference * 0.1)
+                if strangle.stock_price > x_max:
+                    x_max = strangle.stock_price + (strangle.breakeven_difference * 0.1)
+            
+            fig = go.Figure()
             fig.add_trace(go.Scatter(
-                x=[strangle.stock_price],
-                y=[0],
-                mode="markers",
-                marker=dict(color="red", size=12, symbol="circle", line=dict(color="black", width=1)),
-                name="Current Price Marker"
+                x=[x_min, x_max],
+                y=[0, 0],
+                mode="lines",
+                line=dict(color="black", width=1),
+                showlegend=False
             ))
+            fig.add_trace(go.Scatter(
+                x=[strangle.lower_breakeven, strangle.upper_breakeven],
+                y=[0, 0],
+                mode="lines",
+                line=dict(color="green", width=2),
+                name="Breakeven Range"
+            ))
+            fig.add_trace(go.Scatter(
+                x=[strangle.lower_breakeven],
+                y=[0], 
+                mode="markers",
+                marker=dict(color="green", size=12, symbol="cross", line_width=0),
+                name="Breakeven Marker"
+            ))
+            fig.add_trace(go.Scatter(
+                x=[strangle.upper_breakeven],
+                y=[0], 
+                mode="markers",
+                marker=dict(color="green", size=12, symbol="cross", line_width=0),
+                name="Breakeven Marker"
+            ))
+            if strangle.stock_price > 0:
+                fig.add_trace(go.Scatter(
+                    x=[strangle.stock_price],
+                    y=[0],
+                    mode="markers",
+                    marker=dict(color="red", size=12, symbol="circle", line=dict(color="black", width=1)),
+                    name="Current Price Marker"
+                ))
 
-        fig.update_layout(
-            showlegend=False,
-            xaxis=dict(
-                showgrid=False,
-                zeroline=False,
-                title=(
-                    f"({strangle.ticker}) "
-                    f"(call: ${strangle.strike_price_call}, {strangle.expiration_date_call}) "
-                    f"(put: ${strangle.strike_price_put}, {strangle.expiration_date_put}) "
-                    f"(in: ${strangle.total_in:.2f})"
+            fig.update_layout(
+                showlegend=False,
+                xaxis=dict(
+                    showgrid=False,
+                    zeroline=False,
+                    title=(
+                        f"({strangle.ticker}) "
+                        f"(call: ${strangle.strike_price_call}, {strangle.expiration_date_call}) "
+                        f"(put: ${strangle.strike_price_put}, {strangle.expiration_date_put}) "
+                        f"(in: ${strangle.total_in:.2f})"
+                    ),
+                    range=[x_min, x_max]
                 ),
-                range=[x_min, x_max]
-            ),
-            yaxis=dict(
-                showticklabels=False,
-                showgrid=True,
-                zeroline=True,
-                range=[0, 0],
-                automargin=True
-            ),
-            height=200,
-            plot_bgcolor="rgba(0,0,0,0)",
-            paper_bgcolor="rgba(0,0,0,0)"
-        )
-
-        display_list.append(html.Div([
-            dcc.Graph(
-                figure=fig,
-                config={'displayModeBar': False},
-                style={'height': '200px', 'padding': '0', 'margin': '0'}
+                yaxis=dict(
+                    showticklabels=False,
+                    showgrid=True,
+                    zeroline=True,
+                    range=[0, 0],
+                    automargin=True
+                ),
+                height=200,
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)"
             )
-        ], style={'padding': '0', 'margin': '0'}))
+
+            display_list.append(html.Div([
+                dcc.Graph(
+                    figure=fig,
+                    config={'displayModeBar': False},
+                    style={'height': '200px', 'padding': '0', 'margin': '0'}
+                )
+            ], style={'padding': '0', 'margin': '0'}))
 
     return display_list
 
@@ -181,9 +191,9 @@ async def websocket_listener():
                         continue
 
                 # Step 3: Subscribe to tickers
-                tickers_str = ",".join([f"A.{ticker}" for ticker in strangle_dict.keys()])
+                tickers_str = ",".join([f"AM.{ticker}" for ticker in strangle_dict.keys()])
                 await websocket.send(json.dumps({"action": "subscribe", "params": tickers_str}))
-                logger.info(f"Subscribed to per-second trade updates for tickers: {tickers_str}")
+                logger.info(f"Subscribed to per-minute aggregate updates for tickers: {tickers_str}")
 
                 # Loop to receive data
                 logger.info("Listening for incoming messages...")
@@ -193,17 +203,21 @@ async def websocket_listener():
                     data = json.loads(message)
 
                     for event in data:
-                        if event.get("ev") == "T":
+                        ev_type = event.get("ev")
+                        if ev_type == "AM":
+                            # Handle trade update
                             ticker = event["sym"]
-                            price = event["p"]
+                            price = event["c"]
                             logger.info(f"Trade update received for {ticker}: {price}")
 
                             if ticker in strangle_dict:
                                 strangle = strangle_dict[ticker]
-                                strangle.stock_price = price
+                                with data_lock:
+                                    strangle.stock_price = price
                                 logger.info(f"Updated {ticker} stock price to {price}")
-                                # Trigger the Dash update
-                                asyncio.run_coroutine_threadsafe(push_update(), asyncio.get_event_loop())
+                        elif ev_type == "status":
+                            # Handle status event
+                            logger.info(f"Status event received: {event}")
                         else:
                             logger.warning(f"Unhandled event type: {event}")
         except websockets.exceptions.ConnectionClosed as e:
@@ -212,13 +226,6 @@ async def websocket_listener():
         except Exception as e:
             logger.error(f"Error in websocket_listener: {e}. Reconnecting in 5 seconds...")
             await asyncio.sleep(5)
-
-async def push_update():
-    """Trigger a callback update for Dash."""
-    logger.info("Triggering Dash callback update")
-    context = dash.callback_context
-    context.triggered = [{"prop_id": "strangle-display.children"}]
-    app.callback_map["strangle-display.children"]["callback"](*[None])
 
 def run_websocket_listener():
     asyncio.run(websocket_listener())
