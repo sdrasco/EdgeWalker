@@ -4,6 +4,7 @@ import logging
 import dash
 import asyncio
 import websockets
+import threading
 from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
@@ -57,7 +58,7 @@ for data in strangles_data:
 # Store strangles in a dictionary for quick lookup
 strangle_dict = {strangle.ticker: strangle for strangle in strangles}
 
-# Dash layout without Interval
+# Dash layout
 app.layout = html.Div([
     html.Div(id='strangle-display')
 ])
@@ -68,12 +69,13 @@ app.layout = html.Div([
 )
 def update_strangles(_):
     display_list = []
+    logger.info("Updating Dash display with latest prices...")
     for strangle in strangles:
         x_min = strangle.lower_breakeven - (strangle.breakeven_difference * 0.25)
         x_max = strangle.upper_breakeven + (strangle.breakeven_difference * 0.25)
         
         if strangle.stock_price > 0:
-            if strangle.stock_price< x_min:
+            if strangle.stock_price < x_min:
                 x_min = strangle.stock_price - (strangle.breakeven_difference * 0.1)
             if strangle.stock_price > x_max:
                 x_max = strangle.stock_price + (strangle.breakeven_difference * 0.1)
@@ -163,10 +165,11 @@ async def websocket_listener():
                 auth_response = await websocket.recv()
                 logger.info(f"Auth Response: {auth_response}")
 
-                # Check for auth success
+                # Enhanced authentication check for debugging
                 if "auth_success" not in auth_response:
-                    logger.error("Authentication failed. Retrying in 5 seconds...")
-                    await asyncio.sleep(5)  # Wait before retrying
+                    logger.error(f"Authentication failed with response: {auth_response}")
+                    logger.error("Retrying in 5 seconds...")
+                    await asyncio.sleep(5)
                     continue
                 
                 # Step 3: Subscribe to tickers
@@ -178,38 +181,46 @@ async def websocket_listener():
                 logger.info("Listening for incoming messages...")
                 while True:
                     message = await websocket.recv()
-                    logger.info(f"Received message: {message}")
+                    logger.info(f"Raw message received: {message}")
                     data = json.loads(message)
 
                     for event in data:
                         if event.get("ev") == "T":
                             ticker = event["sym"]
                             price = event["p"]
-                            logger.info(f"Update for {ticker}: {price}")
+                            logger.info(f"Trade update received for {ticker}: {price}")
 
                             if ticker in strangle_dict:
                                 strangle = strangle_dict[ticker]
                                 strangle.stock_price = price
+                                logger.info(f"Updated {ticker} stock price to {price}")
+                                # Trigger the Dash update
                                 asyncio.run_coroutine_threadsafe(push_update(), asyncio.get_event_loop())
+                        else:
+                            logger.warning(f"Unhandled event type: {event}")
         except websockets.exceptions.ConnectionClosed as e:
             logger.error(f"WebSocket connection closed: {e}. Reconnecting in 5 seconds...")
-            await asyncio.sleep(5)  # Wait and then retry connection
+            await asyncio.sleep(5)
         except Exception as e:
             logger.error(f"Error in websocket_listener: {e}. Reconnecting in 5 seconds...")
-            await asyncio.sleep(5)  # General exception handling with a reconnect delay
+            await asyncio.sleep(5)
 
 async def push_update():
     """Trigger a callback update for Dash."""
+    logger.info("Triggering Dash callback update")
     context = dash.callback_context
     context.triggered = [{"prop_id": "strangle-display.children"}]
     app.callback_map["strangle-display.children"]["callback"](*[None])
 
+def run_websocket_listener():
+    asyncio.run(websocket_listener())
+
 def main():
+    # Start the WebSocket listener in a separate thread
+    threading.Thread(target=run_websocket_listener, daemon=True).start()
+
     # Start the Dash server
     app.run_server(debug=False)
-
-    # Run the WebSocket listener in the same loop as Dash
-    asyncio.run(websocket_listener())
 
 if __name__ == '__main__':
     main()
