@@ -162,16 +162,24 @@ async def websocket_listener():
 
                 # Step 2: Authenticate
                 await websocket.send(json.dumps({"action": "auth", "params": API_KEY}))
-                auth_response = await websocket.recv()
-                logger.info(f"Auth Response: {auth_response}")
-
-                # Enhanced authentication check for debugging
-                if "auth_success" not in auth_response:
-                    logger.error(f"Authentication failed with response: {auth_response}")
-                    logger.error("Retrying in 5 seconds...")
-                    await asyncio.sleep(5)
-                    continue
                 
+                # Wait for multiple responses if needed
+                while True:
+                    auth_response = await websocket.recv()
+                    logger.info(f"Auth Response: {auth_response}")
+                    
+                    response_data = json.loads(auth_response)
+                    # Check if any response in the list includes an "authenticated" status
+                    if any(event.get("status") == "auth_success" for event in response_data):
+                        logger.info("Authentication successful.")
+                        break
+                    elif any(event.get("status") == "connected" for event in response_data):
+                        logger.info("Connection established but not authenticated.")
+                    else:
+                        logger.error(f"Unexpected auth response: {auth_response}")
+                        await asyncio.sleep(5)
+                        continue
+
                 # Step 3: Subscribe to tickers
                 tickers_str = ",".join([f"A.{ticker}" for ticker in strangle_dict.keys()])
                 await websocket.send(json.dumps({"action": "subscribe", "params": tickers_str}))
