@@ -140,19 +140,58 @@ The project is organized into the following directories:
 - Convert all API calls to cusomized URL http get requests
 - Modular code organization: The project is now divided into multiple `/src/*.py` files, making it easier to extend and reuse components.
 
-## Strangle Tracker Dashboard (Very Early Prototype)
+## Holdings Dashboard
 
-We have a bisic monitor of your strangle positions with a clunky yet functional dashboard. The **Strangle Tracker** in `src/holdings.py` pulls live data from the Polygon.io API and keeps you updated every minute on each strangle's current price relative to its breakeven range.  This is very much a *first draft*, so no points for aesthetics just yet. It's not yet pretty, but it works nicely.
+The `dashboard.py` script is a core component of Edge Walker, designed to monitor and visualize real-time options data from the holdings specified in `holdings.json`. This interactive dashboard uses the Polygon.io WebSocket API to stream trade-by-trade stock prices with millisecond precision, displaying updates immediately as new trades occur.
 
-**Features**:
-- Green lines show breakeven ranges and a big red dots mark the current prices.
-- Each plot has your ticker, company name, and expiration date on the x-axis (edit the `strangles = []` object to reflect your holdings)
+Key features include:
+- **Trade-Triggered Updates**: Subscribes to Polygon.io’s WebSocket `T` (trade) feed, ensuring the dashboard reflects each new trade with precise, millisecond timestamps.
+- **Breakeven Visualization**: Calculates and displays upper and lower breakeven points for each strangle, allowing for instant insights into profit/loss scenarios as prices fluctuate.
+- **Detailed, Human-Readable Logging**: Logs each trade event with a timestamp, ticker, price, and share count for comprehensive tracking of each trade in real time.
+- **Thread-Safe Processing**: Uses a `Lock` to ensure thread-safe handling of data across multiple holdings and ticker subscriptions.
+- **Flexible Subscription Options**: Allows for `per_minute`, `per_second`, and `trades` subscriptions to control update intervals based on monitoring needs.
+
+### Running the Script
+
+To run `dashboard.py` with different update frequencies, use the following options:
+- **Trade-by-Trade Mode**: This mode updates with every new trade as it occurs.  
+  ```bash
+  python dashboard.py --subscription trades
+  ```
+
+- **Per-Minute Aggregated Mode**: This mode aggregates updates once per minute.
+  ```bash
+  python dashboard.py --subscription per_minute
+  ```
+
+- **Per-Second Aggregated Mode**: This mode aggregates updates once per second.
+  ```bash
+  python dashboard.py --subscription per_second
+  ```
+
+If no subscription type is specified, `per_minute` is used as the default.
+
+### Example Log Output
+
+```plaintext
+2024-11-13 11:28:14.753  VZ    $40.46  45 shares
+2024-11-13 11:28:32.151  SCHD  $28.92  87 shares
+2024-11-13 11:28:32.940  SCHD  $28.91  26 shares
+2024-11-13 11:28:53.151  SHEL  $65.06  100 shares
+```
+
+### Display Appearance
+The graphical display is in early development stages, so aesthetics may be basic. It is functional, displaying essential elements for tracking:
+
+- **Breakeven Range**: Green lines represent breakeven points.
+- **Current Price**: Red dots indicate the latest trade price.
+- **Plot Labels**: Each plot shows the ticker, company name, and expiration date on the x-axis. (Edit the `strangles = []` object to reflect your own holdings.)
 
 <p align="center">
-  <img src="images/holdings.png" alt="Early example of Strangle Tracker" width="75%" valign="center"/>
+  <img src="images/dashboard.png" alt="Early example of Strangle Tracker" width="75%" valign="center"/>
 </p>
 
-Run `holdings.py` to see it in action on your local server at `http://127.0.0.1:8050/`.
+Access the dashboard on your local server at `http://127.0.0.1:8050/`.
 
 ## Future improvements
 
