@@ -297,7 +297,7 @@ def run_websocket_listener(subscription_type):
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Strangle Dashboard')
-    parser.add_argument('--subscription', choices=['per_minute', 'per_second', 'trades'], default='per_minute',
+    parser.add_argument('--subscription', choices=['per_minute', 'per_second', 'trades'], default='trades',
                         help='Subscription type for websocket (default: per_minute)')
     args = parser.parse_args()
 
