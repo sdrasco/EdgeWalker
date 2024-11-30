@@ -148,7 +148,9 @@ class StrangleFinder:
             return pd.DataFrame()
 
         # Fill missing premiums with midpoint
-        options_df['premium'].fillna(options_df['midpoint'], inplace=True)
+        options_df['premium'] = pd.to_numeric(options_df['premium'], errors='coerce')
+        options_df['midpoint'] = pd.to_numeric(options_df['midpoint'], errors='coerce')
+        options_df['premium'] = options_df['premium'].fillna(options_df['midpoint'])
 
         # Store stock price once to avoid repeated access
         stock_price = options_df['stock_price'].iloc[0]

@@ -1,3 +1,6 @@
+# Python virtual environment
+venv/
+
 # Ignore Mac system files
 .DS_Store
 
