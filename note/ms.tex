@@ -158,7 +158,7 @@ Under these circumstances, the arbitrage can only be achieved if one or both con
 
 \subsection{Dynamic Strangle}
 Now consider the case where the put is purchased when the underlying asset has price $S_P$, and the call is purchased at some other time when the underlying asset has price $S_C$.  In that case, our simple bounds (\ref{eq:bounds}) become
-\begin{subequations} \label{eq:bounds}
+\begin{subequations} \label{eq:dynamicbounds}
 \begin{align}
 P \geq \max(0, K_P - S_P) \geq K_P - S_P~,\\
 C \geq \max(0, S_C - K_C) \geq S_C - K_C~,
@@ -177,6 +177,6 @@ Thus, for a deep in-the-money contract, one may find it possible to dynamically 
 
 \section{Summary}
 
-This note analyzes the feasibility of a lossless strangle. We show that such a position is not realistic, but that a deep in-the-money option contract can be dynamically reconfigured into a lossless position.  This lossless position resembles a strangle with inverted breakeven points, amounting to an arbitrage.  Although this hedge reduces the upside potential, it cannot force the overall strategy into a net loss—hence “lossless.”  The analysis  emphasizes that the main ingredient for this arbitrage is purchasing the two contracts at sufficiently different market conditions, rather than relying on static mispricing.
+This note analyzes the feasibility of a lossless strangle. We show that such a position is not realistic, but that a deep in-the-money option contract can be dynamically reconfigured into a lossless position.  This lossless position resembles a strangle with inverted breakeven points, amounting to an arbitrage.  Although this hedge reduces the upside potential, it cannot force the overall strategy into a net loss—hence “lossless.”  The main ingredient for this arbitrage is purchasing the two contracts at sufficiently different market conditions, rather than relying on static mispricing.
 
 \end{document}
