@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  24 JAN 2025 19:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  25 JAN 2025 12:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -305,52 +305,52 @@ e
 ))
 \openout3 = `msNotes.bib'.
 
-<put.png, id=1, 670.505pt x 469.755pt>
-File: put.png Graphic file (type png)
-<use put.png>
-Package pdftex.def Info: put.png  used on input line 33.
-(pdftex.def)             Requested size: 229.49844pt x 160.7826pt.
-<call.png, id=3, 720.6925pt x 356.33125pt>
-File: call.png Graphic file (type png)
-<use call.png>
-Package pdftex.def Info: call.png  used on input line 52.
-(pdftex.def)             Requested size: 229.49844pt x 113.46829pt.
-<strangle.png, id=4, 583.17876pt x 360.34625pt>
+<figs/put.pdf, id=1, 423.05156pt x 273.1806pt>
+File: figs/put.pdf Graphic file (type pdf)
+<use figs/put.pdf>
+Package pdftex.def Info: figs/put.pdf  used on input line 33.
+(pdftex.def)             Requested size: 229.49844pt x 148.19476pt.
+<figs/call.pdf, id=2, 417.7206pt x 273.1806pt>
+File: figs/call.pdf Graphic file (type pdf)
+<use figs/call.pdf>
+Package pdftex.def Info: figs/call.pdf  used on input line 52.
+(pdftex.def)             Requested size: 229.49844pt x 150.08722pt.
+<strangle.png, id=3, 583.17876pt x 360.34625pt>
 File: strangle.png Graphic file (type png)
 <use strangle.png>
-Package pdftex.def Info: strangle.png  used on input line 72.
+Package pdftex.def Info: strangle.png  used on input line 73.
 (pdftex.def)             Requested size: 229.49844pt x 141.80461pt.
 
-[1{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./put
-.png> <./call.png>]
+[1{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./fig
+s/put.pdf> <./figs/call.pdf>]
 
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 119.
+ on input line 114.
 
-<sequence1.png, id=25, 501.875pt x 318.18875pt>
+<sequence1.png, id=61, 501.875pt x 318.18875pt>
 File: sequence1.png Graphic file (type png)
 <use sequence1.png>
-Package pdftex.def Info: sequence1.png  used on input line 124.
+Package pdftex.def Info: sequence1.png  used on input line 125.
 (pdftex.def)             Requested size: 153.00156pt x 97.0013pt.
-<sequence2.png, id=26, 382.42876pt x 303.1325pt>
+<sequence2.png, id=62, 382.42876pt x 303.1325pt>
 File: sequence2.png Graphic file (type png)
 <use sequence2.png>
-Package pdftex.def Info: sequence2.png  used on input line 125.
+Package pdftex.def Info: sequence2.png  used on input line 126.
 (pdftex.def)             Requested size: 153.00156pt x 121.2786pt.
-<sequence3.png, id=27, 440.64626pt x 229.85875pt>
+<sequence3.png, id=63, 440.64626pt x 229.85875pt>
 File: sequence3.png Graphic file (type png)
 <use sequence3.png>
-Package pdftex.def Info: sequence3.png  used on input line 126.
+Package pdftex.def Info: sequence3.png  used on input line 127.
 (pdftex.def)             Requested size: 153.00156pt x 79.8099pt.
-<sequence4.png, id=28, 429.605pt x 334.24875pt>
+<sequence4.png, id=64, 429.605pt x 334.24875pt>
 File: sequence4.png Graphic file (type png)
 <use sequence4.png>
-Package pdftex.def Info: sequence4.png  used on input line 127.
+Package pdftex.def Info: sequence4.png  used on input line 128.
 (pdftex.def)             Requested size: 153.00156pt x 119.0391pt.
-<sequence5.png, id=29, 429.605pt x 342.27875pt>
+<sequence5.png, id=65, 429.605pt x 342.27875pt>
 File: sequence5.png Graphic file (type png)
 <use sequence5.png>
-Package pdftex.def Info: sequence5.png  used on input line 128.
+Package pdftex.def Info: sequence5.png  used on input line 129.
 (pdftex.def)             Requested size: 153.00156pt x 121.8989pt.
 
 Class revtex4-2 Warning: Float cannot be placed.
@@ -359,7 +359,7 @@ No file ms.bbl.
 [2 <./strangle.png>]
 
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 182.
+ on input line 183.
 
 [3 <./sequence1.png> <./sequence2.png> <./sequence3.png> <./sequence4.png> <./s
 equence5.png>] (./ms.aux)
@@ -369,10 +369,10 @@ L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4785 strings out of 474116
- 71349 string characters out of 5743681
- 1954187 words of memory out of 5000000
- 27104 multiletter control sequences out of 15000+600000
+ 4784 strings out of 474116
+ 71458 string characters out of 5743681
+ 1957187 words of memory out of 5000000
+ 27103 multiletter control sequences out of 15000+600000
  563499 words of font info for 55 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  61i,8n,69p,777b,321s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -380,22 +380,25 @@ Here is how much of TeX's memory you used:
 ></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></
 usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></u
-sr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr
-/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/l
-ocal/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loc
-al/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local
-/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/te
-xlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
-ve/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/
-2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
-024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/202
-4/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2024/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on ms.pdf (3 pages, 487935 bytes).
+sr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></us
+r/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/
+local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/lo
+cal/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/loca
+l/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/
+texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/te
+xlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texli
+ve/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/
+2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/202
+4/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2024/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2024/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2024/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmti9.pfb>
+Output written on ms.pdf (3 pages, 491197 bytes).
 PDF statistics:
- 111 PDF objects out of 1000 (max. 8388607)
- 57 compressed objects within 1 object stream
+ 148 PDF objects out of 1000 (max. 8388607)
+ 92 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
