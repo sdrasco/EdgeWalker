@@ -31,7 +31,7 @@ sketched in Fig.~\ref{fig:put}.
 \begin{figure}[hb]
     \centering
     \includegraphics[width=0.45\textwidth]{figs/put.pdf}
-    \caption{Profit and loss curves for a long put with representative values of $K_P = 25$ USD and $P = 1$ USD.  The breakeven point $S_- = K_P - P$, is shown as a left-pointing triangle.}
+    \caption{Profit and loss curves for a long put with representative values of $K_P = \$25$ USD and $P = \$1$ USD.  The breakeven point $S_- = K_P - P$, is shown as a left-pointing triangle.}
     \label{fig:put}
 \end{figure}
 
@@ -50,7 +50,7 @@ sketched in Fig.~\ref{fig:call}.
 \begin{figure}[hb]
     \centering
     \includegraphics[width=0.45\textwidth]{figs/call.pdf}
-    \caption{Profit and loss curves for a long call with representative values of $K_C = 25$ USD and $C = 1$ USD.  The breakeven point $S_+ = K_C + C$, is shown as a right-pointing triangle.
+    \caption{Profit and loss curves for a long call with representative values of $K_C = \$25$ and $C = \$1$.  The breakeven point $S_+ = K_C + C$, is shown as a right-pointing triangle.
     }
     \label{fig:call}
 \end{figure}
@@ -72,7 +72,7 @@ A generic strangle with $K_P < K_C$, is sketched in Fig.~\ref{fig:strangle}.
     \centering
     \includegraphics[width=0.45\textwidth]{figs/strangle.pdf}
     \caption{Profit and loss curves for a generic strangle with representative values
-    $K_P = 24$ USD, $K_C = 26$ USD, and $C = P = 1$ USD.
+    $K_P = \$24$, $K_C = \$26$, and $C = P = \$1$.
     The breakeven points $S_\pm$ are again shown as triangles.}
     \label{fig:strangle}
 \end{figure}
@@ -129,12 +129,14 @@ its breakeven points are inverted $S_- \geq S_+$, and  $\varphi(S) \geq 0$, for 
     \includegraphics[width=0.3\textwidth]{figs/sequence3.pdf}
     \includegraphics[width=0.3\textwidth]{figs/sequence4.pdf}
     \includegraphics[width=0.3\textwidth]{figs/sequence5.pdf}
-    \caption{A sequence of profit and loss curves as strikes $K_C$ and/or $K_P$ are repositioned while the combined premium $\Pi = C+P$, is unrealistically held fixed. The strike positions are as follows:
-    a generic strangle with $K_P < K_C$ (top left), 
-    a straddle with $K_P = K_C$ (top middle),   
-    an inverted strangle with $0 < (K_P - K_C) < \Pi$ (top right), 
-    a critically inverted lossless strangle where $0 < (K_P - K_C) = \Pi$ (bottom left),
-    and lastly a generic inverted lossless strangle where both the strikes and the breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right).}
+\caption{
+    A sequence of profit and loss curves as strikes $K_C$ and/or $K_P$ are repositioned while the combined premium $\Pi = C+P$ is unrealistically held fixed at a representative \$2. The strike positions include:
+    a generic strangle with $K_P < K_C$ (top left, $K_P=\$24$, $K_C=\$26$),
+    a straddle with $K_P = K_C$ (top middle, $K_P=\$25$, $K_C=\$25$),
+    an inverted strangle with $0 < (K_P - K_C) < \Pi$ (top right, $K_P=\$25.5$, $K_C=\$24.5$),
+    a critically inverted lossless strangle where $0 < (K_P - K_C) = \Pi$ (bottom left, $K_P=\$26$, $K_C=\$24$),
+    and a generic inverted lossless strangle where both the strikes and the breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right, $K_P=\$27.5$, $K_C=\$22.5$).
+}
     \label{fig:sequence}
 \end{figure*}
 
