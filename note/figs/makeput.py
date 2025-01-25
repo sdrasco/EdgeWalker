@@ -15,7 +15,7 @@ line_thickness = 4
 # Parameters
 P = 1
 K_P = 25
-S_min, S_max = 22, 26
+S_min, S_max = 22.5, 26
 
 # Generate S values
 S = np.linspace(S_min, S_max, 400)
@@ -29,6 +29,8 @@ S_minus = K_P - P  # This is the value of S where varphi_P = 0
 # Separate by sign of varphi:
 #   - green if varphi >= 0
 #   - red if varphi < 0
+# makeput.py
+
 mask_green = (varphi >= 0)
 mask_red = (varphi < 0)
 

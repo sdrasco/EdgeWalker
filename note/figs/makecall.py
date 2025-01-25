@@ -1,3 +1,5 @@
+# makecall.py
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -15,7 +17,7 @@ line_thickness = 4
 # Parameters
 C = 1
 K_C = 25
-S_min, S_max = 22, 28
+S_min, S_max = 24, 27.5
 
 # Generate S values
 S = np.linspace(S_min, S_max, 400)
