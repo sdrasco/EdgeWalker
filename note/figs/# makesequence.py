@@ -43,23 +43,18 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
 
     # Find the breakeven points where varphi = 0
     # For a strangle with K_P != K_C, the breakeven points are:
-    # S_breakeven_low = K_P - P - C
-    # S_breakeven_high = K_C + P + C
     S_breakeven_low = K_P - P - C
     S_breakeven_high = K_C + P + C
 
-    # Ensure S_breakeven_low <= S_breakeven_high
-    if S_breakeven_low > S_breakeven_high:
-        S_breakeven_low, S_breakeven_high = S_breakeven_high, S_breakeven_low
 
     # Separate by sign of varphi:
-    #   - Green if varphi >= 0 (excluding the loss region)
+    #   - Green if varphi >= 0
     #   - Red if varphi < 0
-    # To prevent unwanted lines, define separate masks for lower and upper green regions
-    # Adjusted masks to exclude the exact breakeven points to prevent overlapping
+    # To prevent unwanted lines, define separate masks for lower, middle, and upper regions
     mask_green_low = (varphi >= 0) & (S < S_breakeven_low)
+    mask_green_mid = (varphi >= 0) & (S >= S_breakeven_low) & (S <= S_breakeven_high)
     mask_green_high = (varphi >= 0) & (S > S_breakeven_high)
-    mask_red = (varphi < 0)
+    mask_red = (varphi < 0) & (S >= S_breakeven_low) & (S <= S_breakeven_high)
 
     # Define colors
     green_muted = "#66A266"
@@ -75,6 +70,10 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     # Plot red regions where varphi < 0
     plt.plot(S[mask_red], varphi[mask_red],
              color=red_muted, linewidth=line_thickness)
+
+    # Plot green regions where varphi >= 0 (middle)
+    plt.plot(S[mask_green_mid], varphi[mask_green_mid],
+             color=green_muted, linewidth=line_thickness)
 
     # Plot green regions where varphi >= 0 (upper)
     plt.plot(S[mask_green_high], varphi[mask_green_high],
@@ -123,16 +122,16 @@ def main():
     S_min, S_max = 20, 30
 
     # Define the y-axis range
-    y_min, y_max = -2.5, 5
+    y_min, y_max = -2.5, 6
 
     # Define the list of (K_P, K_C) pairs for the 5 plots
     # Modify these pairs as needed for your specific scenarios
     K_pairs = [
-        (24, 26),      # Sequence 1
-        (25, 25),      # Sequence 2 (symmetric strangle)
-        (25.5, 24.5),  # Sequence 3
-        (27, 23),       # Sequence 4
-        (28, 22)       # Sequence 5
+        (24, 26),      
+        (25, 25),      
+        (25.5, 24.5),      
+        (26, 24),      
+        (27.5, 22.5)
     ]
 
     # Iterate over the pairs and generate plots
