@@ -77,9 +77,9 @@ plt.plot(S_breakeven_low, 0, color='black', marker='<', markersize=16,
 plt.plot(S_breakeven_high, 0, color='black', marker='>', markersize=16, 
          linestyle='None', zorder=5)
 
-# Labels with (USD)
-plt.xlabel(r'$S$ (USD)')
-plt.ylabel(r'$\varphi(S)$ (USD)')
+# Labels with (\$)
+plt.xlabel(r'$S$ (\$)')
+plt.ylabel(r'$\varphi(S)$ (\$)')
 
 # X-axis limits
 plt.xlim([S_min, S_max])

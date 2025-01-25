@@ -57,9 +57,9 @@ plt.plot(S_plus, 0, color='black', marker='>', markersize=16,
          linestyle='None', label=r'$S_{+}$', zorder=5)  # Right-pointing triangle
 
 
-# Labels with (USD)
-plt.xlabel(r'$S$ (USD)')
-plt.ylabel(r'$\varphi_C(S)$ (USD)')
+# Labels with (\$)
+plt.xlabel(r'$S$ (\$)')
+plt.ylabel(r'$\varphi_C(S)$ (\$)')
 
 # X-axis limits
 plt.xlim([S_min, S_max])

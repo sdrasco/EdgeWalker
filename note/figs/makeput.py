@@ -60,9 +60,9 @@ plt.plot(S_minus, 0, color='black', marker='<', markersize=16,
 # plt.text(S_minus + 0.3, 0.5, r'$S_{-}$', fontsize=18, ha='left', 
 #          va='bottom', zorder=6)  # Positioned above the marker
 
-# Labels with (USD)
-plt.xlabel(r'$S$ (USD)')
-plt.ylabel(r'$\varphi_P(S)$ (USD)')
+# Labels with (\$)
+plt.xlabel(r'$S$ (\$)')
+plt.ylabel(r'$\varphi_P(S)$ (\$)')
 
 # X-axis limits
 plt.xlim([S_min, S_max])
