@@ -14,7 +14,7 @@
 \date{\today}
 
 \begin{abstract}
-Purchasing a call and a put contract on the same underlying generally produces a “well-shaped” profit-and-loss curve with a loss at the center and profit emerging on either side beyond two breakeven points. For fixed premiums, one could in principle reposition the strikes to invert these breakeven points, raising the we well and eliminating loss. This brief note examines how realistic, variable premiums affect such an approach, showing that a truly lossless configuration generally requires the two contracts to be acquired at different times. For sufficiently large differences in the underlying prices at the times of purchase, this mechanism can provide a lossless hedge for a position that has developed into deep in-the-money status.
+Purchasing a call and a put contract on the same underlying generally produces a “well-shaped” profit-and-loss curve with a loss at the center and profit emerging on either side beyond two breakeven points. For fixed premiums, one could in principle reposition the strikes to invert these breakeven points, raising the we well and eliminating loss. This brief note examines how realistic, variable premiums affect such an approach, showing that a truly lossless configuration generally requires the two contracts to be acquired at different times under very different market conditions. For sufficiently large differences in the underlying prices at the times of purchase, this mechanism can provide a lossless hedge for a position that has developed into deep in-the-money status.
 \end{abstract}
 
 \maketitle
@@ -156,7 +156,7 @@ C \geq \max(0, S - K_C) \geq S - K_C~,
 \end{subequations}
 so that the total premium is bounded by $\Pi \geq K_P - K_C$, which can be restated as the contradiction
 \begin{equation}
-\varphi_{\min} \leq 0~,
+\varphi_{\min} \leq 0~.
 \end{equation}
 
 Under these circumstances, the arbitrage can only be achieved if one or both contracts has been mis-priced in violation of the simple bounds (\ref{eq:bounds}).  
