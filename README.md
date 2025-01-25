@@ -5,8 +5,7 @@
 
 ## For experienced traders (TLDR)
 
-Edge Walker searches real-time market data for options strangles with minimal breakeven spread. Here are some 
-[handwritten notes looking into the arbitrage-like case of zero breakeven spread](html/EdgewalkerNotes.pdf). Edgewalker's asynchronous python and C++ modules pull and model all US stock option chains in about 30 seconds. Edge Walker gets its data with the [Polygon.io API](https://polygon.io/).
+Edge Walker searches real-time market data for options strangles with minimal breakeven spread. Here is [a short technical note explaining how that could work](note/ms.pdf). Edgewalker's asynchronous python and C++ modules pull and model all US stock option chains in about 30 seconds. Edge Walker gets its data with the [Polygon.io API](https://polygon.io/).
 
 ## For those without options trading experience
 
@@ -25,7 +24,7 @@ Edge Walker is a software tool that searches for an idealized version of a tradi
 
 Edge Walker searches for the most "balanced" strangles—those with the smallest difference, or narrowest gap, or sharpest edge, between the upper and lower breakeven prices. By sharpening this edge, you reduce the conditions under which losses occur. Edge Walker was made to try and find trades as near as possible to the ideal scenario in which the upper and lower breakeven prices are identical.  
 
-Can one really ever find a risk-free case where the upper and lower breakeven prices match? In short, not really.  However, there is a way to find such a position if you are willing to introduce another sort of risk.  Here are some [handwritten notes explaining how that could work](html/EdgewalkerNotes.pdf).
+Can one really ever find a risk-free case where the upper and lower breakeven prices match? In short, not really.  However, there is a way to find such a position if you are willing to introduce another sort of risk.  Here is [a short technical note explaining how that could work](note/ms.pdf).
 
 While we'll describe the contract pairs that Edge Walker searches through as strangles, we won't actually insist on them having matching expiration dates. In that sense they are, at least potentially, expiration-decoupled strangles. Ultimately many of the trades Edge Walker identifies as most interesting turn out to have matched expirations, or strike prices, or both.
 
