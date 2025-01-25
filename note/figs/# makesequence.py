@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_strangle(P, C, K_P, K_C, S_min, S_max, filename):
+def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     """
     Plots the P/L diagram for a strangle strategy and saves it to a file.
 
@@ -14,6 +14,8 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, filename):
     - K_C (float): Strike price for the Call option.
     - S_min (float): Minimum underlying asset price.
     - S_max (float): Maximum underlying asset price.
+    - y_min (float): Minimum y-axis value.
+    - y_max (float): Maximum y-axis value.
     - filename (str): Name of the output PDF file.
     """
     # --- LaTeX + serif font setup (must happen before plotting) ---
@@ -46,12 +48,17 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, filename):
     S_breakeven_low = K_P - P - C
     S_breakeven_high = K_C + P + C
 
+    # Ensure S_breakeven_low <= S_breakeven_high
+    if S_breakeven_low > S_breakeven_high:
+        S_breakeven_low, S_breakeven_high = S_breakeven_high, S_breakeven_low
+
     # Separate by sign of varphi:
     #   - Green if varphi >= 0 (excluding the loss region)
     #   - Red if varphi < 0
     # To prevent unwanted lines, define separate masks for lower and upper green regions
-    mask_green_low = (varphi >= 0) & (S <= S_breakeven_low)
-    mask_green_high = (varphi >= 0) & (S >= S_breakeven_high)
+    # Adjusted masks to exclude the exact breakeven points to prevent overlapping
+    mask_green_low = (varphi >= 0) & (S < S_breakeven_low)
+    mask_green_high = (varphi >= 0) & (S > S_breakeven_high)
     mask_red = (varphi < 0)
 
     # Define colors
@@ -91,6 +98,9 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, filename):
     # X-axis limits
     plt.xlim([S_min, S_max])
 
+    # Y-axis limits
+    plt.ylim([y_min, y_max])
+
     # Optional: Remove the legend since markers have no labels
     # plt.legend()
 
@@ -112,20 +122,23 @@ def main():
     # Define the range of underlying asset prices
     S_min, S_max = 20, 30
 
+    # Define the y-axis range
+    y_min, y_max = -2.5, 5
+
     # Define the list of (K_P, K_C) pairs for the 5 plots
     # Modify these pairs as needed for your specific scenarios
     K_pairs = [
-        (24, 26),  # Sequence 1
-        (25, 25),  # Sequence 2
-        (26, 24),  # Sequence 3
-        (27, 23),  # Sequence 4 (symmetric strangle)
-        (28, 22)   # Sequence 5
+        (24, 26),      # Sequence 1
+        (25, 25),      # Sequence 2 (symmetric strangle)
+        (25.5, 24.5),  # Sequence 3
+        (27, 23),       # Sequence 4
+        (28, 22)       # Sequence 5
     ]
 
     # Iterate over the pairs and generate plots
     for idx, (K_P, K_C) in enumerate(K_pairs, start=1):
         filename = f'sequence{idx}.pdf'
-        plot_strangle(P, C, K_P, K_C, S_min, S_max, filename)
+        plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename)
         print(f'Generated {filename} with K_P={K_P}, K_C={K_C}')
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  25 JAN 2025 13:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  25 JAN 2025 14:02
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -342,16 +342,16 @@ File: figs/sequence3.pdf Graphic file (type pdf)
 <use figs/sequence3.pdf>
 Package pdftex.def Info: figs/sequence3.pdf  used on input line 129.
 (pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
-<figs/sequence4.pdf, id=63, 417.7206pt x 273.1806pt>
-File: figs/sequence4.pdf Graphic file (type pdf)
-<use figs/sequence4.pdf>
-Package pdftex.def Info: figs/sequence4.pdf  used on input line 130.
-(pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
-<figs/sequence5.pdf, id=64, 417.7206pt x 273.1806pt>
-File: figs/sequence5.pdf Graphic file (type pdf)
-<use figs/sequence5.pdf>
-Package pdftex.def Info: figs/sequence5.pdf  used on input line 131.
-(pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
+<sequence4.png, id=63, 429.605pt x 334.24875pt>
+File: sequence4.png Graphic file (type png)
+<use sequence4.png>
+Package pdftex.def Info: sequence4.png  used on input line 130.
+(pdftex.def)             Requested size: 153.00156pt x 119.0391pt.
+<sequence5.png, id=65, 429.605pt x 342.27875pt>
+File: sequence5.png Graphic file (type png)
+<use sequence5.png>
+Package pdftex.def Info: sequence5.png  used on input line 131.
+(pdftex.def)             Requested size: 153.00156pt x 121.8989pt.
 
 Class revtex4-2 Warning: Float cannot be placed.
 
@@ -361,8 +361,8 @@ No file ms.bbl.
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
  on input line 185.
 
-[3 <./figs/sequence1.pdf> <./figs/sequence2.pdf> <./figs/sequence3.pdf> <./figs
-/sequence4.pdf> <./figs/sequence5.pdf>] (./ms.aux)
+[3 <./figs/sequence1.pdf> <./figs/sequence2.pdf> <./figs/sequence3.pdf> <./sequ
+ence4.png> <./sequence5.png>] (./ms.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -370,7 +370,7 @@ L3 programming layer <2024-02-20>
  ) 
 Here is how much of TeX's memory you used:
  4783 strings out of 474116
- 71801 string characters out of 5743681
+ 71683 string characters out of 5743681
  1958187 words of memory out of 5000000
  27102 multiletter control sequences out of 15000+600000
  563499 words of font info for 55 fonts, out of 8000000 for 9000
@@ -395,10 +395,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2024/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2024/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on ms.pdf (3 pages, 320716 bytes).
+Output written on ms.pdf (3 pages, 373863 bytes).
 PDF statistics:
- 193 PDF objects out of 1000 (max. 8388607)
- 142 compressed objects within 2 object streams
+ 185 PDF objects out of 1000 (max. 8388607)
+ 132 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
