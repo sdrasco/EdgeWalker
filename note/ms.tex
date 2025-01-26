@@ -21,7 +21,7 @@ Purchasing a call and a put contract on the same underlying generally produces a
 
 \section{Overview}
 
-This short note explores the risk associated with a novel position resembling the familiar strangle.  The aim is to find conditions for an arbitrage or lossless position.  To fix notation we begin with a reminder of the profit/loss curves for a long put, a long call, and their combination in a strangle. 
+This short note explores the risk associated with a novel position resembling the familiar strangle.  The aim is to find conditions for arbitrage-like or lossless positions. The positions will indeed be lossless, but they will lack the instantaneous and simultaneous ingredients of a traditional definition of arbitrage.  To fix notation we begin with a reminder of the profit/loss curves for a long put, a long call, and their combination in a strangle. 
 
 A \textbf{long put} with strike price $K_P$ and premium $P$ has profit/loss $\varphi_P$ as a function of underlying asset price $S$
 \begin{equation}
@@ -89,12 +89,14 @@ This note explores the feasibility of a strangle position whose profit/loss curv
 
 \section{Fixed premium model}
 
-We begin by assuming, unrealistically, that the strikes can be adjusted without changing the total premium 
+We begin by assuming that the strikes can be adjusted without changing the total premium 
 \begin{equation}
 \Pi = P + C~.
 \end{equation}
+This of course isn't at all realistic, as we will remove the constraint in the next section, however it enables 
+exploring the full range of strangle dynamics, including lossless positions be they possible or not.
 The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shifting the strikes $K_C$ and/or $K_P$,  in such a way that eventually the breakeven points defy their meaning, become inverted $S_- \geq S_+$, and $\varphi(S) \geq 0$, for all $S$.
-\begin{figure*}[hb]
+\begin{figure*}[htb]
     \centering
     \includegraphics[width=0.3\textwidth]{figs/sequence1.pdf}
     \includegraphics[width=0.3\textwidth]{figs/sequence2.pdf}
@@ -112,7 +114,7 @@ The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shiftin
 }
     \label{fig:sequence}
 \end{figure*}
-
+Note that once the strikes are critically inverted with loss eliminated, further strike separation widens the region $S_+ < S < S_-$ in which the profit is independent of the underlying price $\varphi = K_P - K_C - \Pi$.
 
 \section{Variable premium model}
 

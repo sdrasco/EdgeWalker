@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 09:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 09:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -325,42 +325,35 @@ Package pdftex.def Info: figs/strangle.pdf  used on input line 73.
 s/put.pdf> <./figs/call.pdf>]
 
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 89.
+ on input line 85.
 
 <figs/sequence1.pdf, id=68, 417.7206pt x 273.1806pt>
 File: figs/sequence1.pdf Graphic file (type pdf)
 <use figs/sequence1.pdf>
-Package pdftex.def Info: figs/sequence1.pdf  used on input line 99.
+Package pdftex.def Info: figs/sequence1.pdf  used on input line 101.
 (pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
 <figs/sequence2.pdf, id=69, 417.7206pt x 273.1806pt>
 File: figs/sequence2.pdf Graphic file (type pdf)
 <use figs/sequence2.pdf>
-Package pdftex.def Info: figs/sequence2.pdf  used on input line 100.
+Package pdftex.def Info: figs/sequence2.pdf  used on input line 102.
 (pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
 <figs/sequence3.pdf, id=70, 417.7206pt x 273.1806pt>
 File: figs/sequence3.pdf Graphic file (type pdf)
 <use figs/sequence3.pdf>
-Package pdftex.def Info: figs/sequence3.pdf  used on input line 101.
+Package pdftex.def Info: figs/sequence3.pdf  used on input line 103.
 (pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
 <figs/sequence4.pdf, id=71, 417.7206pt x 273.1806pt>
 File: figs/sequence4.pdf Graphic file (type pdf)
 <use figs/sequence4.pdf>
-Package pdftex.def Info: figs/sequence4.pdf  used on input line 102.
+Package pdftex.def Info: figs/sequence4.pdf  used on input line 104.
 (pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
 <figs/sequence5.pdf, id=72, 417.7206pt x 273.1806pt>
 File: figs/sequence5.pdf Graphic file (type pdf)
 <use figs/sequence5.pdf>
-Package pdftex.def Info: figs/sequence5.pdf  used on input line 103.
+Package pdftex.def Info: figs/sequence5.pdf  used on input line 105.
 (pdftex.def)             Requested size: 153.00156pt x 100.05814pt.
-
-Class revtex4-2 Warning: Float cannot be placed.
-
-No file ms.bbl.
 [2 <./figs/strangle.pdf>]
-
-LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 160.
-
+No file ms.bbl.
 [3{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 } <./figs/sequence1.pdf> <./figs/sequence2.pdf> <./figs/sequence3.pdf> <./figs/
 sequence4.pdf> <./figs/sequence5.pdf>] (./ms.aux)
@@ -370,10 +363,10 @@ L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4786 strings out of 474116
- 71838 string characters out of 5743681
- 1960187 words of memory out of 5000000
- 27103 multiletter control sequences out of 15000+600000
+ 4788 strings out of 474116
+ 71858 string characters out of 5743681
+ 1952187 words of memory out of 5000000
+ 27105 multiletter control sequences out of 15000+600000
  563836 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  61i,8n,69p,1045b,352s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -398,7 +391,7 @@ dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2024/texmf-dist
 /fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2024/texmf-dist/f
 onts/type1/public/cm-super/sfrm1728.pfb>
-Output written on ms.pdf (3 pages, 462375 bytes).
+Output written on ms.pdf (3 pages, 463060 bytes).
 PDF statistics:
  235 PDF objects out of 1000 (max. 8388607)
  181 compressed objects within 2 object streams
