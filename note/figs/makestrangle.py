@@ -52,7 +52,7 @@ mask_red = (varphi < 0)
 green_muted = "#66A266"
 red_muted = "#CC6666"
 
-plt.figure(figsize=(6, 4), dpi=300)
+plt.figure(figsize=(6, 3.5), dpi=300)
 
 # Plot green regions where varphi >= 0 (lower)
 plt.plot(S[mask_green_low], varphi[mask_green_low],

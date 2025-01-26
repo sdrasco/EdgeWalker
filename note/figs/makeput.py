@@ -15,7 +15,7 @@ line_thickness = 4
 # Parameters
 P = 1
 K_P = 25
-S_min, S_max = 22.5, 26
+S_min, S_max = 22.5, 25.5
 
 # Generate S values
 S = np.linspace(S_min, S_max, 400)
@@ -35,7 +35,7 @@ mask_red = (varphi < 0)
 green_muted = "#66A266"
 red_muted = "#CC6666"
 
-plt.figure(figsize=(6, 4), dpi=300)
+plt.figure(figsize=(6, 3.5), dpi=300)
 
 # Plot green (varphi >= 0)
 plt.plot(S[mask_green], varphi[mask_green],

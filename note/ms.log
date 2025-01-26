@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 17:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 18:03
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -305,21 +305,21 @@ e
 ))
 \openout3 = `msNotes.bib'.
 
-<figs/put.pdf, id=1, 417.7206pt x 273.1806pt>
+<figs/put.pdf, id=1, 417.7206pt x 237.04561pt>
 File: figs/put.pdf Graphic file (type pdf)
 <use figs/put.pdf>
 Package pdftex.def Info: figs/put.pdf  used on input line 33.
-(pdftex.def)             Requested size: 229.49844pt x 150.08722pt.
-<figs/call.pdf, id=2, 417.7206pt x 273.1806pt>
+(pdftex.def)             Requested size: 229.49844pt x 130.2344pt.
+<figs/call.pdf, id=2, 417.7206pt x 237.04561pt>
 File: figs/call.pdf Graphic file (type pdf)
 <use figs/call.pdf>
 Package pdftex.def Info: figs/call.pdf  used on input line 52.
-(pdftex.def)             Requested size: 229.49844pt x 150.08722pt.
-<figs/strangle.pdf, id=3, 417.7206pt x 273.1806pt>
+(pdftex.def)             Requested size: 229.49844pt x 130.2344pt.
+<figs/strangle.pdf, id=3, 417.7206pt x 237.04561pt>
 File: figs/strangle.pdf Graphic file (type pdf)
 <use figs/strangle.pdf>
 Package pdftex.def Info: figs/strangle.pdf  used on input line 73.
-(pdftex.def)             Requested size: 229.49844pt x 150.08722pt.
+(pdftex.def)             Requested size: 229.49844pt x 130.2344pt.
 
 [1{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./fig
 s/put.pdf> <./figs/call.pdf>]
@@ -342,10 +342,10 @@ L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4758 strings out of 474116
- 71067 string characters out of 5743681
+ 4759 strings out of 474116
+ 71078 string characters out of 5743681
  1944187 words of memory out of 5000000
- 27075 multiletter control sequences out of 15000+600000
+ 27076 multiletter control sequences out of 15000+600000
  563836 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  61i,8n,69p,813b,348s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -370,7 +370,7 @@ dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2024/texmf-dist
 /fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2024/texmf-dist/f
 onts/type1/public/cm-super/sfrm1728.pfb>
-Output written on ms.pdf (3 pages, 478839 bytes).
+Output written on ms.pdf (3 pages, 478740 bytes).
 PDF statistics:
  183 PDF objects out of 1000 (max. 8388607)
  133 compressed objects within 2 object streams
