@@ -67,7 +67,7 @@ plt.plot(S[mask_green_high], varphi[mask_green_high],
          color=green_muted, linewidth=line_thickness)
 
 # Add a single thin black horizontal line at varphi = 0
-plt.axhline(0, color='black', linewidth=0.8, linestyle='-')
+plt.axhline(0, color='black', linewidth=1, linestyle='-',zorder=1)
 
 # Add left-pointing triangle marker at S_breakeven_low
 plt.plot(S_breakeven_low, 0, color='black', marker='<', markersize=16, 
@@ -79,11 +79,11 @@ plt.plot(S_breakeven_high, 0, color='black', marker='>', markersize=16,
 
 # Add marker for K_P with higher zorder using plt.plot
 plt.plot(K_P, 0, color='black', marker='3', markersize=16, 
-         linestyle='None', label=r'$S_{-}$', zorder=5)  
+         linestyle='None', label=r'$S_{-}$', zorder=0)  
 
 # Add marker for K_C with higher zorder using plt.plot
 plt.plot(K_C, 0, color='black', marker='4', markersize=16, 
-         linestyle='None', label=r'$S_{-}$', zorder=5)  
+         linestyle='None', label=r'$S_{-}$', zorder=0)  
 
 
 # Labels with (\$)

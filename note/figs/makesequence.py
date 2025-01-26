@@ -74,7 +74,7 @@ def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max, annotation_tex
              color=green_muted, linewidth=line_thickness)
 
     # Add a single thin black horizontal line at varphi = 0
-    ax.axhline(0, color='black', linewidth=0.8, linestyle='-')
+    ax.axhline(0, color='black', linewidth=1, linestyle='-', zorder=1)
 
     # Breakeven markers
     ax.plot(S_breakeven_low, 0, color='black', marker='<', markersize=16, 
@@ -84,9 +84,9 @@ def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max, annotation_tex
 
     # Markers for K_P and K_C
     ax.plot(K_P, 0, color='black', marker='3', markersize=16, 
-             linestyle='None', label=r'$S_{-}$', zorder=5)  
+             linestyle='None', label=r'$S_{-}$', zorder=0)  
     ax.plot(K_C, 0, color='black', marker='4', markersize=16, 
-             linestyle='None', label=r'$S_{+}$', zorder=5)  
+             linestyle='None', label=r'$S_{+}$', zorder=0)  
 
     # Y-axis label
     ax.set_ylabel(r'$\varphi(S)$ (\$)')

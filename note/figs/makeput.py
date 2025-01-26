@@ -48,11 +48,11 @@ plt.plot(S[mask_red], varphi[mask_red],
          label=r'$\varphi_P(S)\,<\,0$')
 
 # Add a single thin black grid line at varphi_P = 0
-plt.axhline(0, color='black', linewidth=0.8, linestyle='-')
+plt.axhline(0, color='black', linewidth=1, linestyle='-', zorder=1)
 
 # Add marker for K_P with higher zorder using plt.plot
 plt.plot(K_P, 0, color='black', marker='3', markersize=16, 
-         linestyle='None', label=r'$S_{-}$', zorder=5)  
+         linestyle='None', label=r'$S_{-}$', zorder=0)  
 
 # Add marker for S_minus with higher zorder using plt.plot
 plt.plot(S_minus, 0, color='black', marker='<', markersize=16, 
