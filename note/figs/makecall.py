@@ -54,8 +54,11 @@ plt.axhline(0, color='black', linewidth=0.8, linestyle='-')
 
 # Add marker for S_plus with higher zorder using plt.plot
 plt.plot(S_plus, 0, color='black', marker='>', markersize=16, 
-         linestyle='None', label=r'$S_{+}$', zorder=5)  # Right-pointing triangle
+         linestyle='None', label=r'$S_{+}$', zorder=5)  
 
+# Add marker for K_C with higher zorder using plt.plot
+plt.plot(K_C, 0, color='black', marker='4', markersize=16, 
+         linestyle='None', label=r'$S_{-}$', zorder=5)  
 
 # Labels with (\$)
 plt.xlabel(r'$S$ (\$)')

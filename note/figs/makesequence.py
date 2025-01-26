@@ -90,6 +90,14 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     plt.plot(S_breakeven_high, 0, color='black', marker='>', markersize=16, 
              linestyle='None', zorder=5)
 
+    # Add marker for K_P with higher zorder using plt.plot
+    plt.plot(K_P, 0, color='black', marker='3', markersize=16, 
+             linestyle='None', label=r'$S_{-}$', zorder=5)  
+
+    # Add marker for K_C with higher zorder using plt.plot
+    plt.plot(K_C, 0, color='black', marker='4', markersize=16, 
+             linestyle='None', label=r'$S_{-}$', zorder=5)  
+
     # Labels with (\$)
     plt.xlabel(r'$S$ (\$)')
     plt.ylabel(r'$\varphi(S)$ (\$)')

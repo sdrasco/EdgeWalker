@@ -31,7 +31,7 @@ sketched in Fig.~\ref{fig:put}.
 \begin{figure}[hb]
     \centering
     \includegraphics[width=0.45\textwidth]{figs/put.pdf}
-    \caption{Profit and loss curve for a long put with representative values of $K_P = \$25$ and $P = \$1$.  The breakeven point $S_- = K_P - P$, is shown as a left-pointing triangle.}
+    \caption{Profit and loss curve for a long put with representative values of $K_P = \$25$ and $P = \$1$.  The breakeven point $S_- = K_P - P$, is shown as a left-pointing triangle, and the strike price $K_P$ is marked with the $ \scalebox{0.5}[1]{$<$} $ symbol.}
     \label{fig:put}
 \end{figure}
 
@@ -50,7 +50,7 @@ sketched in Fig.~\ref{fig:call}.
 \begin{figure}[hb]
     \centering
     \includegraphics[width=0.45\textwidth]{figs/call.pdf}
-    \caption{Profit and loss curve for a long call with representative values of $K_C = \$25$ and $C = \$1$.  The breakeven point $S_+ = K_C + C$, is shown as a right-pointing triangle.
+    \caption{Profit and loss curve for a long call with representative values of $K_C = \$25$ and $C = \$1$.  The breakeven point $S_+ = K_C + C$, is shown as a right-pointing triangle, and the strike price $K_C$ is marked with the $ \scalebox{0.5}[1]{$>$} $ symbol.
     }
     \label{fig:call}
 \end{figure}
@@ -73,7 +73,7 @@ A generic strangle with $K_P < K_C$, is sketched in Fig.~\ref{fig:strangle}.
     \includegraphics[width=0.45\textwidth]{figs/strangle.pdf}
     \caption{Profit and loss curve for a generic strangle with representative values
     $K_P = \$24$, $K_C = \$26$, and $C = P = \$1$.
-    The breakeven points $S_\pm$ are again shown as triangles.}
+    The breakeven points $S_\pm$ are again shown as triangles, and the strikes by the $ \scalebox{0.5}[1]{$>$} $ and $\scalebox{0.5}[1]{$<$}$ symbols. }
     \label{fig:strangle}
 \end{figure}
 This produces a profit when $S$ moves significantly outside the strike region $(K_P, K_C)$, but has a loss in the middle. 
@@ -107,7 +107,8 @@ The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shiftin
     a straddle with $K_P = K_C$ (top middle, $K_P=\$25$, $K_C=\$25$),
     an inverted strangle with $0 < (K_P - K_C) < \Pi$ (top right, $K_P=\$25.5$, $K_C=\$24.5$),
     a critically inverted lossless strangle where the breakeven points essentially lose their meaning and $0 < (K_P - K_C) = \Pi$ (bottom left, $K_P=\$26$, $K_C=\$24$),
-    and a generic inverted lossless strangle where both the strikes and the so-called breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right, $K_P=\$27.5$, $K_C=\$22.5$).
+    and a generic inverted lossless strangle where both the strikes and the so-called breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right, $K_P=\$27.5$, $K_C=\$22.5$). 
+    The breakeven points $S_\pm$ are again shown as triangles, and the strikes by the $ \scalebox{0.5}[1]{$>$} $ and $\scalebox{0.5}[1]{$<$}$ symbols.
 }
     \label{fig:sequence}
 \end{figure*}
