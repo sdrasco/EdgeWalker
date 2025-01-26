@@ -1,4 +1,5 @@
-# makesequence.py
+
+# makesequence_refactored_centered.py
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.size'] = 14      # Base font size for all text
 plt.rcParams['axes.labelsize'] = 16 # Axis labels
 
-def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max):
+def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max, annotation_text=None):
     """
     Plots the P/L diagram for a strangle strategy on a given Axes object.
 
@@ -25,6 +26,7 @@ def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max):
     - S_max (float): Maximum underlying asset price.
     - y_min (float): Minimum y-axis value.
     - y_max (float): Maximum y-axis value.
+    - annotation_text (str, optional): LaTeX string to annotate the plot.
     """
     # Line thickness
     line_thickness = 4  # Increased for prominence
@@ -93,9 +95,17 @@ def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max):
     ax.set_xlim([S_min, S_max])
     ax.set_ylim([y_min, y_max])
 
+    # Add LaTeX annotation if provided
+    if annotation_text:
+        # Position the text at the center top of the axes
+        ax.text(0.5, 0.95, annotation_text, transform=ax.transAxes,
+                fontsize=14, verticalalignment='top', horizontalalignment='center',zorder=1,
+                bbox=dict(facecolor='white', edgecolor='none', alpha=0.6))
+
 def main():
     """
     Main function to generate a single figure containing a sequence of strangle P/L plots with varying K_P and K_C.
+    Each subplot has a custom LaTeX annotation near the top center.
     Only the bottom subplot gets the horizontal axis label.
     """
     # Define the premiums
@@ -106,15 +116,15 @@ def main():
     S_min, S_max = 20, 30
 
     # Define the y-axis range
-    y_min, y_max = -2.5, 6
+    y_min, y_max = -2.5, 6.15
 
-    # Define the list of (K_P, K_C) pairs for the 5 plots
+    # Define the list of (K_P, K_C, LaTeX annotation) tuples for the plots
     K_pairs = [
-        (24, 26),      
-        (25, 25),      
-        (25.5, 24.5),      
-        (26, 24),      
-        (27.5, 22.5)
+        (24, 26, r'$K_P = \$24,~~K_C = \$26,~~K_P < K_C$'),      
+        (25, 25, r'$K_P = \$25,~~K_C = \$25,~~K_P = K_C$'),      
+        (25.5, 24.5, r'$K_P = \$25.5,~~K_C = \$24.5,~~0 < (K_P - K_C) < \Pi$'),      
+        (26, 24, r'$K_P = \$26,~~K_C = \$24,~~0 < (K_P - K_C) = \Pi$'),      
+        (27.5, 22.5, r'$K_P = \$27.5,~~K_C = \$22.5,~~0 < \Pi < (K_P - K_C)$')
     ]
 
     num_plots = len(K_pairs)
@@ -127,12 +137,9 @@ def main():
         axes = [axes]
 
     # Iterate over the pairs and generate plots
-    for idx, (ax, (K_P, K_C)) in enumerate(zip(axes, K_pairs)):
-        plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max)
+    for idx, (ax, (K_P, K_C, annotation)) in enumerate(zip(axes, K_pairs)):
+        plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max, annotation_text=annotation)
         
-        # Remove subplot titles (eliminated as per user request)
-        # ax.set_title(f'Sequence {idx+1}: $K_P$={K_P}, $K_C$={K_C}', fontsize=14)
-
         # Add x-axis label only to the bottom subplot
         if idx == num_plots - 1:
             ax.set_xlabel(r'$S$ (\$)')
@@ -152,3 +159,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
