@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 10:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 10:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -359,7 +359,7 @@ No file ms.bbl.
 [2 <./figs/strangle.pdf>]
 
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 178.
+ on input line 177.
 
 [3{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 } <./figs/sequence1.pdf> <./figs/sequence2.pdf> <./figs/sequence3.pdf> <./figs/
@@ -398,7 +398,7 @@ dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2024/texmf-dist
 /fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2024/texmf-dist/f
 onts/type1/public/cm-super/sfrm1728.pfb>
-Output written on ms.pdf (3 pages, 462728 bytes).
+Output written on ms.pdf (3 pages, 463047 bytes).
 PDF statistics:
  235 PDF objects out of 1000 (max. 8388607)
  181 compressed objects within 2 object streams
