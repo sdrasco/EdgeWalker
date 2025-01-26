@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 10:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.11.30)  26 JAN 2025 15:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -327,53 +327,25 @@ s/put.pdf> <./figs/call.pdf>]
 LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
  on input line 89.
 
-<figs/sequence1.pdf, id=68, 417.7206pt x 200.9106pt>
-File: figs/sequence1.pdf Graphic file (type pdf)
-<use figs/sequence1.pdf>
-Package pdftex.def Info: figs/sequence1.pdf  used on input line 116.
-(pdftex.def)             Requested size: 229.49844pt x 110.38159pt.
-<figs/sequence2.pdf, id=69, 417.7206pt x 200.9106pt>
-File: figs/sequence2.pdf Graphic file (type pdf)
-<use figs/sequence2.pdf>
-Package pdftex.def Info: figs/sequence2.pdf  used on input line 117.
-(pdftex.def)             Requested size: 229.49844pt x 110.38159pt.
-<figs/sequence3.pdf, id=70, 417.7206pt x 200.9106pt>
-File: figs/sequence3.pdf Graphic file (type pdf)
-<use figs/sequence3.pdf>
-Package pdftex.def Info: figs/sequence3.pdf  used on input line 118.
-(pdftex.def)             Requested size: 229.49844pt x 110.38159pt.
-<figs/sequence4.pdf, id=71, 417.7206pt x 200.9106pt>
-File: figs/sequence4.pdf Graphic file (type pdf)
-<use figs/sequence4.pdf>
-Package pdftex.def Info: figs/sequence4.pdf  used on input line 119.
-(pdftex.def)             Requested size: 229.49844pt x 110.38159pt.
-<figs/sequence5.pdf, id=72, 417.7206pt x 200.9106pt>
-File: figs/sequence5.pdf Graphic file (type pdf)
-<use figs/sequence5.pdf>
-Package pdftex.def Info: figs/sequence5.pdf  used on input line 120.
-(pdftex.def)             Requested size: 229.49844pt x 110.38159pt.
-
-LaTeX Warning: Float too large for page by 44.65796pt on input line 131.
-
+<figs/strangle_sequence.pdf, id=68, 439.27145pt x 706.80057pt>
+File: figs/strangle_sequence.pdf Graphic file (type pdf)
+<use figs/strangle_sequence.pdf>
+Package pdftex.def Info: figs/strangle_sequence.pdf  used on input line 98.
+(pdftex.def)             Requested size: 229.49844pt x 369.26399pt.
+[2{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
+} <./figs/strangle.pdf> <./figs/strangle_sequence.pdf>]
 No file ms.bbl.
-[2 <./figs/strangle.pdf>]
-
-LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 177.
-
-[3{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
-} <./figs/sequence1.pdf> <./figs/sequence2.pdf> <./figs/sequence3.pdf> <./figs/
-sequence4.pdf> <./figs/sequence5.pdf>] (./ms.aux)
+[3] (./ms.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 4786 strings out of 474116
- 71803 string characters out of 5743681
- 1963187 words of memory out of 5000000
- 27103 multiletter control sequences out of 15000+600000
+ 4759 strings out of 474116
+ 71076 string characters out of 5743681
+ 1944187 words of memory out of 5000000
+ 27076 multiletter control sequences out of 15000+600000
  563836 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  61i,8n,69p,998b,348s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -398,10 +370,10 @@ dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2024/texmf-dist
 /fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2024/texmf-dist/f
 onts/type1/public/cm-super/sfrm1728.pfb>
-Output written on ms.pdf (3 pages, 463003 bytes).
+Output written on ms.pdf (3 pages, 455552 bytes).
 PDF statistics:
- 235 PDF objects out of 1000 (max. 8388607)
- 181 compressed objects within 2 object streams
+ 179 PDF objects out of 1000 (max. 8388607)
+ 129 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

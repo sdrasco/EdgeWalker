@@ -3,11 +3,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
+# --- LaTeX + serif font setup (must happen before plotting) ---
+plt.rcParams['text.usetex'] = True
+plt.rcParams['font.family'] = 'serif'
+
+# Increase font size for publication
+plt.rcParams['font.size'] = 14      # Base font size for all text
+plt.rcParams['axes.labelsize'] = 16 # Axis labels
+
+def plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max):
     """
-    Plots the P/L diagram for a strangle strategy and saves it to a file.
+    Plots the P/L diagram for a strangle strategy on a given Axes object.
 
     Parameters:
+    - ax (matplotlib.axes.Axes): The Axes object to plot on.
     - P (float): Premium for the Put option.
     - C (float): Premium for the Call option.
     - K_P (float): Strike price for the Put option.
@@ -16,18 +25,9 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     - S_max (float): Maximum underlying asset price.
     - y_min (float): Minimum y-axis value.
     - y_max (float): Maximum y-axis value.
-    - filename (str): Name of the output PDF file.
     """
-    # --- LaTeX + serif font setup (must happen before plotting) ---
-    plt.rcParams['text.usetex'] = True
-    plt.rcParams['font.family'] = 'serif'
-
-    # Increase font size for publication
-    plt.rcParams['font.size'] = 14      # Base font size for all text
-    plt.rcParams['axes.labelsize'] = 16 # Axis labels
-
-    # Increase line thickness
-    line_thickness = 4
+    # Line thickness
+    line_thickness = 4  # Increased for prominence
 
     # Generate S values
     S = np.linspace(S_min, S_max, 400)
@@ -55,58 +55,48 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     green_muted = "#66A266"
     red_muted = "#CC6666"
 
-    # Figure with same width (6 inches) but half the height (2 inches)
-    plt.figure(figsize=(6, 3), dpi=300)
-
     # Plot green regions where varphi >= 0 (lower)
-    plt.plot(S[mask_green_low], varphi[mask_green_low],
+    ax.plot(S[mask_green_low], varphi[mask_green_low],
              color=green_muted, linewidth=line_thickness)
 
     # Plot red regions where varphi < 0
-    plt.plot(S[mask_red], varphi[mask_red],
+    ax.plot(S[mask_red], varphi[mask_red],
              color=red_muted, linewidth=line_thickness)
 
     # Plot green regions where varphi >= 0 (middle)
-    plt.plot(S[mask_green_mid], varphi[mask_green_mid],
+    ax.plot(S[mask_green_mid], varphi[mask_green_mid],
              color=green_muted, linewidth=line_thickness)
 
     # Plot green regions where varphi >= 0 (upper)
-    plt.plot(S[mask_green_high], varphi[mask_green_high],
+    ax.plot(S[mask_green_high], varphi[mask_green_high],
              color=green_muted, linewidth=line_thickness)
 
     # Add a single thin black horizontal line at varphi = 0
-    plt.axhline(0, color='black', linewidth=0.8, linestyle='-')
+    ax.axhline(0, color='black', linewidth=0.8, linestyle='-')
 
     # Breakeven markers
-    plt.plot(S_breakeven_low, 0, color='black', marker='<', markersize=16, 
+    ax.plot(S_breakeven_low, 0, color='black', marker='<', markersize=16, 
              linestyle='None', zorder=5)
-    plt.plot(S_breakeven_high, 0, color='black', marker='>', markersize=16, 
+    ax.plot(S_breakeven_high, 0, color='black', marker='>', markersize=16, 
              linestyle='None', zorder=5)
 
     # Markers for K_P and K_C
-    plt.plot(K_P, 0, color='black', marker='3', markersize=16, 
+    ax.plot(K_P, 0, color='black', marker='3', markersize=16, 
              linestyle='None', label=r'$S_{-}$', zorder=5)  
-    plt.plot(K_C, 0, color='black', marker='4', markersize=16, 
-             linestyle='None', label=r'$S_{-}$', zorder=5)  
+    ax.plot(K_C, 0, color='black', marker='4', markersize=16, 
+             linestyle='None', label=r'$S_{+}$', zorder=5)  
 
-    # Labels with (\$)
-    plt.xlabel(r'$S$ (\$)')
-    plt.ylabel(r'$\varphi(S)$ (\$)')
+    # Y-axis label
+    ax.set_ylabel(r'$\varphi(S)$ (\$)')
 
     # X-axis and Y-axis limits
-    plt.xlim([S_min, S_max])
-    plt.ylim([y_min, y_max])
-
-    # Tight layout for nicer spacing
-    plt.tight_layout()
-
-    # Save the plot
-    plt.savefig(filename, bbox_inches='tight')
-    plt.close()
+    ax.set_xlim([S_min, S_max])
+    ax.set_ylim([y_min, y_max])
 
 def main():
     """
-    Main function to generate a sequence of strangle P/L plots with varying K_P and K_C.
+    Main function to generate a single figure containing a sequence of strangle P/L plots with varying K_P and K_C.
+    Only the bottom subplot gets the horizontal axis label.
     """
     # Define the premiums
     P = 1  # Premium for Put option
@@ -127,11 +117,38 @@ def main():
         (27.5, 22.5)
     ]
 
+    num_plots = len(K_pairs)
+
+    # Create subplots
+    fig, axes = plt.subplots(nrows=num_plots, ncols=1, figsize=(6, 2*num_plots), dpi=300, sharex=True)
+
+    # If there's only one subplot, axes is not a list; make it a list for consistency
+    if num_plots == 1:
+        axes = [axes]
+
     # Iterate over the pairs and generate plots
-    for idx, (K_P, K_C) in enumerate(K_pairs, start=1):
-        filename = f'sequence{idx}.pdf'
-        plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename)
-        print(f'Generated {filename} with K_P={K_P}, K_C={K_C}')
+    for idx, (ax, (K_P, K_C)) in enumerate(zip(axes, K_pairs)):
+        plot_strangle(ax, P, C, K_P, K_C, S_min, S_max, y_min, y_max)
+        
+        # Remove subplot titles (eliminated as per user request)
+        # ax.set_title(f'Sequence {idx+1}: $K_P$={K_P}, $K_C$={K_C}', fontsize=14)
+
+        # Add x-axis label only to the bottom subplot
+        if idx == num_plots - 1:
+            ax.set_xlabel(r'$S$ (\$)')
+        else:
+            # Hide x-axis labels for other subplots
+            ax.label_outer()
+
+    # Adjust layout for better spacing
+    plt.tight_layout()
+
+    # Save the combined figure
+    output_filename = 'strangle_sequence.pdf'
+    plt.savefig(output_filename, bbox_inches='tight')
+    plt.close()
+
+    print(f'Generated {output_filename} with {num_plots} subplots.')
 
 if __name__ == "__main__":
     main()

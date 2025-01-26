@@ -85,39 +85,17 @@ S_{+} = K_C + \Pi~.
 \end{equation}
 If $K_P < K_C$, then $S_{-} < S_{+}$.  When $K_P > K_C$ however, it is possible to have inverted breakeven points $S_{-} > S_{+}$.
 
-This note explores the feasibility of a strangle position whose profit/loss curve is raised in such a way that the loss well is entirely eliminated,  $\varphi(S) \geq 0$ for all $S$. 
+This note explores the feasibility of a strangle position whose profit/loss curve is raised in such a way that the loss well is entirely eliminated,  $\varphi(S) \ge 0$ for all $S$. 
 
 \section{Fixed premium model}
 
 We begin by assuming that the strikes can be adjusted without changing the total premium.
 We will remove this unrealistic constraint in the next section. However, it enables 
 exploring the full range of positions, including lossless ones, be they possible or not.
-The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shifting the strikes $K_C$ and/or $K_P$,  in such a way that eventually the breakeven points defy their meaning, become inverted $S_- \geq S_+$, and $\varphi(S) \geq 0$, for all $S$.
-%\begin{figure*}[htb]
-%    \centering
-%    \includegraphics[width=0.3\textwidth]{figs/sequence1.pdf}
-%    \includegraphics[width=0.3\textwidth]{figs/sequence2.pdf}
-%    \includegraphics[width=0.3\textwidth]{figs/sequence3.pdf}
-%    \includegraphics[width=0.3\textwidth]{figs/sequence4.pdf}
-%    \includegraphics[width=0.3\textwidth]{figs/sequence5.pdf}
-%\caption{
-%    A sequence of profit and loss curves as strikes $K_C$ and/or $K_P$ are repositioned while the combined premium $\Pi = C+P$ is unrealistically held fixed at a representative \$2. The strike positions include:
-%    a generic strangle with $K_P < K_C$ (top left, $K_P=\$24$, $K_C=\$26$),
-%    a straddle with $K_P = K_C$ (top middle, $K_P=\$25$, $K_C=\$25$),
-%    an inverted strangle with $0 < (K_P - K_C) < \Pi$ (top right, $K_P=\$25.5$, $K_C=\$24.5$),
-%    a critically inverted lossless strangle where the breakeven points essentially lose their meaning and $0 < (K_P - K_C) = \Pi$ (bottom left, $K_P=\$26$, $K_C=\$24$),
-%    and a generic inverted lossless strangle where both the strikes and the so-called breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right, $K_P=\$27.5$, $K_C=\$22.5$). 
-%    The breakeven points $S_\pm$ are again shown as triangles, and the strikes by the $ \scalebox{0.5}[1]{$>$} $ and $\scalebox{0.5}[1]{$<$}$ symbols.
-%}
-%    \label{fig:sequence}
-%\end{figure*}
+The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shifting the strikes $K_C$ and/or $K_P$,  in such a way that eventually the breakeven points defy their meaning, become inverted $S_- \ge S_+$, and $\varphi(S) \ge 0$, for all $S$.
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.45\textwidth]{figs/sequence1.pdf}
-    \includegraphics[width=0.45\textwidth]{figs/sequence2.pdf}
-    \includegraphics[width=0.45\textwidth]{figs/sequence3.pdf}
-    \includegraphics[width=0.45\textwidth]{figs/sequence4.pdf}
-    \includegraphics[width=0.45\textwidth]{figs/sequence5.pdf}
+    \includegraphics[width=0.45\textwidth]{figs/strangle_sequence.pdf}
 \caption{
     A sequence of profit and loss curves as strikes $K_C$ and/or $K_P$ are repositioned while the combined premium $\Pi = C+P$ is unrealistically held fixed at a representative \$2. The strike positions include:
     a generic strangle with $K_P < K_C$ (top, $K_P=\$24$, $K_C=\$26$),
@@ -129,24 +107,29 @@ The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shiftin
 }
     \label{fig:sequence}
 \end{figure}
-The breakeven points lose their meaning when the strikes are critically inverted.  As the strike separation continues, the flat region shrinks to a point, when the so-called breakeven points are identical.  Further separation of the strikes inverts the breakeven points and widens the flat region
+Initially with $K_P < K_C$, as the strikes approach the flat region with 
 \begin{equation} \label{eq:minimum}
-\varphi(S_+ < S < S_-) = \varphi_{\min} = K_P - K_C - \Pi \geq 0~.
+\varphi = \varphi_{\min} = K_P - K_C - \Pi~.
 \end{equation}
+shrinks to a point when the straddle condition $K_P = K_C$, is reached with $\varphi_{\min} = -\Pi$.
+Further separation inverting the strike prices $K_P > K_C$, widens the flat region, and increases $\varphi_{\min}$ 
+until eventually the breakeven points lose their meaning when the strikes are critically inverted, 
+eliminating loss with $\varphi_{\min} = 0$.  
+As the strike separation continues $\varphi_{\min} > 0$, and the so-called breakeven points are eventually identical before themselves inverting as that flat region continues to widen.
 
 \section{Variable premium model}
 
-The final two strangles in Fig.~\ref{fig:sequence} would amount to an arbitrage in that they are completely lossless.  Unsurprisingly, realistic premiums prohibit these positions.  To see this, note that the arbitrage-like scenarios have minimum profit (\ref{eq:minimum}).
+The final two strangles in Fig.~\ref{fig:sequence} would amount to an arbitrage in that they are completely lossless.  Unsurprisingly, realistic premiums prohibit these positions.  To see this, note that the lossless scenarios have positive minimum profit  $\varphi_{\min} \ge 0$.
 However, if the put and call are both purchased simultaneously, they will have premiums bounded by 
 \begin{subequations} \label{eq:bounds}
 \begin{align}
-P \geq \max(0, K_P - S) \geq K_P - S~,\\
-C \geq \max(0, S - K_C) \geq S - K_C~,
+P \ge \max(0, K_P - S) \ge K_P - S~,\\
+C \ge \max(0, S - K_C) \ge S - K_C~,
 \end{align}
 \end{subequations}
-so that the total premium is bounded by $\Pi \geq K_P - K_C$, which can be restated as the contradiction
+so that the total premium is bounded by $\Pi \ge K_P - K_C$, which can be restated using the general minimum profit expression (\ref{eq:minimum}) as the contradiction
 \begin{equation}
-\varphi_{\min} \leq 0~.
+\varphi_{\min} \le 0~.
 \end{equation}
 
 So the arbitrage only occurs for mispriced premiums, violating the simple bounds (\ref{eq:bounds}).  The next section shows that the lossless positions can in principle be achieved if dynamically constructed, lacking the instantaneous and simultaneous ingredients of a traditional definition of arbitrage.
@@ -155,19 +138,19 @@ So the arbitrage only occurs for mispriced premiums, violating the simple bounds
 Now consider the case where the put is purchased when the underlying asset has price $S_P$, and the call is purchased at some other time when the underlying asset has price $S_C$.  In that case, our simple bounds (\ref{eq:bounds}) become
 \begin{subequations} \label{eq:dynamicbounds}
 \begin{align}
-P \geq \max(0, K_P - S_P) \geq K_P - S_P~,\\
-C \geq \max(0, S_C - K_C) \geq S_C - K_C~,
+P \ge \max(0, K_P - S_P) \ge K_P - S_P~,\\
+C \ge \max(0, S_C - K_C) \ge S_C - K_C~,
 \end{align}
 \end{subequations}
 so that the total premium is bounded by
 \begin{equation}
-\Pi \geq (K_P - S_P) + (S_C - K_C)~,
+\Pi \ge (K_P - S_P) + (S_C - K_C)~,
 \end{equation}
 which can be restated as
 \begin{equation}
-\varphi_{\min} \leq S_P - S_C~.
+\varphi_{\min} \le S_P - S_C~.
 \end{equation}
-So if one purchased a put or a call, and then that position develops a deep in-the-money status, one could purchase a corresponding call or put such that $S_P \gg S_C$.  This could cause $\varphi_{\min} \geq 0$, such that the second option contract acted as a lossless hedge insuring at least some profit even if $S$ were to experience a high volatility event such that the deep in-the-money contract completely collapsed.
+So if one purchased a put or a call, and then that position develops a deep in-the-money status, one could purchase a corresponding call or put such that $S_P \gg S_C$.  This could cause $\varphi_{\min} \ge 0$, such that the second option contract acted as a lossless hedge insuring at least some profit even if $S$ were to experience a high volatility event such that the deep in-the-money contract completely collapsed.
 Thus, for a deep in-the-money contract, one may find it possible to dynamically construct a strangle with inverted breakeven points that locks out loss.  This dynamic strangle hedge would of course come at a cost, unappealing to someone holding a deep in-the-money option contract. However that cost would only reduce the overall profit, and could not convert it to a loss.
 
 \section{Summary}
