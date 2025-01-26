@@ -42,15 +42,10 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     varphi = varphi_P + varphi_C
 
     # Find the breakeven points where varphi = 0
-    # For a strangle with K_P != K_C, the breakeven points are:
     S_breakeven_low = K_P - P - C
     S_breakeven_high = K_C + P + C
 
-
-    # Separate by sign of varphi:
-    #   - Green if varphi >= 0
-    #   - Red if varphi < 0
-    # To prevent unwanted lines, define separate masks for lower, middle, and upper regions
+    # Separate by sign of varphi to color differently
     mask_green_low = (varphi >= 0) & (S < S_breakeven_low)
     mask_green_mid = (varphi >= 0) & (S >= S_breakeven_low) & (S <= S_breakeven_high)
     mask_green_high = (varphi >= 0) & (S > S_breakeven_high)
@@ -60,8 +55,8 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     green_muted = "#66A266"
     red_muted = "#CC6666"
 
-    # Create the plot
-    plt.figure(figsize=(6, 4), dpi=300)
+    # Figure with same width (6 inches) but half the height (2 inches)
+    plt.figure(figsize=(6, 3), dpi=300)
 
     # Plot green regions where varphi >= 0 (lower)
     plt.plot(S[mask_green_low], varphi[mask_green_low],
@@ -82,19 +77,15 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     # Add a single thin black horizontal line at varphi = 0
     plt.axhline(0, color='black', linewidth=0.8, linestyle='-')
 
-    # Add left-pointing triangle marker at S_breakeven_low
+    # Breakeven markers
     plt.plot(S_breakeven_low, 0, color='black', marker='<', markersize=16, 
              linestyle='None', zorder=5)
-
-    # Add right-pointing triangle marker at S_breakeven_high
     plt.plot(S_breakeven_high, 0, color='black', marker='>', markersize=16, 
              linestyle='None', zorder=5)
 
-    # Add marker for K_P with higher zorder using plt.plot
+    # Markers for K_P and K_C
     plt.plot(K_P, 0, color='black', marker='3', markersize=16, 
              linestyle='None', label=r'$S_{-}$', zorder=5)  
-
-    # Add marker for K_C with higher zorder using plt.plot
     plt.plot(K_C, 0, color='black', marker='4', markersize=16, 
              linestyle='None', label=r'$S_{-}$', zorder=5)  
 
@@ -102,14 +93,9 @@ def plot_strangle(P, C, K_P, K_C, S_min, S_max, y_min, y_max, filename):
     plt.xlabel(r'$S$ (\$)')
     plt.ylabel(r'$\varphi(S)$ (\$)')
 
-    # X-axis limits
+    # X-axis and Y-axis limits
     plt.xlim([S_min, S_max])
-
-    # Y-axis limits
     plt.ylim([y_min, y_max])
-
-    # Optional: Remove the legend since markers have no labels
-    # plt.legend()
 
     # Tight layout for nicer spacing
     plt.tight_layout()
@@ -133,7 +119,6 @@ def main():
     y_min, y_max = -2.5, 6
 
     # Define the list of (K_P, K_C) pairs for the 5 plots
-    # Modify these pairs as needed for your specific scenarios
     K_pairs = [
         (24, 26),      
         (25, 25),      
