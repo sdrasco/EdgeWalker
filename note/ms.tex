@@ -143,10 +143,8 @@ so that the total premium is bounded by
 \begin{equation}
 \Pi \ge (K_P - S_P) + (S_C - K_C)~,
 \end{equation}
-which can be restated as
-\begin{equation}
-\varphi_{\min} \le S_P - S_C~.
-\end{equation}
+which can be restated as $\varphi_{\min} \le S_P - S_C$.
+
 So if one purchased a put or a call, and then that position develops a deep in-the-money status, one could purchase a corresponding call or put such that $S_P \gg S_C$.  This could cause $\varphi_{\min} \ge 0$, such that the second option contract acted as a lossless hedge insuring at least some profit even if $S$ were to experience a high volatility event such that the deep in-the-money contract completely collapsed.
 Thus, for a deep in-the-money contract, one may find it possible to dynamically construct a strangle with inverted breakeven points that locks out loss.  This dynamic strangle hedge would of course come at a cost, unappealing to someone holding a deep in-the-money option contract. However that cost would only reduce the overall profit, and could not convert it to a loss.
 
