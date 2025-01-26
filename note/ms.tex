@@ -93,27 +93,45 @@ We begin by assuming that the strikes can be adjusted without changing the total
 \begin{equation}
 \Pi = P + C~.
 \end{equation}
-This of course isn't at all realistic, as we will remove the constraint in the next section, however it enables 
+This isn't, and we will remove the constraint in the next section. However, it enables 
 exploring the full range of strangle dynamics, including lossless positions be they possible or not.
 The sequence shown in Fig.~\ref{fig:sequence} demonstrates the effect of shifting the strikes $K_C$ and/or $K_P$,  in such a way that eventually the breakeven points defy their meaning, become inverted $S_- \geq S_+$, and $\varphi(S) \geq 0$, for all $S$.
-\begin{figure*}[htb]
+%\begin{figure*}[htb]
+%    \centering
+%    \includegraphics[width=0.3\textwidth]{figs/sequence1.pdf}
+%    \includegraphics[width=0.3\textwidth]{figs/sequence2.pdf}
+%    \includegraphics[width=0.3\textwidth]{figs/sequence3.pdf}
+%    \includegraphics[width=0.3\textwidth]{figs/sequence4.pdf}
+%    \includegraphics[width=0.3\textwidth]{figs/sequence5.pdf}
+%\caption{
+%    A sequence of profit and loss curves as strikes $K_C$ and/or $K_P$ are repositioned while the combined premium $\Pi = C+P$ is unrealistically held fixed at a representative \$2. The strike positions include:
+%    a generic strangle with $K_P < K_C$ (top left, $K_P=\$24$, $K_C=\$26$),
+%    a straddle with $K_P = K_C$ (top middle, $K_P=\$25$, $K_C=\$25$),
+%    an inverted strangle with $0 < (K_P - K_C) < \Pi$ (top right, $K_P=\$25.5$, $K_C=\$24.5$),
+%    a critically inverted lossless strangle where the breakeven points essentially lose their meaning and $0 < (K_P - K_C) = \Pi$ (bottom left, $K_P=\$26$, $K_C=\$24$),
+%    and a generic inverted lossless strangle where both the strikes and the so-called breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right, $K_P=\$27.5$, $K_C=\$22.5$). 
+%    The breakeven points $S_\pm$ are again shown as triangles, and the strikes by the $ \scalebox{0.5}[1]{$>$} $ and $\scalebox{0.5}[1]{$<$}$ symbols.
+%}
+%    \label{fig:sequence}
+%\end{figure*}
+\begin{figure}[htb]
     \centering
-    \includegraphics[width=0.3\textwidth]{figs/sequence1.pdf}
-    \includegraphics[width=0.3\textwidth]{figs/sequence2.pdf}
-    \includegraphics[width=0.3\textwidth]{figs/sequence3.pdf}
-    \includegraphics[width=0.3\textwidth]{figs/sequence4.pdf}
-    \includegraphics[width=0.3\textwidth]{figs/sequence5.pdf}
+    \includegraphics[width=0.25\textwidth]{figs/sequence1.pdf}
+    \includegraphics[width=0.25\textwidth]{figs/sequence2.pdf}
+    \includegraphics[width=0.25\textwidth]{figs/sequence3.pdf}
+    \includegraphics[width=0.25\textwidth]{figs/sequence4.pdf}
+    \includegraphics[width=0.25\textwidth]{figs/sequence5.pdf}
 \caption{
     A sequence of profit and loss curves as strikes $K_C$ and/or $K_P$ are repositioned while the combined premium $\Pi = C+P$ is unrealistically held fixed at a representative \$2. The strike positions include:
-    a generic strangle with $K_P < K_C$ (top left, $K_P=\$24$, $K_C=\$26$),
-    a straddle with $K_P = K_C$ (top middle, $K_P=\$25$, $K_C=\$25$),
-    an inverted strangle with $0 < (K_P - K_C) < \Pi$ (top right, $K_P=\$25.5$, $K_C=\$24.5$),
-    a critically inverted lossless strangle where the breakeven points essentially lose their meaning and $0 < (K_P - K_C) = \Pi$ (bottom left, $K_P=\$26$, $K_C=\$24$),
-    and a generic inverted lossless strangle where both the strikes and the so-called breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom right, $K_P=\$27.5$, $K_C=\$22.5$). 
+    a generic strangle with $K_P < K_C$ (top, $K_P=\$24$, $K_C=\$26$),
+    a straddle with $K_P = K_C$ ($K_P=\$25$, $K_C=\$25$),
+    an inverted strangle with $0 < (K_P - K_C) < \Pi$ ($K_P=\$25.5$, $K_C=\$24.5$),
+    a critically inverted lossless strangle where the breakeven points essentially lose their meaning and $0 < (K_P - K_C) = \Pi$ ($K_P=\$26$, $K_C=\$24$),
+    and a generic inverted lossless strangle where both the strikes and the so-called breakeven points are inverted with $\Pi < (K_P - K_C)$ (bottom, $K_P=\$27.5$, $K_C=\$22.5$). 
     The breakeven points $S_\pm$ are again shown as triangles, and the strikes by the $ \scalebox{0.5}[1]{$>$} $ and $\scalebox{0.5}[1]{$<$}$ symbols.
 }
     \label{fig:sequence}
-\end{figure*}
+\end{figure}
 Note that once the strikes are critically inverted with loss eliminated, further strike separation widens the region $S_+ < S < S_-$ in which the profit is independent of the underlying price $\varphi = K_P - K_C - \Pi$.
 
 \section{Variable premium model}
@@ -134,7 +152,7 @@ so that the total premium is bounded by $\Pi \geq K_P - K_C$, which can be resta
 \varphi_{\min} \leq 0~.
 \end{equation}
 
-Under these circumstances, the arbitrage can only be achieved if one or both contracts has been mispriced in violation of the simple bounds (\ref{eq:bounds}).  The next section will show however that the lossless positions can in principle be achieved, they will be dynamically constructed and lack the instantaneous or simultaneous ingredients of a traditional definition of arbitrage.
+So the arbitrage only occurs for mispriced premiums, violating the simple bounds (\ref{eq:bounds}).  The next section will show however that the lossless positions can in principle be achieved, they will be dynamically constructed and l lack the instantaneous and simultaneous ingredients of a traditional definition of arbitrage.
 
 \subsection{Dynamic Strangle}
 Now consider the case where the put is purchased when the underlying asset has price $S_P$, and the call is purchased at some other time when the underlying asset has price $S_C$.  In that case, our simple bounds (\ref{eq:bounds}) become
@@ -157,6 +175,6 @@ Thus, for a deep in-the-money contract, one may find it possible to dynamically 
 
 \section{Summary}
 
-This note analyzes the feasibility of a lossless strangle. We show that such a position is not realistic unless the traditional static strangle is configured dynamically, with each leg being acquired under different market conditions.  A deep in-the-money option contract can be dynamically reconfigured into a lossless position resembling a strangle with inverted breakeven points.  Although this hedge reduces the upside potential, it cannot force the overall strategy into a net loss—hence “lossless.”  The main ingredient in this position is purchasing the two contracts at sufficiently different market conditions, rather than relying on static mispricing.
+This note analyzes the feasibility of a lossless strangle. We show that such a position is not realistic unless the traditional static strangle is configured dynamically, with each leg being acquired under different market conditions.  A deep in-the-money option contract can be dynamically reconfigured into a lossless position resembling a strangle with inverted breakeven points, amounting to an arbitrage.  Although this hedge reduces the upside potential, it cannot force the overall strategy into a net loss—hence “lossless.”  The main ingredient for this arbitrage is purchasing the two contracts at sufficiently different market conditions, rather than relying on static mispricing.
 
 \end{document}
