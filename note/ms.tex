@@ -127,14 +127,11 @@ P \ge \max(0, K_P - S) \ge K_P - S~,\\
 C \ge \max(0, S - K_C) \ge S - K_C~,
 \end{align}
 \end{subequations}
-so that the total premium is bounded by $\Pi \ge K_P - K_C$, which can be restated using the general minimum profit expression (\ref{eq:minimum}) as the contradiction
-\begin{equation}
-\varphi_{\min} \le 0~.
-\end{equation}
+so that the total premium is bounded by $\Pi \ge K_P - K_C$, which can be restated using the general minimum profit expression (\ref{eq:minimum}) as the contradiction $\varphi_{\min} \le 0$.
 
 So the arbitrage only occurs for mispriced premiums, violating the simple bounds (\ref{eq:bounds}).  The next section shows that the lossless positions can in principle be achieved if dynamically constructed, lacking the instantaneous and simultaneous ingredients of a traditional definition of arbitrage.
 
-\subsection{Dynamic Strangle}
+\section{Dynamic Strangle}
 Now consider the case where the put is purchased when the underlying asset has price $S_P$, and the call is purchased at some other time when the underlying asset has price $S_C$.  In that case, our simple bounds (\ref{eq:bounds}) become
 \begin{subequations} \label{eq:dynamicbounds}
 \begin{align}
