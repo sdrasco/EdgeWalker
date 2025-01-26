@@ -136,7 +136,7 @@ The breakeven points lose their meaning when the strikes are critically inverted
 
 \section{Variable premium model}
 
-The final two strangles in Fig.~\ref{fig:sequence} would amount to an arbitrage in that they are completely lossless.  Unsurprisingly, this is not an achievable position when premiums are allowed to vary realistically.  To see this, note that the arbitrage-like scenarios have minimum profit (\ref{eq:minimum}).
+The final two strangles in Fig.~\ref{fig:sequence} would amount to an arbitrage in that they are completely lossless.  Unsurprisingly, realistic premiums prohibit these positions.  To see this, note that the arbitrage-like scenarios have minimum profit (\ref{eq:minimum}).
 However, if the put and call are both purchased simultaneously, they will have premiums bounded by 
 \begin{subequations} \label{eq:bounds}
 \begin{align}
@@ -149,7 +149,7 @@ so that the total premium is bounded by $\Pi \geq K_P - K_C$, which can be resta
 \varphi_{\min} \leq 0~.
 \end{equation}
 
-So the arbitrage only occurs for mispriced premiums, violating the simple bounds (\ref{eq:bounds}).  The next section will show however that the lossless positions can in principle be achieved, they will be dynamically constructed, lacking the instantaneous and simultaneous ingredients of a traditional definition of arbitrage.
+So the arbitrage only occurs for mispriced premiums, violating the simple bounds (\ref{eq:bounds}).  The next section shows that the lossless positions can in principle be achieved if dynamically constructed, lacking the instantaneous and simultaneous ingredients of a traditional definition of arbitrage.
 
 \subsection{Dynamic Strangle}
 Now consider the case where the put is purchased when the underlying asset has price $S_P$, and the call is purchased at some other time when the underlying asset has price $S_C$.  In that case, our simple bounds (\ref{eq:bounds}) become
