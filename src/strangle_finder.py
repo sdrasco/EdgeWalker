@@ -164,6 +164,9 @@ class StrangleFinder:
             (options_df['premium'] < 20.0) &
             (options_df['strike_price'].between(stock_price / 10, stock_price * 10)) &
             ((options_df['ask'] - options_df['bid']).abs() <= 0.3 * options_df['premium']) &
+            # Ensure premium is reasonably close to the prevailing market quotes
+            (options_df['premium'] >= options_df['bid'] - 0.1 * options_df['midpoint']) &
+            (options_df['premium'] <= options_df['ask'] + 0.1 * options_df['midpoint']) &
             ~(
                 ((options_df['contract_type'] == 'put') & (options_df['premium'] < (options_df['strike_price'] - stock_price))) |
                 ((options_df['contract_type'] == 'call') & (options_df['premium'] < (stock_price - options_df['strike_price'])))
